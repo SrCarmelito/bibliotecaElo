@@ -30,6 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,7 +83,7 @@ public class Usuario implements UserDetails, Auditable {
     private SituacaoUsuarioEnum situacao;
 
     @Embedded
-    @Audited
+    @NotAudited
     private AuditInfo audit = AuditInfo.now();
 
     @Override

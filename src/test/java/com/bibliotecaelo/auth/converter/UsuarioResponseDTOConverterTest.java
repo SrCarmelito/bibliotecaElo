@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UsuarioResponseDTOConverterTest extends DefaultTest {
+class UsuarioResponseDTOConverterTest extends DefaultTest {
 
     @Autowired
     UsuarioResponseDTOConverter usuarioResponseDTOConverter;
