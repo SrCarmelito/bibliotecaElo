@@ -9,9 +9,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -118,4 +120,21 @@ public class ExceptionHandlerCustom {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> messageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
+        Set<String> errors = new HashSet<>();
+        String message = "Erro Estrutural da requisição, verifique o Json de Payload e Tente novamente!";
+        errors.add(message);
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
+        return ResponseEntity.status(status).body(err);
+    }
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<StandardError> validationException(ValidationException e, HttpServletRequest request) {
+        Set<String> errors = new HashSet<>();
+        errors.add(e.getLocalizedMessage());
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
+        return ResponseEntity.status(status).body(err);
+    }
 }

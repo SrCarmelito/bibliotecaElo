@@ -6,12 +6,10 @@ import java.util.Optional;
 import com.bibliotecaelo.auth.domain.Usuario;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import static java.util.Objects.isNull;
 
-@Slf4j
 public class AuditListener {
 
     @PrePersist

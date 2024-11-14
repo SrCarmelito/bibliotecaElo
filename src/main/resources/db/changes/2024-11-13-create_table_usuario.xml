@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_table_usuario" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela usuario já existe"/>
+        <createTable schemaName="biblioteca" tableName="usuario">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="usuario_pk" nullable="false"/>
+            </column>
+            <column type="varchar(150)" name="nome"><constraints nullable="false"/></column>
+            <column type="varchar(150)" name="email"><constraints nullable="false"/></column>
+            <column type="datetime" name="data_cadastro"><constraints nullable="false"/></column>
+            <column type="varchar(11)" name="telefone"><constraints nullable="false"/></column>
+            <column type="varchar(150)" name="login"><constraints nullable="false"/></column>
+            <column type="varchar(150)" name="senha"><constraints nullable="false"/></column>
+            <column type="varchar(1000)" name="reset_token"/>
+            <column type="varchar(100)" name="situacao"><constraints nullable="false"/></column>
+            <column name="datacriacao" type="datetime"/>
+            <column name="dataalteracao" type="datetime"/>
+            <column name="usuariocriacao" type="varchar(60)"/>
+            <column name="usuarioalteracao" type="varchar(60)"/>
+        </createTable>
+        <addUniqueConstraint schemaName="biblioteca" tableName="usuario" columnNames="id" constraintName="u_usuario_id"/>
+    </changeSet>
+
+</databaseChangeLog>
