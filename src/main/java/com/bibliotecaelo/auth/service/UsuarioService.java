@@ -2,54 +2,64 @@ package com.bibliotecaelo.auth.service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
+import com.bibliotecaelo.auth.converter.UsuarioResponseDTOConverter;
 import com.bibliotecaelo.auth.domain.Usuario;
 import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.auth.dto.UsuarioDTO;
+import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
+import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.ValidationException;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 @Service
-@Slf4j
 public class UsuarioService {
-    
+    private static final int EXPIRATION_TIME_NEW_PASSWORD = 5;
+    private static final int EXPIRATION_TIME_LOGIN = 120;
+
     private final UsuarioRepository usuarioRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final TokenService tokenService;
-    private int EXPIRATION_TIME_LOGIN = 120;
-    private int EXPIRATION_TIME_NEW_PASSWORD = 5;
+    private final UsuarioResponseDTOConverter usuarioResponseDTOConverter;
+    private final UsuarioDTOConverter usuarioDTOConverter;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, EmailService emailService, TokenService tokenService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, EmailService emailService, TokenService tokenService,
+            UsuarioResponseDTOConverter usuarioResponseDTOConverter, UsuarioDTOConverter usuarioDTOConverter) {
         this.usuarioRepository = usuarioRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.tokenService = tokenService;
+        this.usuarioResponseDTOConverter = usuarioResponseDTOConverter;
+        this.usuarioDTOConverter = usuarioDTOConverter;
     }
 
-    public void newUser(UsuarioDTO usuarioDTO) {
+    public UsuarioResponseDTO novoUsuario(UsuarioDTO usuarioDTO) {
         validaUsuario(usuarioDTO);
         validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao());
 
-        Usuario novoUsuario = new Usuario();
-        novoUsuario.setNome(usuarioDTO.getNome());
-        novoUsuario.setEmail(usuarioDTO.getEmail());
-        novoUsuario.setLogin(usuarioDTO.getLogin());
+        Usuario novoUsuario = usuarioDTOConverter.from(usuarioDTO);
 
+        novoUsuario.setSituacao(SituacaoUsuarioEnum.INATIVO);
         novoUsuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
 
-        usuarioRepository.save(novoUsuario);
+        return usuarioResponseDTOConverter.to(usuarioRepository.save(novoUsuario));
     }
 
     public void resetPassword(HttpServletRequest request, String email) throws IOException {
@@ -79,11 +89,11 @@ public class UsuarioService {
         try {
             tokenService.getSubject(newPasswordDTO.getToken());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Token Inválido ou expirado, tente novamente!");
+            throw new ValidationException("Token Inválido ou expirado, tente novamente!");
         }
 
         Usuario usuario = usuarioRepository.findByResetToken(newPasswordDTO.getToken()).orElseThrow(
-                () -> new IllegalArgumentException("Token Não Encontrado, tente novamente!"));
+                () -> new ValidationException("Token Não Encontrado, tente novamente!"));
 
         validaSenha(newPasswordDTO.getSenha(), newPasswordDTO.getSenhaConfirmacao());
         usuario.setSenha(passwordEncoder.encode(newPasswordDTO.getSenha()));
@@ -92,30 +102,32 @@ public class UsuarioService {
     }
 
     public String gerarToken(LoginDTO login) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(login.getLogin(), login.getSenha());
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setSenha(login.getSenha());
+        usuarioDTO.setLogin(login.getLogin());
 
-        Authentication authentication = this.authenticationManager
-                .authenticate(usernamePasswordAuthenticationToken);
+        Usuario usuario = getAutentication(usuarioDTO);
 
-        var usuario = (Usuario) authentication.getPrincipal();
+        if (usuario.getSituacao().equals(SituacaoUsuarioEnum.INATIVO)) {
+            throw new ValidationException("Usuário está Inativo, contate o Adminsitrador do Software!");
+        }
 
         return tokenService.gerarToken(usuario, EXPIRATION_TIME_LOGIN);
     }
 
     public void validaUsuario(UsuarioDTO usuarioDTO) {
         if (usuarioRepository.findByLogin(usuarioDTO.getLogin()) != null) {
-            throw new IllegalArgumentException("Usuário já existe, tente novamente!");
+            throw new ValidationException("Usuário já existe, tente novamente!");
         }
 
         if (usuarioRepository.findByEmail(usuarioDTO.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("E-mail já cadastrado, tente novamente!");
+            throw new ValidationException("E-mail já cadastrado, tente novamente!");
         }
 
         Pattern patternEmail = Pattern.compile("^(.+)@(\\S+)$");
         Matcher matcherEmail = patternEmail.matcher(usuarioDTO.getEmail());
         if (!matcherEmail.find()) {
-            throw new IllegalArgumentException("Não é um E-mail Válido!");
+            throw new ValidationException("Não é um E-mail Válido!");
         }
     }
 
@@ -123,13 +135,48 @@ public class UsuarioService {
         Pattern patternSenha = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{6,150}$");
         Matcher matcherSenha = patternSenha.matcher(senha);
         if (!matcherSenha.find()) {
-            throw new IllegalArgumentException
+            throw new ValidationException
                     ("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
         }
 
         if (!senha.equals(senhaConfirmacao)){
-            throw new IllegalArgumentException("Senha e Senha de Confirmação não Conferem, tente novamente!");
+            throw new ValidationException("Senha e Senha de Confirmação não Conferem, tente novamente!");
         }
     }
 
+    public Usuario getAutentication(UsuarioDTO login) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(login.getLogin(), login.getSenha());
+
+        Authentication authentication = this.authenticationManager
+                .authenticate(usernamePasswordAuthenticationToken);
+
+        return (Usuario) authentication.getPrincipal();
+    }
+
+    public UsuarioResponseDTO findById(UUID usuarioId) {
+        return usuarioResponseDTOConverter.to(usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado")));
+    }
+
+    public UsuarioResponseDTO update(UsuarioDTO usuarioDTO) {
+
+        final Usuario usuarioToUpdate = usuarioRepository.findById(usuarioDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado"));
+
+        usuarioDTOConverter.from(usuarioDTO, usuarioToUpdate);
+
+        usuarioRepository.saveAndFlush(usuarioToUpdate);
+
+        return new UsuarioResponseDTOConverter().to(usuarioToUpdate);
+    }
+
+    public void deleteById(UUID usuarioId) {
+        // TODO validar se o usuário tem registro de empréstimo, se tiver, não pode deixar deletar
+        usuarioRepository.deleteById(usuarioId);
+    }
+
+    public Page<UsuarioResponseDTO> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable).map(usuarioResponseDTOConverter::to);
+    }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="create_table_revision" author="carmelito.benali">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="revision" schemaName="biblioteca"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="biblioteca" tableName="revision">
+            <column name="revisionnumber" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="revisiondate" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="remoteipaddress" type="VARCHAR(400)"/>
+            <column name="login" type="VARCHAR(60)"/>
+            <column name="username" type="VARCHAR(60)"/>
+            <column name="userid" type="uuid"/>
+        </createTable>
+        <addPrimaryKey schemaName="biblioteca" tableName="revision" columnNames="revisionnumber"/>
+    </changeSet>
+
+    <changeSet id="create_sequence_seq_revision" author="carmelito.benali">
+        <preConditions onFail="MARK_RAN" onFailMessage="Sequence SEQ_REVISION já existe">
+            <not>
+                <sequenceExists sequenceName="seq_revision" schemaName="biblioteca"/>
+            </not>
+        </preConditions>
+
+        <createSequence schemaName="biblioteca" sequenceName="seq_revision" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+</databaseChangeLog>
