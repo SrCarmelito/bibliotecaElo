@@ -29,7 +29,9 @@ public class AuthConfigurations {
         httpSecurity.headers(AbstractHttpConfigurer::disable);
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // ideal habilitar no deploy em prod
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/reset-password").permitAll()
+                        .requestMatchers("/auth/confirm-reset-password").permitAll()
                         .requestMatchers("/h2/**").permitAll()
                         .anyRequest().authenticated()
                 )

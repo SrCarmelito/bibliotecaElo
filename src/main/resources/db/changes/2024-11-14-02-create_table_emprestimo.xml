@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_table_emprestimo" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela emprestimo já existe"/>
+        <createTable schemaName="biblioteca" tableName="emprestimo">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="emprestimo_pk" nullable="false"/>
+            </column>
+            <column type="uuid" name="usuario_id">
+                <constraints nullable="false"
+                             foreignKeyName="emp_usu_fk"
+                             referencedTableName="usuario"
+                             referencedColumnNames="id"/>
+            </column>
+            <column type="uuid" name="livro_id">
+                <constraints nullable="false"
+                             foreignKeyName="emp_livro_fk"
+                             referencedTableName="livro"
+                             referencedColumnNames="id"/>
+            </column>
+            <column type="datetime" name="data_emprestimo"><constraints nullable="false"/></column>
+            <column type="datetime" name="data_devolucao"><constraints nullable="false"/></column>
+            <column type="varchar(60)" name="status"><constraints nullable="false"/></column>
+            <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
+            <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="usuarioalteracao" type="varchar(60)"><constraints nullable="false"/></column>
+        </createTable>
+        <addUniqueConstraint schemaName="biblioteca" tableName="emprestimo" columnNames="id" constraintName="u_emprestimo_id"/>
+    </changeSet>
+
+    <changeSet id="create_table_emprestimo_aud" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela emprestimo_aud já existe"/>
+        <createTable tableName="emprestimo_aud" schemaName="biblioteca">
+            <column type="BIGINT" name="rev"><constraints nullable="false"/></column>
+            <column type="numeric(10)" name="revtype"><constraints nullable="false"/></column>
+            <column type="uuid" name="id"><constraints nullable="false"/></column>
+            <column type="uuid" name="usuario_id"/>
+            <column type="uuid" name="livro_id"/>
+            <column type="datetime" name="data_emprestimo"/>
+            <column type="datetime" name="data_devolucao"/>
+            <column type="varchar(60)" name="status"/>
+        </createTable>
+        <addPrimaryKey schemaName="biblioteca" tableName="emprestimo_aud" columnNames="id, rev" constraintName="pk_emprestimo_aud"/>
+        <addUniqueConstraint schemaName="biblioteca" tableName="emprestimo_aud" columnNames="id, rev" constraintName="u_emprestimo_aud_id"/>
+    </changeSet>
+
+</databaseChangeLog>

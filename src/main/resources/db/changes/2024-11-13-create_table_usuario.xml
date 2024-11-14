@@ -20,12 +20,32 @@
             <column type="varchar(150)" name="senha"><constraints nullable="false"/></column>
             <column type="varchar(1000)" name="reset_token"/>
             <column type="varchar(100)" name="situacao"><constraints nullable="false"/></column>
-            <column name="datacriacao" type="datetime"/>
-            <column name="dataalteracao" type="datetime"/>
-            <column name="usuariocriacao" type="varchar(60)"/>
-            <column name="usuarioalteracao" type="varchar(60)"/>
+            <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
+            <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="usuarioalteracao" type="varchar(60)"><constraints nullable="false"/></column>
         </createTable>
         <addUniqueConstraint schemaName="biblioteca" tableName="usuario" columnNames="id" constraintName="u_usuario_id"/>
+    </changeSet>
+
+    <changeSet id="create_table_usuario_aud" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela usuario_aud já existe"/>
+        <createTable tableName="usuario_aud" schemaName="biblioteca">
+            <column type="BIGINT" name="rev"><constraints nullable="false"/></column>
+            <column type="numeric(10)" name="revtype"><constraints nullable="false"/></column>
+            <column type="uuid" name="id"><constraints nullable="false"/></column>
+            <column type="varchar(150)" name="nome"/>
+            <column type="varchar(150)" name="email"/>
+            <column type="datetime" name="data_cadastro"/>
+            <column type="varchar(11)" name="telefone"/>
+            <column type="varchar(150)" name="login"/>
+            <column type="varchar(150)" name="senha"/>
+            <column type="varchar(1000)" name="reset_token"/>
+            <column type="varchar(100)" name="situacao"/>
+        </createTable>
+        <addPrimaryKey schemaName="biblioteca" tableName="usuario_aud" columnNames="id, rev" constraintName="pk_usuario_aud"/>
+        <addUniqueConstraint schemaName="biblioteca" tableName="usuario_aud" columnNames="id, rev" constraintName="u_usuario_aud_id"/>
     </changeSet>
 
 </databaseChangeLog>

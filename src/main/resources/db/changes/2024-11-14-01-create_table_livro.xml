@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_table_livro" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela livro já existe"/>
+        <createTable schemaName="biblioteca" tableName="livro">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="livro_pk" nullable="false"/>
+            </column>
+            <column type="varchar(1000)" name="titulo"><constraints nullable="false"/></column>
+            <column type="varchar(1000)" name="autor"><constraints nullable="false"/></column>
+            <column type="BIGINT" name="isbn"><constraints nullable="false"/></column>
+            <column type="datetime" name="data_publicacao"><constraints nullable="false"/></column>
+            <column type="varchar(150)" name="categoria"><constraints nullable="false"/></column>
+            <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
+            <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="usuarioalteracao" type="varchar(60)"><constraints nullable="false"/></column>
+        </createTable>
+        <addUniqueConstraint schemaName="biblioteca" tableName="livro" columnNames="id" constraintName="u_livro_id"/>
+    </changeSet>
+
+    <changeSet id="create_table_livro_aud" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela livro_aud já existe"/>
+        <createTable tableName="livro_aud" schemaName="biblioteca">
+            <column type="BIGINT" name="rev"><constraints nullable="false"/></column>
+            <column type="numeric(10)" name="revtype"><constraints nullable="false"/></column>
+            <column type="uuid" name="id"><constraints nullable="false"/></column>
+            <column type="varchar(1000)" name="titulo"/>
+            <column type="varchar(1000)" name="autor"/>
+            <column type="BIGINT" name="isbn"/>
+            <column type="datetime" name="data_publicacao"/>
+            <column type="varchar(150)" name="categoria"/>
+        </createTable>
+        <addPrimaryKey schemaName="biblioteca" tableName="livro_aud" columnNames="id, rev" constraintName="pk_livro_aud"/>
+        <addUniqueConstraint schemaName="biblioteca" tableName="livro_aud" columnNames="id, rev" constraintName="u_livro_aud_id"/>
+    </changeSet>
+
+</databaseChangeLog>
