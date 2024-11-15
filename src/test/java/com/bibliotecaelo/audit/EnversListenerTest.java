@@ -74,7 +74,7 @@ class EnversListenerTest {
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        MvcResult mvcResult = mockMvc.perform(post("/auth/login")
+        MvcResult mvcResult = mockMvc.perform(post("/api/usuarios/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
@@ -88,7 +88,7 @@ class EnversListenerTest {
         usuarioAlterado.setNome("Nome modificado");
         usuarioAlterado.setTelefone("1234567890");
 
-        mockMvc.perform(put("/auth")
+        mockMvc.perform(put("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usuarioAlterado))
                         .header("Authorization", "Bearer " + token))

@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.controller;
+package com.bibliotecaelo.auth.resource;
 
 import java.util.UUID;
 
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
-public class UsuarioController {
+@RequestMapping("/api/usuarios")
+public class UsuarioResource {
 
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioResource(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 

@@ -69,7 +69,7 @@ public class AuditListenerTest {
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        MvcResult mvcResult = mockMvc.perform(post("/auth/login")
+        MvcResult mvcResult = mockMvc.perform(post("/api/usuarios/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
@@ -79,7 +79,7 @@ public class AuditListenerTest {
 
         UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
 
-        MvcResult result = mockMvc.perform(post("/auth/novo-usuario")
+        MvcResult result = mockMvc.perform(post("/api/usuarios/novo-usuario")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usuarioDTO))
                         .header("Authorization", "Bearer " + token))
@@ -103,7 +103,7 @@ public class AuditListenerTest {
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        MvcResult mvcResult = mockMvc.perform(post("/auth/login")
+        MvcResult mvcResult = mockMvc.perform(post("/api/usuarios/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
@@ -117,7 +117,7 @@ public class AuditListenerTest {
         usuarioAlterado.setNome("Nome modificado");
         usuarioAlterado.setTelefone("1234567890");
 
-        mockMvc.perform(put("/auth")
+        mockMvc.perform(put("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usuarioAlterado))
                         .header("Authorization", "Bearer " + token))

@@ -12,11 +12,11 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="livro_pk" nullable="false"/>
             </column>
-            <column type="varchar(1000)" name="titulo"><constraints nullable="false"/></column>
-            <column type="varchar(1000)" name="autor"><constraints nullable="false"/></column>
-            <column type="BIGINT" name="isbn"><constraints nullable="false"/></column>
-            <column type="datetime" name="data_publicacao"><constraints nullable="false"/></column>
-            <column type="varchar(150)" name="categoria"><constraints nullable="false"/></column>
+            <column name="titulo" type="varchar(1000)"><constraints nullable="false"/></column>
+            <column name="autor" type="varchar(1000)"><constraints nullable="false"/></column>
+            <column name="isbn" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="data_publicacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="categoria" type="varchar(150)"><constraints nullable="false"/></column>
             <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
             <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
             <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
@@ -29,14 +29,14 @@
         <validCheckSum>ANY</validCheckSum>
         <preConditions onFail="MARK_RAN" onFailMessage="A tabela livro_aud já existe"/>
         <createTable tableName="livro_aud" schemaName="biblioteca">
-            <column type="BIGINT" name="rev"><constraints nullable="false"/></column>
-            <column type="numeric(10)" name="revtype"><constraints nullable="false"/></column>
-            <column type="uuid" name="id"><constraints nullable="false"/></column>
-            <column type="varchar(1000)" name="titulo"/>
-            <column type="varchar(1000)" name="autor"/>
-            <column type="BIGINT" name="isbn"/>
-            <column type="datetime" name="data_publicacao"/>
-            <column type="varchar(150)" name="categoria"/>
+            <column name="rev" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="revtype" type="numeric(10)"><constraints nullable="false"/></column>
+            <column name="id" type="uuid"><constraints nullable="false"/></column>
+            <column name="titulo" type="varchar(1000)"/>
+            <column name="autor" type="varchar(1000)"/>
+            <column name="isbn" type="BIGINT"/>
+            <column name="data_publicacao" type="datetime"/>
+            <column name="categoria" type="varchar(150)"/>
         </createTable>
         <addPrimaryKey schemaName="biblioteca" tableName="livro_aud" columnNames="id, rev" constraintName="pk_livro_aud"/>
         <addUniqueConstraint schemaName="biblioteca" tableName="livro_aud" columnNames="id, rev" constraintName="u_livro_aud_id"/>
