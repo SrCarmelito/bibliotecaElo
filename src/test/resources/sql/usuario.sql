@@ -1,3 +1,5 @@
+delete from biblioteca.usuario;
+
 insert into biblioteca.usuario (
 	id,
 	nome,

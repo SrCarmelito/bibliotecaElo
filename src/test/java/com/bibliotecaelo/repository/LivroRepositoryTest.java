@@ -1,6 +1,7 @@
 package com.bibliotecaelo.repository;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.domain.Livro;
@@ -8,9 +9,13 @@ import com.bibliotecaelo.enums.CategoriaLivroEnum;
 import com.bibliotecaelo.fixtures.LivroFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql(scripts = {
+        "/sql/livro.sql"
+})
 class LivroRepositoryTest extends DefaultTest {
 
     @Autowired
@@ -53,7 +58,12 @@ class LivroRepositoryTest extends DefaultTest {
         assertThat(livroAtualizado.getAutor()).isEqualTo("Autor Modificado");
         assertThat(livroAtualizado.getDataPublicacao()).isEqualTo(LocalDate.of(1995, 12, 28));
         assertThat(livroAtualizado.getCategoria()).isEqualTo(CategoriaLivroEnum.ACAO_AVENTURA);
+    }
 
+    @Test
+    void buscaLivro() {
+        Livro livrobuscado = repository.findById(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f")).orElseThrow();
+        assertThat(livrobuscado.getIsbn()).isEqualTo(4475598957534L);
     }
 
 }

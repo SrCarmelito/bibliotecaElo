@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.controller;
+package com.bibliotecaelo.auth.resource;
 
 import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.auth.dto.LoginDTO;
@@ -19,14 +19,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UsuarioControllerTest extends DefaultTest {
+class UsuarioResourceTest
+        extends DefaultTest {
 
     @MockBean
     private UsuarioService usuarioService;
 
     @Test
     public void newUser() throws Exception {
-        mockMvc.perform(post("/auth/novo-usuario")
+        mockMvc.perform(post("/api/usuarios/novo-usuario")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(UsuarioFixtures.usuarioCarmelitoDTO())))
                 .andDo(print())
@@ -38,7 +39,7 @@ class UsuarioControllerTest extends DefaultTest {
 
     @Test
     public void resetPassword() throws Exception {
-        mockMvc.perform(post("/auth/reset-password")
+        mockMvc.perform(post("/api/usuarios/reset-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString("carmelito.benali@hotmail.com")))
                 .andDo(print())
@@ -56,7 +57,7 @@ class UsuarioControllerTest extends DefaultTest {
         newPasswordDTO.setSenhaConfirmacao("123");
         newPasswordDTO.setToken("123");
 
-        mockMvc.perform(post("/auth/confirm-reset-password")
+        mockMvc.perform(post("/api/usuarios/confirm-reset-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newPasswordDTO)))
                 .andDo(print())
@@ -69,7 +70,7 @@ class UsuarioControllerTest extends DefaultTest {
     @Test
     public void findById() throws Exception {
 
-        mockMvc.perform(get("/auth/{usuarioId}", "ee4ae880-a4db-4563-b330-7e2a27d26115")
+        mockMvc.perform(get("/api/usuarios/{usuarioId}", "ee4ae880-a4db-4563-b330-7e2a27d26115")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
@@ -80,7 +81,7 @@ class UsuarioControllerTest extends DefaultTest {
 
     @Test
     public void update() throws Exception {
-        mockMvc.perform(put("/auth")
+        mockMvc.perform(put("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(UsuarioFixtures.usuarioCarmelitoDTO())))
                 .andDo(print())
@@ -92,7 +93,7 @@ class UsuarioControllerTest extends DefaultTest {
 
     @Test
     public void deleteByUsuarioId() throws Exception{
-        mockMvc.perform(delete("/auth/{usuarioId}", "ee4ae880-a4db-4563-b330-7e2a27d26115")
+        mockMvc.perform(delete("/api/usuarios/{usuarioId}", "ee4ae880-a4db-4563-b330-7e2a27d26115")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
@@ -107,7 +108,7 @@ class UsuarioControllerTest extends DefaultTest {
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/usuarios/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
