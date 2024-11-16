@@ -67,7 +67,7 @@ public class UsuarioResource {
         return ResponseEntity.ok(usuarioService.findById(usuarioId));
     }
 
-    @GetMapping("/usuarios")
+    @GetMapping
     public ResponseEntity<Page<UsuarioResponseDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(usuarioService.findAll(pageable));
     }

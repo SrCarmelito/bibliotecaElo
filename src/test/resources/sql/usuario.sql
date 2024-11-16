@@ -1,3 +1,4 @@
+delete from biblioteca.emprestimo;
 delete from biblioteca.usuario;
 
 insert into biblioteca.usuario (

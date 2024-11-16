@@ -1,9 +1,11 @@
 package com.bibliotecaelo.service;
 
+import com.bibliotecaelo.repository.EmprestimoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.converter.LivroDTOConverter;
@@ -42,10 +44,10 @@ class LivroServiceTest extends DefaultTest {
     LivroRepository repository;
 
     @Mock
-    LivroDTOConverter converter;
+    EmprestimoRepository emprestimoRepository;
 
     @Mock
-    Pageable pageable;
+    LivroDTOConverter converter;
 
     LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
 
@@ -121,8 +123,21 @@ class LivroServiceTest extends DefaultTest {
         assertThrows(EntityNotFoundException.class, () -> service.update(livroDTO));
     }
 
-/*    @Test
+    @Test
     void deleteById() {
-        // TODO validar se o LIVRO tem registro de empréstimo, se tiver, não pode deixar deletar
-    }*/
+        UUID livroId = UUID.randomUUID();
+
+        when(emprestimoRepository.existsByLivroId(livroId)).thenReturn(false);
+        service.deleteById(livroId);
+
+        verify(repository).deleteById(livroId);
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void deleteByIdThrows() {
+        when(emprestimoRepository.existsByLivroId(livroDTO.getId())).thenReturn(true);
+        assertThrows(ValidationException.class, () -> service.deleteById(livroDTO.getId()));
+    }
+
 }
