@@ -8,10 +8,12 @@ import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
 import com.bibliotecaelo.auth.converter.UsuarioResponseDTOConverter;
 import com.bibliotecaelo.auth.domain.Usuario;
+import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.auth.dto.UsuarioDTO;
 import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.auth.repository.UsuarioRepository;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
+import com.bibliotecaelo.repository.EmprestimoRepository;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,6 +52,9 @@ class UsuarioServiceTest extends DefaultTest {
     UsuarioRepository usuarioRepository;
 
     @Mock
+    EmprestimoRepository emprestimoRepository;
+
+    @Mock
     TokenService tokenService;
 
     @Mock
@@ -63,7 +68,6 @@ class UsuarioServiceTest extends DefaultTest {
 
     @Mock
     UsuarioResponseDTOConverter usuarioResponseDTOConverter;
-
     UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
 
     Usuario usuario = UsuarioFixtures.usuarioPele();
@@ -101,35 +105,72 @@ class UsuarioServiceTest extends DefaultTest {
     }
 
     @Test
-    void validaUsuario() {
+    void resetPasswordValidaEmail() {
+        MockHttpServletRequest servletRequest = new MockHttpServletRequest();
+
+        when(usuarioRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        String mensagemEmailNaoCadastrado = assertThrows(IllegalArgumentException.class,
+                () -> usuarioService.resetPassword(servletRequest, "12345"))
+                .getMessage();
+
+        assertThat(mensagemEmailNaoCadastrado).isEqualTo("Não corresponde a um e-mail Cadastrado");
+    }
+
+    @Test
+    void validaUsuarioExistente() {
         when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(new Usuario());
+
+        String mensagemUsuarioJaExiste = assertThrows(ValidationException.class,
+                () -> usuarioService.validaUsuario(usuarioDTO))
+                .getMessage();
+
+        assertThat(mensagemUsuarioJaExiste).isEqualTo("Usuário já existe, tente novamente!");
+    }
+
+    @Test
+    void validaEmailJaCadastrado() {
+        when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(null);
         when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(Optional.of(new Usuario()));
 
-        assertThrows(ValidationException.class,
+        String mensagemEmailJaCadastrado = assertThrows(ValidationException.class,
                 () -> usuarioService.validaUsuario(usuarioDTO))
-                .getMessage().equals("Usuário já existe, tente novamente!");
+                .getMessage();
 
-        assertThrows(ValidationException.class,
-                () -> usuarioService.validaUsuario(usuarioDTO))
-                .getMessage().equals("E-mail já cadastrado, tente novamente!");
+        assertThat(mensagemEmailJaCadastrado).isEqualTo("E-mail já cadastrado, tente novamente!");
+    }
 
+    @Test
+    void validaEmailIncorreto() {
         usuarioDTO.setEmail("aaa");
-        assertThrows(ValidationException.class,
+        when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(null);
+        when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(Optional.empty());
+
+        String mensagemEmailJaCadastrado = assertThrows(ValidationException.class,
                 () -> usuarioService.validaUsuario(usuarioDTO))
-                .getMessage().equals("Não é um E-mail Válido!");
+                .getMessage();
+
+        assertThat(mensagemEmailJaCadastrado).isEqualTo("Não é um E-mail Válido!");
     }
 
     @Test
     void validaSenha() {
         usuarioDTO.setSenha("Aa");
-        assertThrows(ValidationException.class,
-                () -> usuarioService.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao()))
-                .getMessage().equals("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
+        String mensagemSenhaInvalida = assertThrows(ValidationException.class,
+                () -> usuarioService.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao())).getMessage();
 
-        assertThrows(ValidationException.class,
-                () -> usuarioService.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao()))
-                .getMessage().equals("Senha e Senha de Confirmação não Conferem, tente novamente!");
+        assertThat(mensagemSenhaInvalida)
+                .isEqualTo("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
+    }
 
+    @Test
+    void validaSenhaDiferenteConfirmacao() {
+        usuarioDTO.setSenha("Aaaaa1");
+        String mensagemSenhaDiferenteConfirmacao = assertThrows(ValidationException.class,
+                () -> usuarioService.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao())).getMessage();
+
+        assertThat(mensagemSenhaDiferenteConfirmacao)
+                .isEqualTo("Senha e Senha de Confirmação não Conferem, tente novamente!");
     }
 
     @Test
@@ -147,10 +188,17 @@ class UsuarioServiceTest extends DefaultTest {
     void deleteById() {
         UUID usuarioId = UUID.randomUUID();
 
+        when(emprestimoRepository.existsByUsuarioId(usuarioId)).thenReturn(false);
         usuarioService.deleteById(usuarioId);
 
         verify(usuarioRepository).deleteById(usuarioId);
         verifyNoMoreInteractions(usuarioRepository);
+    }
+
+    @Test
+    void deleteByIdThrows() {
+        when(emprestimoRepository.existsByUsuarioId(usuarioDTO.getId())).thenReturn(true);
+        assertThrows(ValidationException.class, () -> usuarioService.deleteById(usuarioDTO.getId()));
     }
 
     @Test
@@ -177,4 +225,20 @@ class UsuarioServiceTest extends DefaultTest {
         verifyNoMoreInteractions(usuarioRepository);
     }
 
-}
+    @Test
+    void confirmResetPassword() {
+        NewPasswordDTO newPasswordDTO = new NewPasswordDTO();
+        newPasswordDTO.setToken("1234");
+        newPasswordDTO.setSenha("123Carmelito");
+        newPasswordDTO.setSenhaConfirmacao("123Carmelito");
+
+        when(tokenService.getSubject(any())).thenReturn("123");
+        when(usuarioRepository.findByResetToken(any())).thenReturn(Optional.of(new Usuario()));
+        when(passwordEncoder.encode(any())).thenReturn("123456");
+        when(usuarioRepository.save(any())).thenReturn(new Usuario());
+
+        usuarioService.confirmResetPassword(newPasswordDTO);
+
+        verify(usuarioRepository).save(any(Usuario.class));
+    }
+    }

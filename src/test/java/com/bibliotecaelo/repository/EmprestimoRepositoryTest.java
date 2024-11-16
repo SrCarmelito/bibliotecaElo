@@ -1,75 +1,42 @@
 package com.bibliotecaelo.repository;
 
-import java.time.LocalDate;
+import java.util.UUID;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
-import com.bibliotecaelo.domain.Emprestimo;
-import com.bibliotecaelo.enums.CategoriaLivroEnum;
-import com.bibliotecaelo.fixtures.EmprestimoFixtures;
-import com.bibliotecaelo.fixtures.LivroFixtures;
-import com.bibliotecaelo.fixtures.UsuarioFixtures;
+import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql(scripts = {
+    "/sql/usuario.sql", "/sql/livro.sql", "/sql/emprestimo.sql"
+})
 class EmprestimoRepositoryTest extends DefaultTest {
 
     @Autowired
-    EmprestimoRepository emprestimoRepository;
+    EmprestimoRepository repository;
 
-    @Autowired
-    LivroRepository livroRepository;
+    @Test
+    void findAllByLivroIdAndStatus() {
+        assertThat(repository.findAllByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
+                StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)).hasSize(1);
 
-    @Autowired
-    UsuarioRepository usuarioRepository;
-
-    private Emprestimo emprestimo() {
-        Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
-        emprestimo.setLivro(livroRepository.save(LivroFixtures.LivroOProcesso()));
-        emprestimo.setUsuario(usuarioRepository.save(UsuarioFixtures.usuarioPele()));
-
-        return emprestimoRepository.save(emprestimo);
+        assertThat(repository.findAllByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
+                StatusEmprestimoEnum.CONCLUIDO)).hasSize(0);
     }
 
     @Test
-    void save() {
-        Emprestimo emprestimoSalvo = emprestimo() ;
-
-        assertThat(emprestimoSalvo.getLivro().getAutor()).isEqualTo("Franz Kakfa");
-        assertThat(emprestimoSalvo.getLivro().getCategoria()).isEqualTo(CategoriaLivroEnum.DISTOPIA);
-        assertThat(emprestimoSalvo.getUsuario().getNome()).isEqualTo("Edson Arantes do Nascimento");
-        assertThat(emprestimoSalvo.getUsuario().getEmail()).isEqualTo("carmelito.benali@hotmail.com");
-        assertThat(emprestimoSalvo.getDataDevolucao()).isEqualTo(LocalDate.of(2024, 8, 7));
-
+    void existsByLivroId() {
+        assertThat(repository.existsByLivroId(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"))).isTrue();
+        assertThat(repository.existsByLivroId(UUID.fromString("fac0d069-15c6-4db9-9bd6-9783ede07986"))).isFalse();
     }
 
     @Test
-    void findById() {
-        Emprestimo emprestimo = emprestimo() ;
-
-        Emprestimo emprestimoBuscado = emprestimoRepository.findById(emprestimo.getId()).orElseThrow();
-        assertThat(emprestimoBuscado.getLivro().getAutor()).isEqualTo("Franz Kakfa");
-        assertThat(emprestimoBuscado.getLivro().getCategoria()).isEqualTo(CategoriaLivroEnum.DISTOPIA);
-        assertThat(emprestimoBuscado.getUsuario().getNome()).isEqualTo("Edson Arantes do Nascimento");
-        assertThat(emprestimoBuscado.getUsuario().getEmail()).isEqualTo("carmelito.benali@hotmail.com");
-        assertThat(emprestimoBuscado.getDataDevolucao()).isEqualTo(LocalDate.of(2024, 8, 7));
+    void existsByUsuarioId() {
+        assertThat(repository.existsByUsuarioId(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"))).isTrue();
+        assertThat(repository.existsByUsuarioId(UUID.fromString("fac0d069-15c6-4db9-9bd6-9783ede07986"))).isFalse();
     }
-
-    @Test
-    void update() {
-        Emprestimo emprestimo = emprestimo() ;
-        Emprestimo emprestimoParaAtualizar = emprestimoRepository.findById(emprestimo.getId()).orElseThrow();
-
-        emprestimoParaAtualizar.setDataEmprestimo(LocalDate.of(1995, 12, 28));
-        emprestimoParaAtualizar.setDataDevolucao(LocalDate.of(2020, 5, 5));
-
-        Emprestimo emprestimoAtualizado = emprestimoRepository.save(emprestimoParaAtualizar);
-
-        assertThat(emprestimoAtualizado.getDataEmprestimo()).isEqualTo(LocalDate.of(1995, 12, 28));
-        assertThat(emprestimoAtualizado.getDataDevolucao()).isEqualTo(LocalDate.of(2020, 5, 5));
-    }
-
 
 }

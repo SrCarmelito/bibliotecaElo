@@ -23,8 +23,7 @@ public class LivroResourceTest extends DefaultTest {
     @MockBean
     private LivroService livroService;
 
-    private
-    LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
+    private final LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
 
     @Test
     public void create() throws Exception {

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UsuarioResourceTest
+public class UsuarioResourceTest
         extends DefaultTest {
 
     @MockBean
@@ -80,6 +80,17 @@ class UsuarioResourceTest
     }
 
     @Test
+    public void findAll() throws Exception {
+        mockMvc.perform(get("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+
+        verify(usuarioService).findAll(any());
+        verifyNoMoreInteractions(usuarioService);
+    }
+
+    @Test
     public void update() throws Exception {
         mockMvc.perform(put("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +129,4 @@ class UsuarioResourceTest
         verifyNoMoreInteractions(usuarioService);
 
     }
-
-
-
 }

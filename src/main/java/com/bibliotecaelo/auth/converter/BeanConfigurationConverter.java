@@ -1,5 +1,6 @@
 package com.bibliotecaelo.auth.converter;
 
+import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.converter.LivroDTOConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,5 +21,10 @@ public class BeanConfigurationConverter {
     @Bean
     public LivroDTOConverter livroDTOConverter() {
         return new LivroDTOConverter();
+    }
+
+    @Bean
+    public EmprestimoDTOConverter emprestimoDTOConverter() {
+        return new EmprestimoDTOConverter();
     }
 }

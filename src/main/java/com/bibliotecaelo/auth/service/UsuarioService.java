@@ -15,6 +15,7 @@ import com.bibliotecaelo.auth.dto.UsuarioDTO;
 import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.repository.EmprestimoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
@@ -26,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 @Service
 public class UsuarioService {
     private static final int EXPIRATION_TIME_NEW_PASSWORD = 5;
@@ -38,9 +40,11 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final UsuarioResponseDTOConverter usuarioResponseDTOConverter;
     private final UsuarioDTOConverter usuarioDTOConverter;
+    private final EmprestimoRepository emprestimoRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, EmailService emailService, TokenService tokenService,
-            UsuarioResponseDTOConverter usuarioResponseDTOConverter, UsuarioDTOConverter usuarioDTOConverter) {
+            UsuarioResponseDTOConverter usuarioResponseDTOConverter, UsuarioDTOConverter usuarioDTOConverter,
+            EmprestimoRepository emprestimoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -48,6 +52,7 @@ public class UsuarioService {
         this.tokenService = tokenService;
         this.usuarioResponseDTOConverter = usuarioResponseDTOConverter;
         this.usuarioDTOConverter = usuarioDTOConverter;
+        this.emprestimoRepository = emprestimoRepository;
     }
 
     public UsuarioResponseDTO novoUsuario(UsuarioDTO usuarioDTO) {
@@ -66,7 +71,7 @@ public class UsuarioService {
         String userMail = email.replace("{\"email\":\"", "").replace("\"}", "");
 
         Usuario usuario = usuarioRepository.findByEmail(userMail).orElseThrow(
-                () -> new IllegalArgumentException("Não é um e-mail válido"));
+                () -> new IllegalArgumentException("Não corresponde a um e-mail Cadastrado"));
 
         String token = tokenService.gerarToken(usuario, EXPIRATION_TIME_NEW_PASSWORD);
         usuario.setResetToken(token);
@@ -172,7 +177,10 @@ public class UsuarioService {
     }
 
     public void deleteById(UUID usuarioId) {
-        // TODO validar se o usuário tem registro de empréstimo, se tiver, não pode deixar deletar
+        if (emprestimoRepository.existsByUsuarioId(usuarioId)) {
+            throw new ValidationException("Usuário Possui Empréstimo vinculado, portanto NÃO será excluído!");
+        }
+
         usuarioRepository.deleteById(usuarioId);
     }
 

@@ -26,7 +26,7 @@ class UsuarioResponseDTOConverterTest extends DefaultTest {
         UsuarioResponseDTO usuarioResponseDTO = usuarioResponseDTOConverter.to(UsuarioFixtures.usuarioPele());
 
         assertThat(usuarioResponseDTO.getNome()).isEqualTo("Edson Arantes do Nascimento");
-        assertThat(usuarioResponseDTO.getEmail()).isEqualTo("carmelito.benali@hotmail.com");
+        assertThat(usuarioResponseDTO.getEmail()).isEqualTo("carmelito.benali@ig.com");
         assertThat(usuarioResponseDTO.getTelefone()).isEqualTo("4499999999");
     }
 

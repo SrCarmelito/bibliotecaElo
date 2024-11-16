@@ -13,7 +13,7 @@ public class UsuarioFixtures {
         Usuario usuario = new Usuario();
         usuario.setId(UUID.fromString("f5070c94-c1ec-4be1-96cf-db855e3c5a1b"));
         usuario.setNome("Edson Arantes do Nascimento");
-        usuario.setEmail("carmelito.benali@hotmail.com");
+        usuario.setEmail("carmelito.benali@ig.com");
         usuario.setDataCadastro(LocalDate.of(1962, 9, 14));
         usuario.setTelefone("4499999999");
         usuario.setLogin("pele");
