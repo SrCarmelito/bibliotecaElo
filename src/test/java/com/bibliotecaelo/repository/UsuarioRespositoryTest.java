@@ -1,10 +1,10 @@
-package com.bibliotecaelo.auth.repository;
+package com.bibliotecaelo.repository;
 
 import java.time.LocalDate;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

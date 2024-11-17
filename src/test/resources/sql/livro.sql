@@ -1,22 +1,6 @@
-insert into biblioteca.livro (
-	id,
-	titulo,
-	autor,
-	isbn,
-	data_publicacao,
-	categoria,
-	datacriacao,
-	dataalteracao,
-	usuariocriacao,
-	usuarioalteracao)
-values (
-	'8bf07126-eaa2-4207-b3de-cbc7a43e038f',
-	'As areias do Tempo',
-	' Sidney Sheldon',
-	4475598957534,
-	'1947-05-20 23:27:55',
-	'FICCAO_POLICIAL',
-	'2024-11-14 06:33:47'::timestamp,
-	'2024-11-14 06:33:47'::timestamp,
-	'system',
-	'system');
+delete from biblioteca.emprestimo;
+delete from biblioteca.livro;
+
+insert into biblioteca.livro (id, titulo, autor, isbn, data_publicacao, categoria, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) VALUES ('de1c8bd9-755d-4f02-9c9b-781c25674109', 'Jane Eyre', 'Charlotte Bronte', 6778667688702, '2006-12-25 08:10:05', 'GRAPHIC_NOVEL', '2024-11-14 06:33:57'::timestamp, '2024-11-14 06:33:57'::timestamp, 'system', 'system');
+insert into biblioteca.livro (id, titulo, autor, isbn, data_publicacao, categoria, datacriacao,	dataalteracao, usuariocriacao, usuarioalteracao) values ('8bf07126-eaa2-4207-b3de-cbc7a43e038f', 'As areias do Tempo', ' Sidney Sheldon', 4475598957534, '1947-05-20 23:27:55', 'FICCAO_POLICIAL', '2024-11-14 06:33:47'::timestamp, '2024-11-14 06:33:47'::timestamp, 'system','system');
+insert into biblioteca.livro (id, titulo, autor, isbn, data_publicacao, categoria, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) values ('9d707fa8-ce8b-4ec9-8b6d-5e235386a3da', 'A amiga genial', 'Elena Ferrante', 8953451684921, '1961-08-07 10:24:28', 'FICCAO_POLICIAL', '2024-11-14 06:33:55'::timestamp, '2024-11-14 06:33:55'::timestamp, 'system', 'system');

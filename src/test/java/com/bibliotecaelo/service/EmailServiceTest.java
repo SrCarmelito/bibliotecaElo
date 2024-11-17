@@ -1,7 +1,8 @@
-package com.bibliotecaelo.auth.service;
+package com.bibliotecaelo.service;
 
 
 import com.bibliotecaelo.DefaultTest;
+import com.bibliotecaelo.auth.service.EmailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

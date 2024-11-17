@@ -1,8 +1,5 @@
 package com.bibliotecaelo.service;
 
-import com.bibliotecaelo.repository.EmprestimoRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,7 +10,11 @@ import com.bibliotecaelo.domain.Livro;
 import com.bibliotecaelo.dto.LivroDTO;
 import com.bibliotecaelo.enums.CategoriaLivroEnum;
 import com.bibliotecaelo.fixtures.LivroFixtures;
+import com.bibliotecaelo.repository.EmprestimoRepository;
 import com.bibliotecaelo.repository.LivroRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,7 +60,8 @@ class LivroServiceTest extends DefaultTest {
 
         service.create(livroDTO);
 
-        verify(repository).findByTitulo(livroDTO.getTitulo());
+        verify(repository).findAllByTitulo(livroDTO.getTitulo());
+        verify(repository).findAllByIsbn(livroDTO.getIsbn());
         verify(repository).save(any());
         verifyNoMoreInteractions(repository);
     }
@@ -67,7 +69,7 @@ class LivroServiceTest extends DefaultTest {
     @Test
     void createThrows() {
         List<Livro> list = List.of(LivroFixtures.LivroOProcesso());
-        when(repository.findByTitulo(any())).thenReturn(list);
+        when(repository.findAllByTitulo(any())).thenReturn(list);
         assertThrows(ValidationException.class, () -> service.create(livroDTO));
     }
 
@@ -138,6 +140,16 @@ class LivroServiceTest extends DefaultTest {
     void deleteByIdThrows() {
         when(emprestimoRepository.existsByLivroId(livroDTO.getId())).thenReturn(true);
         assertThrows(ValidationException.class, () -> service.deleteById(livroDTO.getId()));
+    }
+
+    @Test
+    void validaISBN() {
+        when(repository.findAllByIsbn(any())).thenReturn(List.of(new Livro()));
+        String mensagemIsbnJaCadastrado = Assertions.assertThrows(ValidationException.class,
+                () -> service.create(livroDTO)).getMessage();
+
+        assertThat(mensagemIsbnJaCadastrado)
+                .isEqualTo("Já Existe uma Livro Cadastrado com este ISBN!");
     }
 
 }

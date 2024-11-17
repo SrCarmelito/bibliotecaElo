@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.dto;
+package com.bibliotecaelo.dto.usuario;
 
 import lombok.Data;
 

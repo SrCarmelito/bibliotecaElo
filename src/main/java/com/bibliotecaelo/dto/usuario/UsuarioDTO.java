@@ -1,9 +1,9 @@
-package com.bibliotecaelo.auth.dto;
+package com.bibliotecaelo.dto.usuario;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
+import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

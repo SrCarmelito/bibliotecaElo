@@ -1,7 +1,5 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.converter.EmprestimoDTOConverter;
-import com.bibliotecaelo.converter.LivroDTOConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -3,7 +3,7 @@ package com.bibliotecaelo.dto;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;

@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.enums;
+package com.bibliotecaelo.enums;
 
 import lombok.Getter;
 

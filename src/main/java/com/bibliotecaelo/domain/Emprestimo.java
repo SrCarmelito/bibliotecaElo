@@ -6,7 +6,6 @@ import java.util.UUID;
 import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
-import com.bibliotecaelo.auth.domain.Usuario;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

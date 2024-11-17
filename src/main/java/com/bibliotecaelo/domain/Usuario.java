@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.domain;
+package com.bibliotecaelo.domain;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
-import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
+import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

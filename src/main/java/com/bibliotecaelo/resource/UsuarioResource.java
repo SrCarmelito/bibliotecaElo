@@ -1,12 +1,12 @@
-package com.bibliotecaelo.auth.resource;
+package com.bibliotecaelo.resource;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.dto.LoginDTO;
-import com.bibliotecaelo.auth.dto.NewPasswordDTO;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
-import com.bibliotecaelo.auth.service.UsuarioService;
+import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.dto.usuario.NewPasswordDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

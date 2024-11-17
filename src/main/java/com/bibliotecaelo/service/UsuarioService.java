@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.service;
+package com.bibliotecaelo.service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -6,16 +6,18 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
-import com.bibliotecaelo.auth.converter.UsuarioResponseDTOConverter;
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.LoginDTO;
-import com.bibliotecaelo.auth.dto.NewPasswordDTO;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
-import com.bibliotecaelo.auth.enums.SituacaoUsuarioEnum;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.auth.service.EmailService;
+import com.bibliotecaelo.auth.service.TokenService;
+import com.bibliotecaelo.converter.UsuarioDTOConverter;
+import com.bibliotecaelo.converter.UsuarioResponseDTOConverter;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.dto.usuario.NewPasswordDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.EmprestimoRepository;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;

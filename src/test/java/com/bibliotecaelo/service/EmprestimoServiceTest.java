@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.domain.Livro;
@@ -16,6 +15,7 @@ import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.EmprestimoRepository;
 import com.bibliotecaelo.repository.LivroRepository;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,7 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.Test;

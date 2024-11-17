@@ -3,7 +3,7 @@ package com.bibliotecaelo.audit;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import com.bibliotecaelo.auth.domain.Usuario;
+import com.bibliotecaelo.domain.Usuario;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import org.springframework.security.core.context.SecurityContextHolder;
