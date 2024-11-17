@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.domain.Emprestimo;
-import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
+import com.bibliotecaelo.dto.Devolucao;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 
@@ -34,8 +34,8 @@ public class EmprestimoFixtures {
         return emprestimoDTO;
     }
 
-    public static EmprestimoAtualizadoDTO emprestimoAtualizadoDTO() {
-        EmprestimoAtualizadoDTO dto = new EmprestimoAtualizadoDTO();
+    public static Devolucao emprestimoAtualizadoDTO() {
+        Devolucao dto = new Devolucao();
 
         dto.setId(UUID.fromString("a10f5489-8230-40d3-963f-da31500aa112"));
         dto.setStatus(StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
