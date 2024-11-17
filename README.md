@@ -5,17 +5,30 @@ Stack Utilizada para construir o Projeto:
 - Java 17
 - Maven
 - Liquibase
+- Pre-Liquibase
 - SpringBoot
 - SpringSecurity
 - PostgreSql
 - Hibernate
 - Hibernate-Envers
 
-Para executar o projeto, após baixar o repositório local, faça uso dos perfis disponibilizadas 'biblioteca-h2[test]' para execução com banco de dados apenas em memória ou 'biblioteca-dev' se desejar verificar a iteração real com o banco de dados.
+# Configurações Iniciais
 
-Ao Subir a API já serão inseridos alguns dados no banco para realizar alguns testes de Usuarios, Livros e Empréstimos;
+Para executar o projeto, após baixar o repositório local, faça uso dos perfis disponibilizadas:
+
+'biblioteca-h2[test]' para execução com banco de dados apenas em memória;
+
+'biblioteca-dev' se desejar verificar a iteração real com o banco de dados.
+
+Credenciais do banco de dados PostgreSql definidas nos arquivos de configuração como variáveis de ambiente e caso necessite, basta editar o value destas variáveis no perfil de configuração na pasta .run:
+
+DATABASE_USERNAME=elotech
+
+DATABASE_PASSWORD=eloconta
 
 'biblioteca-dev' -> como o liquibase não cria o banco de dados automaticamente, para isso seria necessário uma implementação via código, o que tornaria moroso o desenvolvimento desta api para um resultado final pequeno! pois para solucionar, bastaria um script de criação de banco de dados, sendo assim, as configurações estão para criar apenas o schema diretamente no banco de dados padrão do PostgreSql 'postgres' como o nome do schema de 'biblioteca' ficando ali persistidas as tabelas e dados manipulados através da api.
+
+Ao Subir a API já serão inseridos alguns dados no banco para realizar alguns testes de Usuarios, Livros e Empréstimos em algum gerador de requisições;
 
 # Documentação da API
 As requisições requerem autenticação via Bearer Token JWT sendo que apenas os end-points abaixo estão configurados para não requerer tal autenticação:
@@ -46,6 +59,8 @@ Antes de realizar as requisições, necessário fazer um POST no end-point /api/
 #### Finalidade:
 Gera o Token de autenticação do usuário
 
+**Não Requer Autenticação via Bearer Token JWT**
+
 ##### Request body:
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
@@ -65,13 +80,11 @@ Gera o Token de autenticação do usuário
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzeXN0ZW0iLCJpZCI6ImVlNGFlODgwLWE0ZGItNDU2My1iMzMwLTdlMmEyN2QyNjExNSIsImV4cCI6MTczMTg1MjkwNn0.J4f7nDJ8j3d4GyncR0LAlqKoCEMjV3We08eUAokPafE
 ```
-
 ```http
   POST /api/usuarios/novo-usuario
 ```
 #### Finalidade:
 Criar um novo Usuário
-
 ##### Request body:
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
@@ -85,7 +98,7 @@ Criar um novo Usuário
 | `situacao` | `string` | Enum com o seguintes valores possíveis 'ATIVO' ou 'INATIVO' |
 
 **Comentário**:
-Por padrão o usuário é criado com o status de 'INATIVO', com a idéia de que algum administrador precise ativar posteriormente realiando um PUT neste mesmo end-point alterando o status para 'ativo';
+Por padrão o usuário é criado com o status de 'INATIVO', mesmo que seja informado no Payload, com a idéia de que algum administrador precise ativar posteriormente realiando um PUT neste mesmo end-point alterando o status para 'ATIVO';
 
 #### Exemplo de Paylod 
 ```
@@ -96,7 +109,8 @@ Por padrão o usuário é criado com o status de 'INATIVO', com a idéia de que 
   "telefone": "4589651265",
   "login": "meulogin",
   "senha": "Meulogin123",
-  "senhaConfirmacao": "Meulogin123"
+  "senhaConfirmacao": "Meulogin123",
+  "situacao": "ATIVO"
 }
 ```
 #### Exemplo de Retorno:
@@ -111,7 +125,6 @@ Por padrão o usuário é criado com o status de 'INATIVO', com a idéia de que 
   "situacao": "INATIVO"
 }
 ```
-
 ```http
   POST /api/usuarios/reset-password
 ```
@@ -123,7 +136,7 @@ Se Corresponder a um e-mail válido no banco de dados é enviado um e-mail conte
 ##### Request body:
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
-| `email` | `string` | **Obrigatório**. e-mail válido |
+| `email` | `string` | **Obrigatório**. e-mail válido de um usuário|
 
 **Comentário**:
 Necessita ser um e-mail já inserido no banco de dados;
@@ -175,7 +188,7 @@ Atualizar dados do Usuário
 ##### Request body:
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
-| `id` | `uuid` | **Obrigatório**. id do usuário a ser atualizado, obrigatório conter na base de dados |
+| `id` | `uuid` | **Obrigatório**. id do usuário que será atualizado, obrigatório conter na base de dados |
 | `nome` | `string` | **Obrigatório**. Entre 6 e 150 caracteres |
 | `email` | `string` | **Obrigatório**. e-mail válido |
 | `dataCadastro` | `data` | **Obrigatório**. formato: "yyyy-MM-dd" e não pode  ser maior que o dia atual |
@@ -566,7 +579,7 @@ Atualizar dados de um Emprestimo já Realizado
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
 | `emprestimo_id` | `uuid` | **Obrigatório**. id do emprestimo a ser atualizado, obrigatório conter na base de dados |
-| `dataDevolucao` | `data` | **Obrigatório**. formato: "yyyy-MM-dd" não pode ser menor do que a dataEmprestimo|
+| `dataDevolucao` | `data` | **Obrigatório**. formato: "yyyy-MM-dd" não pode ser menor do que a data do emprestimo|
 | `status` | `string` | Enum com o seguintes valores possíveis 'AGUARDANDO_DEVOLUCAO' ou 'CONCLUIDO'|
 
 #### Exemplo de Paylod 
