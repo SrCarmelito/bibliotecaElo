@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class Devolucao {
+public class EmprestimoAtualizadoDTO {
 
     private UUID id;
 

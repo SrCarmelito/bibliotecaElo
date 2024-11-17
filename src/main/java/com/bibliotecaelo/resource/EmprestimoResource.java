@@ -2,7 +2,7 @@ package com.bibliotecaelo.resource;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.dto.Devolucao;
+import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.service.EmprestimoService;
 import jakarta.validation.Valid;
@@ -33,8 +33,8 @@ public class EmprestimoResource {
     }
 
     @PutMapping
-    public ResponseEntity<EmprestimoDTO> update(@RequestBody @Valid Devolucao devolucao) {
-        return ResponseEntity.ok(service.update(devolucao));
+    public ResponseEntity<EmprestimoDTO> update(@RequestBody @Valid EmprestimoAtualizadoDTO emprestimoAtualizadoDTO) {
+        return ResponseEntity.ok(service.update(emprestimoAtualizadoDTO));
     }
 
     @GetMapping("/{emprestimoId}")

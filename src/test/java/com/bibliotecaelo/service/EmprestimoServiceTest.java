@@ -8,7 +8,7 @@ import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.domain.Livro;
-import com.bibliotecaelo.dto.Devolucao;
+import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
@@ -59,7 +59,7 @@ class EmprestimoServiceTest extends DefaultTest {
 
     Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
 
-    Devolucao devolucao = EmprestimoFixtures.emprestimoAtualizadoDTO();
+    EmprestimoAtualizadoDTO emprestimoAtualizadoDTO = EmprestimoFixtures.emprestimoAtualizadoDTO();
 
     @Test
     void create() {
@@ -91,9 +91,9 @@ class EmprestimoServiceTest extends DefaultTest {
     void update() {
         when(emprestimoRepository.findById(any())).thenReturn(Optional.of(emprestimo));
 
-        service.update(devolucao);
+        service.update(emprestimoAtualizadoDTO);
 
-        verify(emprestimoRepository).findById(devolucao.getId());
+        verify(emprestimoRepository).findById(emprestimoAtualizadoDTO.getId());
         verify(emprestimoRepository).saveAndFlush(any());
         verifyNoMoreInteractions(emprestimoRepository);
     }
@@ -127,11 +127,11 @@ class EmprestimoServiceTest extends DefaultTest {
 
     @Test
     void validaDataEmprestimoPosteriorDataDevolucao() {
-        devolucao.setDataDevolucao(LocalDate.of(6000, 12, 1));
+        emprestimoAtualizadoDTO.setDataDevolucao(LocalDate.of(6000, 12, 1));
 
         String mensagemAlteracaoDaData = assertThrows(ValidationException.class,
                 () -> service.validaDataEmprestimoPosteriorDevolucao(
-                        devolucao.getDataDevolucao(),
+                        emprestimoAtualizadoDTO.getDataDevolucao(),
                         LocalDate.of(2024, 12, 1)
                 )).getMessage();
 
