@@ -2,10 +2,10 @@ package com.bibliotecaelo.audit;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
-import com.bibliotecaelo.auth.dto.LoginDTO;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.converter.UsuarioDTOConverter;
+import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

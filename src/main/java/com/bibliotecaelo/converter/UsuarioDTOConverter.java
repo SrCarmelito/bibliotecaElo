@@ -1,11 +1,11 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 
 import static java.util.Objects.isNull;
 
-public class UsuarioDTOConverter implements DTOConverter<Usuario, UsuarioDTO>{
+public class UsuarioDTOConverter implements DTOConverter<Usuario, UsuarioDTO> {
     @Override
     public Usuario from(UsuarioDTO dto, Usuario entity) {
         if (isNull(entity)) {

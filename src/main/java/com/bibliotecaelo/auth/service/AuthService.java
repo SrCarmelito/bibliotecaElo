@@ -1,6 +1,6 @@
 package com.bibliotecaelo.auth.service;
 
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

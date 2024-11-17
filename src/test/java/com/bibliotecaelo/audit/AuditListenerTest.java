@@ -2,12 +2,12 @@ package com.bibliotecaelo.audit;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
-import com.bibliotecaelo.auth.dto.LoginDTO;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.converter.UsuarioDTOConverter;
+import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;

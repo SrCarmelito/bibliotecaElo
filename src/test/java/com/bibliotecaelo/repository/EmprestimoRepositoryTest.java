@@ -38,5 +38,4 @@ class EmprestimoRepositoryTest extends DefaultTest {
         assertThat(repository.existsByUsuarioId(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"))).isTrue();
         assertThat(repository.existsByUsuarioId(UUID.fromString("fac0d069-15c6-4db9-9bd6-9783ede07986"))).isFalse();
     }
-
 }

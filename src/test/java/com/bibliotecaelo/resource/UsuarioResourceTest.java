@@ -1,10 +1,10 @@
-package com.bibliotecaelo.auth.resource;
+package com.bibliotecaelo.resource;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.dto.LoginDTO;
-import com.bibliotecaelo.auth.dto.NewPasswordDTO;
-import com.bibliotecaelo.auth.service.UsuarioService;
+import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.dto.usuario.NewPasswordDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
+import com.bibliotecaelo.service.UsuarioService;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;

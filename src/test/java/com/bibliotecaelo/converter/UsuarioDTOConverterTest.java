@@ -1,8 +1,8 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

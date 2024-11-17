@@ -3,7 +3,7 @@ package com.bibliotecaelo.audit;
 import java.util.Date;
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.domain.Usuario;
+import com.bibliotecaelo.domain.Usuario;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestAttributes;

@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.resource;
+package com.bibliotecaelo.resource;
 
 import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.dto.LivroDTO;

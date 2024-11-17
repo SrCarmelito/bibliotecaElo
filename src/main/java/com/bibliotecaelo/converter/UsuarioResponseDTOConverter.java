@@ -1,12 +1,12 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import org.apache.commons.lang3.NotImplementedException;
 
 import static java.util.Objects.isNull;
 
-public class UsuarioResponseDTOConverter implements DTOConverter<Usuario, UsuarioResponseDTO>{
+public class UsuarioResponseDTOConverter implements DTOConverter<Usuario, UsuarioResponseDTO> {
 
     @Override
     public Usuario from(UsuarioResponseDTO dto, Usuario entity) {

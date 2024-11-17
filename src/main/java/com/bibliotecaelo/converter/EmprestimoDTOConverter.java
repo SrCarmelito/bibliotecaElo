@@ -1,7 +1,5 @@
 package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.auth.converter.DTOConverter;
-import com.bibliotecaelo.auth.converter.UsuarioResponseDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 

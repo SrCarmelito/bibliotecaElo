@@ -2,13 +2,13 @@ package com.bibliotecaelo.service;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.repository.EmprestimoRepository;
 import com.bibliotecaelo.repository.LivroRepository;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.Page;

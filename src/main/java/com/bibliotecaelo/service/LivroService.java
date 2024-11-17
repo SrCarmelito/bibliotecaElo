@@ -29,8 +29,12 @@ public class LivroService {
     }
 
     public LivroDTO create(LivroDTO livroDTO) {
-        if (!repository.findByTitulo(livroDTO.getTitulo()).isEmpty()) {
+        if (!repository.findAllByTitulo(livroDTO.getTitulo()).isEmpty()) {
             throw new ValidationException("Já Existe uma Livro Cadastrado com este Título!");
+        }
+
+        if (!repository.findAllByIsbn(livroDTO.getIsbn()).isEmpty()) {
+            throw new ValidationException("Já Existe uma Livro Cadastrado com este ISBN!");
         }
 
         return converter.to(repository.save(converter.from(livroDTO)));

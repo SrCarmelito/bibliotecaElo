@@ -1,4 +1,4 @@
-package com.bibliotecaelo.auth.converter;
+package com.bibliotecaelo.converter;
 
 public interface DTOConverter<E, D> {
 

@@ -1,6 +1,5 @@
 package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.auth.converter.DTOConverter;
 import com.bibliotecaelo.domain.Livro;
 import com.bibliotecaelo.dto.LivroDTO;
 

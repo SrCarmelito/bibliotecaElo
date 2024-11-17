@@ -1,19 +1,21 @@
-package com.bibliotecaelo.auth.service;
+package com.bibliotecaelo.service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.bibliotecaelo.DefaultTest;
-import com.bibliotecaelo.auth.converter.UsuarioDTOConverter;
-import com.bibliotecaelo.auth.converter.UsuarioResponseDTOConverter;
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.NewPasswordDTO;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
-import com.bibliotecaelo.auth.repository.UsuarioRepository;
+import com.bibliotecaelo.auth.service.EmailService;
+import com.bibliotecaelo.auth.service.TokenService;
+import com.bibliotecaelo.converter.UsuarioDTOConverter;
+import com.bibliotecaelo.converter.UsuarioResponseDTOConverter;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.NewPasswordDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.EmprestimoRepository;
+import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

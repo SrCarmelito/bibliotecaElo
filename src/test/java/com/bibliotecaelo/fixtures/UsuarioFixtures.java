@@ -3,9 +3,9 @@ package com.bibliotecaelo.fixtures;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.bibliotecaelo.auth.domain.Usuario;
-import com.bibliotecaelo.auth.dto.UsuarioDTO;
-import com.bibliotecaelo.auth.dto.UsuarioResponseDTO;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 
 public class UsuarioFixtures {
 
