@@ -8,6 +8,7 @@ import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.domain.Livro;
+import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
@@ -59,7 +60,7 @@ class EmprestimoServiceTest extends DefaultTest {
 
     Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
 
-    EmprestimoDTO emprestimoDtoToUpdate = new EmprestimoDTOConverter().to(emprestimo);
+    EmprestimoAtualizadoDTO emprestimoAtualizadoDTO = EmprestimoFixtures.emprestimoAtualizadoDTO();
 
     @Test
     void create() {
@@ -91,9 +92,9 @@ class EmprestimoServiceTest extends DefaultTest {
     void update() {
         when(emprestimoRepository.findById(any())).thenReturn(Optional.of(emprestimo));
 
-        service.update(emprestimoDtoToUpdate);
+        service.update(emprestimoAtualizadoDTO);
 
-        verify(emprestimoRepository).findById(emprestimoDtoToUpdate.getId());
+        verify(emprestimoRepository).findById(emprestimoAtualizadoDTO.getId());
         verify(emprestimoRepository).saveAndFlush(any());
         verifyNoMoreInteractions(emprestimoRepository);
     }
@@ -126,40 +127,14 @@ class EmprestimoServiceTest extends DefaultTest {
     }
 
     @Test
-    void validaBloqueioDeAlteracaoDoUsuarioDoEmprestimo() {
-        String mensagemAlteracaoDoUsuario = assertThrows(ValidationException.class,
-                () -> service.validaAlteracoes(emprestimo, emprestimoDTO)).getMessage();
-
-        assertThat(mensagemAlteracaoDoUsuario)
-                .isEqualTo("Não é permitido alterar o usuário que emprestou o Livro!");
-    }
-
-    @Test
-    void validaBloqueioDeAlteracaoDoLivroDoEmprestimo() {
-        emprestimoDtoToUpdate.setLivro(LivroFixtures.LivroDTOOCortico());
-
-        String mensagemAlteracaoDoLivro = assertThrows(ValidationException.class,
-                () -> service.validaAlteracoes(emprestimo, emprestimoDtoToUpdate)).getMessage();
-
-        assertThat(mensagemAlteracaoDoLivro).isEqualTo("Não é permitido alterar o Livro do Empréstimo!");
-    }
-
-    @Test
-    void validaBloqueioDeAlteracaoDaDataDoEmprestimo() {
-        emprestimoDtoToUpdate.setDataEmprestimo(LocalDate.of(2024, 11, 1));
-
-        String mensagemAlteracaoDaData = assertThrows(ValidationException.class,
-                () -> service.validaAlteracoes(emprestimo, emprestimoDtoToUpdate)).getMessage();
-
-        assertThat(mensagemAlteracaoDaData).isEqualTo("Não é permitido alterar a data do Empréstimo!");
-    }
-
-    @Test
     void validaDataEmprestimoPosteriorDataDevolucao() {
-        emprestimoDtoToUpdate.setDataEmprestimo(LocalDate.of(2024, 11, 1));
+        emprestimoAtualizadoDTO.setDataDevolucao(LocalDate.of(6000, 12, 1));
 
         String mensagemAlteracaoDaData = assertThrows(ValidationException.class,
-                () -> service.validaDataEmprestimoPosteriorDevolucao(emprestimoDtoToUpdate)).getMessage();
+                () -> service.validaDataEmprestimoPosteriorDevolucao(
+                        emprestimoAtualizadoDTO.getDataDevolucao(),
+                        LocalDate.of(2024, 12, 1)
+                )).getMessage();
 
         assertThat(mensagemAlteracaoDaData).isEqualTo("Data da Devolução menor que a data do Empréstimo, verifique!");
     }

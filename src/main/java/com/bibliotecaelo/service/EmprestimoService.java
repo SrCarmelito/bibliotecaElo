@@ -1,9 +1,11 @@
 package com.bibliotecaelo.service;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
+import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.repository.EmprestimoRepository;
@@ -37,7 +39,7 @@ public class EmprestimoService {
     }
 
     public EmprestimoDTO create(EmprestimoDTO emprestimoDTO) {
-        validaDataEmprestimoPosteriorDevolucao(emprestimoDTO);
+        validaDataEmprestimoPosteriorDevolucao(emprestimoDTO.getDataEmprestimo(), emprestimoDTO.getDataEmprestimo());
 
         if (!emprestimoRepository.findAllByLivroIdAndStatus(
                     emprestimoDTO.getLivro().getId(),
@@ -57,15 +59,18 @@ public class EmprestimoService {
         return converter.to(emprestimoRepository.save(novoEmprestimo));
     }
 
-    public EmprestimoDTO update(EmprestimoDTO emprestimoDTO) {
-        validaDataEmprestimoPosteriorDevolucao(emprestimoDTO);
+    public EmprestimoDTO update(EmprestimoAtualizadoDTO emprestimoAtualizadoDTO) {
 
-        final Emprestimo emprestimoToUpdate = buscaEmprestimo(emprestimoDTO.getId());
+        Emprestimo emprestimoAtualizado = buscaEmprestimo(emprestimoAtualizadoDTO.getId());
 
-        validaAlteracoes(emprestimoToUpdate, emprestimoDTO);
+        validaDataEmprestimoPosteriorDevolucao(
+                emprestimoAtualizado.getDataEmprestimo(),
+                emprestimoAtualizadoDTO.getDataDevolucao());
 
-        return converter.to(emprestimoRepository
-                .saveAndFlush(converter.from(emprestimoDTO, emprestimoToUpdate)));
+        emprestimoAtualizado.setDataDevolucao(emprestimoAtualizadoDTO.getDataDevolucao());
+        emprestimoAtualizado.setStatus(emprestimoAtualizadoDTO.getStatus());
+
+        return converter.to(emprestimoRepository.saveAndFlush(emprestimoAtualizado));
     }
 
     public EmprestimoDTO findById(UUID emprestimoId) {
@@ -81,23 +86,9 @@ public class EmprestimoService {
                 .orElseThrow(() -> new ValidationException("Empréstimo Não Encontrado"));
     }
 
-    protected void validaDataEmprestimoPosteriorDevolucao(EmprestimoDTO emprestimoDTO) {
-        if(emprestimoDTO.getDataEmprestimo().isAfter(emprestimoDTO.getDataDevolucao())) {
+    protected void validaDataEmprestimoPosteriorDevolucao(LocalDate dataEmprestimo, LocalDate dataDevolucao) {
+        if(dataEmprestimo.isAfter(dataDevolucao)) {
             throw new ValidationException("Data da Devolução menor que a data do Empréstimo, verifique!");
         }
     }
-    protected void validaAlteracoes(Emprestimo emprestimoToUpdate, EmprestimoDTO emprestimoDTO) {
-        if(!emprestimoToUpdate.getUsuario().getId().equals(emprestimoDTO.getUsuario().getId())) {
-            throw new ValidationException("Não é permitido alterar o usuário que emprestou o Livro!");
-        }
-
-        if (!emprestimoToUpdate.getLivro().getId().equals(emprestimoDTO.getLivro().getId())) {
-            throw new ValidationException("Não é permitido alterar o Livro do Empréstimo!");
-        }
-
-        if(!emprestimoToUpdate.getDataEmprestimo().isEqual(emprestimoDTO.getDataEmprestimo())) {
-            throw new ValidationException("Não é permitido alterar a data do Empréstimo!");
-        }
-    }
-
 }
