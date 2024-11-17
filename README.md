@@ -3,17 +3,19 @@
 
 Stack Utilizada para construir o Projeto:
 - Java 17
+- Maven
 - Liquibase
 - SpringBoot
-- PostgreSql
 - SpringSecurity
-- Envers Para Auditoria de Entidades
+- PostgreSql
+- Hibernate
+- Hibernate-Envers
 
 Para executar o projeto, após baixar o repositório local, faça uso dos perfis disponibilizadas 'biblioteca-h2[test]' para execução com banco de dados apenas em memória ou 'biblioteca-dev' se desejar verificar a iteração real com o banco de dados.
 
 Ao Subir a API já serão inseridos alguns dados no banco para realizar alguns testes de Usuarios, Livros e Empréstimos;
 
-'biblioteca-dev' -> como o liquibase não cria o banco de dados automaticamente, para isso seria necessário uma implementação via código para ser criado o banco de dados, o que tornaria moroso o desenvolvimento desta api para um resultado final pequeno! pois para solucionar, bastaria um script de criação de banco de dados, sendo assim, as configurações estão para criar apenas o schema diretamente no banco de dados padrão do PostgreSql 'postgres' como o nome do schema de 'biblioteca' ficando ali persistidas as tabelas e dados manipulados através da api.
+'biblioteca-dev' -> como o liquibase não cria o banco de dados automaticamente, para isso seria necessário uma implementação via código, o que tornaria moroso o desenvolvimento desta api para um resultado final pequeno! pois para solucionar, bastaria um script de criação de banco de dados, sendo assim, as configurações estão para criar apenas o schema diretamente no banco de dados padrão do PostgreSql 'postgres' como o nome do schema de 'biblioteca' ficando ali persistidas as tabelas e dados manipulados através da api.
 
 # Documentação da API
 As requisições requerem autenticação via Bearer Token JWT sendo que apenas os end-points abaixo estão configurados para não requerer tal autenticação:
@@ -563,7 +565,7 @@ Atualizar dados de um Emprestimo já Realizado
 ##### Request body:
 | Parâmetro   | Tipo       | Descrição                           |
 | :---------- | :--------- | :---------------------------------- |
-| `id` | `uuid` | **Obrigatório**. id do emprestimo a ser atualizado, obrigatório conter na base de dados |
+| `emprestimo_id` | `uuid` | **Obrigatório**. id do emprestimo a ser atualizado, obrigatório conter na base de dados |
 | `dataDevolucao` | `data` | **Obrigatório**. formato: "yyyy-MM-dd" não pode ser menor do que a dataEmprestimo|
 | `status` | `string` | Enum com o seguintes valores possíveis 'AGUARDANDO_DEVOLUCAO' ou 'CONCLUIDO'|
 
