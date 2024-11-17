@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
-import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
+import com.bibliotecaelo.dto.Devolucao;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.repository.EmprestimoRepository;
@@ -59,16 +59,16 @@ public class EmprestimoService {
         return converter.to(emprestimoRepository.save(novoEmprestimo));
     }
 
-    public EmprestimoDTO update(EmprestimoAtualizadoDTO emprestimoAtualizadoDTO) {
+    public EmprestimoDTO update(Devolucao devolucao) {
 
-        Emprestimo emprestimoAtualizado = buscaEmprestimo(emprestimoAtualizadoDTO.getId());
+        Emprestimo emprestimoAtualizado = buscaEmprestimo(devolucao.getId());
 
         validaDataEmprestimoPosteriorDevolucao(
                 emprestimoAtualizado.getDataEmprestimo(),
-                emprestimoAtualizadoDTO.getDataDevolucao());
+                devolucao.getDataDevolucao());
 
-        emprestimoAtualizado.setDataDevolucao(emprestimoAtualizadoDTO.getDataDevolucao());
-        emprestimoAtualizado.setStatus(emprestimoAtualizadoDTO.getStatus());
+        emprestimoAtualizado.setDataDevolucao(devolucao.getDataDevolucao());
+        emprestimoAtualizado.setStatus(devolucao.getStatus());
 
         return converter.to(emprestimoRepository.saveAndFlush(emprestimoAtualizado));
     }

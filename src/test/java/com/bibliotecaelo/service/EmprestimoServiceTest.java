@@ -8,11 +8,10 @@ import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.domain.Livro;
-import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
+import com.bibliotecaelo.dto.Devolucao;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
-import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.EmprestimoRepository;
 import com.bibliotecaelo.repository.LivroRepository;
@@ -60,7 +59,7 @@ class EmprestimoServiceTest extends DefaultTest {
 
     Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
 
-    EmprestimoAtualizadoDTO emprestimoAtualizadoDTO = EmprestimoFixtures.emprestimoAtualizadoDTO();
+    Devolucao devolucao = EmprestimoFixtures.emprestimoAtualizadoDTO();
 
     @Test
     void create() {
@@ -92,9 +91,9 @@ class EmprestimoServiceTest extends DefaultTest {
     void update() {
         when(emprestimoRepository.findById(any())).thenReturn(Optional.of(emprestimo));
 
-        service.update(emprestimoAtualizadoDTO);
+        service.update(devolucao);
 
-        verify(emprestimoRepository).findById(emprestimoAtualizadoDTO.getId());
+        verify(emprestimoRepository).findById(devolucao.getId());
         verify(emprestimoRepository).saveAndFlush(any());
         verifyNoMoreInteractions(emprestimoRepository);
     }
@@ -128,11 +127,11 @@ class EmprestimoServiceTest extends DefaultTest {
 
     @Test
     void validaDataEmprestimoPosteriorDataDevolucao() {
-        emprestimoAtualizadoDTO.setDataDevolucao(LocalDate.of(6000, 12, 1));
+        devolucao.setDataDevolucao(LocalDate.of(6000, 12, 1));
 
         String mensagemAlteracaoDaData = assertThrows(ValidationException.class,
                 () -> service.validaDataEmprestimoPosteriorDevolucao(
-                        emprestimoAtualizadoDTO.getDataDevolucao(),
+                        devolucao.getDataDevolucao(),
                         LocalDate.of(2024, 12, 1)
                 )).getMessage();
 
