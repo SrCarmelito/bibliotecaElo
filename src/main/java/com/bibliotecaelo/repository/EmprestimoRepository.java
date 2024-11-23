@@ -6,14 +6,13 @@ import java.util.UUID;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, UUID> {
 
-    List<Emprestimo> findAllByLivroIdAndStatus(@Param("livroId") UUID livroId, @Param("status") StatusEmprestimoEnum status);
+    List<Emprestimo> findAllByLivroIdAndStatus(UUID livroId, StatusEmprestimoEnum status);
 
-    boolean existsByLivroId(@Param("livroId") UUID livroId);
-    boolean existsByUsuarioId(@Param("usuarioId") UUID usuarioId);
+    boolean existsByLivroId(UUID livroId);
+    boolean existsByUsuarioId(UUID usuarioId);
 }
