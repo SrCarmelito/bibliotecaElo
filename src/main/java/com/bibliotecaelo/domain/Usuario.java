@@ -9,6 +9,7 @@ import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
+import com.bibliotecaelo.interfaces.Entidade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -44,7 +45,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @Audited
 @EntityListeners(AuditListener.class)
-public class Usuario implements UserDetails, Auditable {
+public class Usuario
+        implements UserDetails, Auditable, Entidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

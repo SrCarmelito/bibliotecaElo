@@ -1,6 +1,7 @@
 package com.bibliotecaelo.audit;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.bibliotecaelo.domain.Usuario;
@@ -18,10 +19,10 @@ public class AuditListener {
         final AuditInfo audit = Optional.ofNullable(auditable.getAudit()).orElse(new AuditInfo());
         Usuario user = new Usuario();
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            String ANONIMOUS_USER = "anonymousUser";
-            if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals(ANONIMOUS_USER)) {
-                user.setLogin(ANONIMOUS_USER);
-                user.setNome(ANONIMOUS_USER);
+            String ANONYMOUS_USER = "anonymousUser";
+            if(Objects.equals(ANONYMOUS_USER, SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())) {
+                user.setLogin(ANONYMOUS_USER);
+                user.setNome(ANONYMOUS_USER);
             } else {
                 user = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             }

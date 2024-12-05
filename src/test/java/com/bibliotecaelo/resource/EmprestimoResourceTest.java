@@ -17,22 +17,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class EmprestimoResourceTest extends DefaultTest {
+public class EmprestimoResourceTest
+        extends DefaultTest {
 
     @MockBean
     private EmprestimoService service;
 
-    private final  EmprestimoDTO emprestimoDTO = EmprestimoFixtures.EmprestimoDTOTeste();
+    private final EmprestimoDTO emprestimoDTO = EmprestimoFixtures.EmprestimoDTOTeste();
 
     @Test
     public void create() throws Exception {
         mockMvc.perform(post("/api/emprestimos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(emprestimoDTO)))
-                        .andDo(print())
-                        .andExpect(status().is2xxSuccessful());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emprestimoDTO)))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
 
-        verify(service).create(any());
+        verify(service).save(any());
         verifyNoMoreInteractions(service);
     }
 

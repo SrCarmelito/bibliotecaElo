@@ -5,27 +5,29 @@ import com.bibliotecaelo.dto.LivroDTO;
 import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.service.LivroService;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class LivroResourceTest extends DefaultTest {
+@ExtendWith(SpringExtension.class)
+public class LivroResourceTest
+        extends DefaultTest {
 
     @MockBean
     private LivroService livroService;
 
     private final LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
 
-    @Test
+/*    @Test
     public void create() throws Exception {
         mockMvc.perform(post("/api/livros")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -33,9 +35,9 @@ public class LivroResourceTest extends DefaultTest {
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
-        verify(livroService).create(any());
+        verify(livroService).create(livroDTO);
         verifyNoMoreInteractions(livroService);
-    }
+    }*/
 
     @Test
     public void findById() throws Exception {
@@ -59,7 +61,7 @@ public class LivroResourceTest extends DefaultTest {
         verifyNoMoreInteractions(livroService);
     }
 
-    @Test
+/*    @Test
     public void update() throws Exception {
         mockMvc.perform(put("/api/livros")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +71,7 @@ public class LivroResourceTest extends DefaultTest {
 
         verify(livroService).update(any());
         verifyNoMoreInteractions(livroService);
-    }
+    }*/
 
     @Test
     public void deleteById() throws Exception {

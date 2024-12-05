@@ -11,20 +11,21 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Sql(scripts = {
-    "/sql/usuario.sql", "/sql/livro.sql", "/sql/emprestimo.sql"
+        "/sql/usuario.sql", "/sql/livro.sql", "/sql/emprestimo.sql"
 })
-class EmprestimoRepositoryTest extends DefaultTest {
+class EmprestimoRepositoryTest
+        extends DefaultTest {
 
     @Autowired
     EmprestimoRepository repository;
 
     @Test
     void findAllByLivroIdAndStatus() {
-        assertThat(repository.findAllByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
-                StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)).hasSize(1);
+        assertThat(repository.existsByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
+                StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)).isTrue();
 
-        assertThat(repository.findAllByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
-                StatusEmprestimoEnum.CONCLUIDO)).hasSize(0);
+        assertThat(repository.existsByLivroIdAndStatus(UUID.fromString("9d707fa8-ce8b-4ec9-8b6d-5e235386a3da"),
+                StatusEmprestimoEnum.CONCLUIDO)).isFalse();
     }
 
     @Test

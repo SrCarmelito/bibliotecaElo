@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.domain.Emprestimo;
-import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 
@@ -13,6 +12,7 @@ public class EmprestimoFixtures {
     public static Emprestimo EmprestimoValido() {
         Emprestimo emprestimo = new Emprestimo();
 
+        emprestimo.setId(UUID.fromString("2cd3f08f-60c7-4214-ac82-b89550ed8992"));
         emprestimo.setUsuario(UsuarioFixtures.usuarioPele());
         emprestimo.setLivro(LivroFixtures.LivroOProcesso());
         emprestimo.setDataEmprestimo(LocalDate.of(2021, 12, 8));
@@ -34,13 +34,4 @@ public class EmprestimoFixtures {
         return emprestimoDTO;
     }
 
-    public static EmprestimoAtualizadoDTO emprestimoAtualizadoDTO() {
-        EmprestimoAtualizadoDTO dto = new EmprestimoAtualizadoDTO();
-
-        dto.setId(UUID.fromString("a10f5489-8230-40d3-963f-da31500aa112"));
-        dto.setStatus(StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
-        dto.setDataDevolucao(LocalDate.of(2024, 10, 11));
-
-        return dto;
-    }
 }

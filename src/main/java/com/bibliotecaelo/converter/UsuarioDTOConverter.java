@@ -2,10 +2,13 @@ package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
 
-public class UsuarioDTOConverter implements DTOConverter<Usuario, UsuarioDTO> {
+@Component
+public class UsuarioDTOConverter
+        implements DTOConverter<Usuario, UsuarioDTO> {
     @Override
     public Usuario from(UsuarioDTO dto, Usuario entity) {
         if (isNull(entity)) {
@@ -25,7 +28,7 @@ public class UsuarioDTOConverter implements DTOConverter<Usuario, UsuarioDTO> {
     @Override
     public UsuarioDTO to(Usuario entity) {
 
-        if(isNull(entity)) {
+        if (isNull(entity)) {
             return new UsuarioDTO();
         }
 

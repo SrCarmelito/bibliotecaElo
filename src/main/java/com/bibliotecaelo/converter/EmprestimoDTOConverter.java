@@ -1,17 +1,38 @@
 package com.bibliotecaelo.converter;
 
+import java.util.Objects;
+
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
 
-public class EmprestimoDTOConverter implements DTOConverter<Emprestimo, EmprestimoDTO> {
+@Component
+@RequiredArgsConstructor
+public class EmprestimoDTOConverter
+        implements DTOConverter<Emprestimo, EmprestimoDTO> {
+
+    private final UsuarioResponseDTOConverter usuarioResponseDTOConverter;
+    private final LivroDTOConverter livroDTOConverter;
+
     @Override
     public Emprestimo from(EmprestimoDTO dto, Emprestimo entity) {
-        if(isNull(entity)) {
+        if (isNull(entity)) {
             entity = new Emprestimo();
         }
 
+        if (Objects.nonNull(dto.getId())) {
+            entity.setId(dto.getId());
+            entity.setDataDevolucao(dto.getDataDevolucao());
+            entity.setStatus(dto.getStatus());
+
+            return entity;
+        }
+
+        entity.setUsuario(usuarioResponseDTOConverter.from(dto.getUsuario()));
+        entity.setLivro(livroDTOConverter.from(dto.getLivro()));
         entity.setDataEmprestimo(dto.getDataEmprestimo());
         entity.setDataDevolucao(dto.getDataDevolucao());
         entity.setStatus(dto.getStatus());
@@ -21,18 +42,14 @@ public class EmprestimoDTOConverter implements DTOConverter<Emprestimo, Empresti
 
     @Override
     public EmprestimoDTO to(Emprestimo entity) {
-        if(isNull(entity)) {
+        if (isNull(entity)) {
             return new EmprestimoDTO();
         }
 
         EmprestimoDTO dto = new EmprestimoDTO();
 
         dto.setId(entity.getId());
-
-        UsuarioResponseDTOConverter usuarioResponseDTOConverter = new UsuarioResponseDTOConverter();
         dto.setUsuario(usuarioResponseDTOConverter.to(entity.getUsuario()));
-
-        LivroDTOConverter livroDTOConverter = new LivroDTOConverter();
         dto.setLivro(livroDTOConverter.to(entity.getLivro()));
         dto.setDataEmprestimo(entity.getDataEmprestimo());
         dto.setDataDevolucao(entity.getDataDevolucao());

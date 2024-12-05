@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.enums.CategoriaLivroEnum;
+import com.bibliotecaelo.interfaces.EntidadeDTO;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LivroDTO {
+public class LivroDTO implements EntidadeDTO {
 
     private UUID id;
 

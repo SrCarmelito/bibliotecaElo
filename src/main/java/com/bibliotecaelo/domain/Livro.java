@@ -7,6 +7,7 @@ import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.enums.CategoriaLivroEnum;
+import com.bibliotecaelo.interfaces.Entidade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -37,7 +38,7 @@ import org.hibernate.envers.NotAudited;
 @Data
 @Audited
 @EntityListeners(AuditListener.class)
-public class Livro implements Auditable {
+public class Livro implements Auditable, Entidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -47,12 +48,12 @@ public class Livro implements Auditable {
     @NotBlank(message = "É Necessário Informar o Título do Livro!")
     private String titulo;
 
-    @Size(max = 1000)
+    @Size(max = 1000 )
     @NotBlank(message = "É Necessário Informar o Autor do Livro!")
     private String autor;
 
     @NotNull(message = "É Necessário Informar o código ISBN do Livro!")
-    private Long isbn;
+    private Long isbn; //TODO trocar para String
 
     @Column(name = "data_publicacao")
     @NotNull(message = "É Necessário Informar a Data de Publicação do Livro!")

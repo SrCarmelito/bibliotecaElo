@@ -1,23 +1,24 @@
 package com.bibliotecaelo.repository;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.bibliotecaelo.domain.Livro;
-import com.bibliotecaelo.enums.CategoriaLivroEnum;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LivroRepository extends JpaRepository<Livro, UUID> {
+public interface LivroRepository
+        extends JpaRepository<Livro, UUID> {
 
-    List<Livro> findAllByTitulo(String titulo);
+    boolean existsByTitulo(String titulo);
 
-    @Query(value = "select e.livro from Emprestimo e join Usuario u on u.id = e.usuario.id where u.id = :usuarioId")
-    List<Livro> livrosEmprestadosPorUsuarioId(UUID usuarioId);
+    boolean existsByIsbn(Long isbn);
 
-    List<Livro> findAllByCategoria(CategoriaLivroEnum categoria);
+    @Query("select distinct l from Livro l join Emprestimo e on e.livro.categoria = l.categoria where e.usuario.id = :usuarioId "
+            + " and not exists (select e2 from Emprestimo e2 where e2.livro = l and e2.usuario.id = :usuarioId) ")
+    Page<Livro> getRecomendacoes(UUID usuarioId, Pageable pageable);
 
-    List<Livro> findAllByIsbn(Long isbn);
 }

@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
+import com.bibliotecaelo.interfaces.EntidadeDTO;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @Data
-public class UsuarioResponseDTO {
+public class UsuarioResponseDTO
+        implements EntidadeDTO {
 
     private UUID id;
     private String nome;

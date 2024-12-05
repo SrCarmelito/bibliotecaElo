@@ -1,14 +1,12 @@
 package com.bibliotecaelo.service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.converter.EmprestimoDTOConverter;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.domain.Livro;
-import com.bibliotecaelo.dto.EmprestimoAtualizadoDTO;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
@@ -21,11 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,10 +31,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-class EmprestimoServiceTest extends DefaultTest {
+@ExtendWith(MockitoExtension.class)
+class EmprestimoServiceTest {
 
     @InjectMocks
     EmprestimoService service;
@@ -59,42 +53,41 @@ class EmprestimoServiceTest extends DefaultTest {
 
     Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
 
-    EmprestimoAtualizadoDTO emprestimoAtualizadoDTO = EmprestimoFixtures.emprestimoAtualizadoDTO();
-
     @Test
     void create() {
         emprestimo.setStatus(StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
 
-        when(emprestimoRepository.findAllByLivroIdAndStatus(any(), any())).thenReturn(List.of(new Emprestimo()));
+        when(emprestimoRepository.existsByLivroIdAndStatus(any(), any())).thenReturn(true);
 
         String mensagemLivroComEmprestimoAndamento = assertThrows(ValidationException.class,
-                () -> service.create(emprestimoDTO)).getMessage();
+                () -> service.save(emprestimo)).getMessage();
 
         assertThat(mensagemLivroComEmprestimoAndamento).isEqualTo("Livro Informado possui Empréstimo em andamento!");
     }
 
     @Test
     void createThrows() {
-        when(converter.from(emprestimoDTO)).thenReturn(emprestimo);
-        when(usuarioRepository.findById(any())).thenReturn(Optional.of(UsuarioFixtures.usuarioPele()));
-        when(livroRepository.findById(any())).thenReturn(Optional.of(new Livro()));
+        when(usuarioRepository.findById(emprestimo.getUsuario().getId())).thenReturn(
+                Optional.of(UsuarioFixtures.usuarioPele()));
+        when(livroRepository.findById(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"))).thenReturn(
+                Optional.of(new Livro()));
+        when(emprestimoRepository.existsByLivroIdAndStatus(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"),
+                StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)).thenReturn(false);
 
-        service.create(emprestimoDTO);
+        service.save(emprestimo);
 
-        verify(emprestimoRepository).findAllByLivroIdAndStatus(any(), any());
-        verify(livroRepository).findById(emprestimoDTO.getLivro().getId());
-        verify(emprestimoRepository).save(emprestimo);
+        verify(emprestimoRepository).existsByLivroIdAndStatus(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"),
+                StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
+        verify(livroRepository).findById(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"));
+        verify(emprestimoRepository).saveAndFlush(emprestimo);
         verifyNoMoreInteractions(emprestimoRepository);
     }
 
     @Test
     void update() {
-        when(emprestimoRepository.findById(any())).thenReturn(Optional.of(emprestimo));
+        service.update(emprestimo);
 
-        service.update(emprestimoAtualizadoDTO);
-
-        verify(emprestimoRepository).findById(emprestimoAtualizadoDTO.getId());
-        verify(emprestimoRepository).saveAndFlush(any());
+        verify(emprestimoRepository).saveAndFlush(emprestimo);
         verifyNoMoreInteractions(emprestimoRepository);
     }
 
@@ -103,7 +96,7 @@ class EmprestimoServiceTest extends DefaultTest {
         when(emprestimoRepository.findById(any())).thenReturn(Optional.of(new Emprestimo()));
         when(converter.to(any())).thenReturn(emprestimoDTO);
 
-        EmprestimoDTO emprestimoFindById = service.findById(emprestimoDTO.getId());
+        EmprestimoDTO emprestimoFindById = converter.to(service.findById(emprestimoDTO.getId()));
 
         assertThat(emprestimoFindById.getDataEmprestimo()).isEqualTo(LocalDate.of(2024, 11, 15));
         assertThat(emprestimoFindById.getDataDevolucao()).isEqualTo(LocalDate.of(2025, 12, 7));
@@ -127,11 +120,11 @@ class EmprestimoServiceTest extends DefaultTest {
 
     @Test
     void validaDataEmprestimoPosteriorDataDevolucao() {
-        emprestimoAtualizadoDTO.setDataDevolucao(LocalDate.of(6000, 12, 1));
+        emprestimo.setDataDevolucao(LocalDate.of(6000, 12, 1));
 
         String mensagemAlteracaoDaData = assertThrows(ValidationException.class,
                 () -> service.validaDataEmprestimoPosteriorDevolucao(
-                        emprestimoAtualizadoDTO.getDataDevolucao(),
+                        emprestimo.getDataDevolucao(),
                         LocalDate.of(2024, 12, 1)
                 )).getMessage();
 

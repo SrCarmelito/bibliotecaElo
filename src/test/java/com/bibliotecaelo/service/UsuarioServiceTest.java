@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.auth.service.EmailService;
 import com.bibliotecaelo.auth.service.TokenService;
 import com.bibliotecaelo.converter.UsuarioDTOConverter;
@@ -21,16 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,12 +36,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
-class UsuarioServiceTest extends DefaultTest {
+class UsuarioServiceTest {
 
     @InjectMocks
     UsuarioService usuarioService;
@@ -89,7 +81,7 @@ class UsuarioServiceTest extends DefaultTest {
     }
 
     @Test
-    void resetPassword() throws Exception{
+    void resetPassword() throws Exception {
         int EXPIRATION_TIME_LOGIN = 120;
 
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
@@ -162,7 +154,8 @@ class UsuarioServiceTest extends DefaultTest {
                 () -> usuarioService.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao())).getMessage();
 
         assertThat(mensagemSenhaInvalida)
-                .isEqualTo("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
+                .isEqualTo(
+                        "Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
     }
 
     @Test
@@ -180,7 +173,8 @@ class UsuarioServiceTest extends DefaultTest {
         when(usuarioRepository.findById(any())).thenReturn(Optional.of(new Usuario()));
         when(usuarioResponseDTOConverter.to(any())).thenReturn(UsuarioFixtures.usuarioResponseDTOAlexMartin());
 
-        UsuarioResponseDTO usuarioResponseDTO = usuarioService.findById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"));
+        UsuarioResponseDTO usuarioResponseDTO = usuarioResponseDTOConverter.to(
+                usuarioService.findById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34")));
 
         assertThat(usuarioResponseDTO.getNome()).isEqualTo("Alex Martin");
         assertThat(usuarioResponseDTO.getTelefone()).isEqualTo("4533568875");
@@ -209,7 +203,7 @@ class UsuarioServiceTest extends DefaultTest {
         when(usuarioRepository.findAll(eq(pageRequest))).thenReturn(
                 new PageImpl<Usuario>(List.of(UsuarioFixtures.usuarioPele())));
 
-        Page<UsuarioResponseDTO> result = usuarioService.findAll(pageRequest);
+        Page<Usuario> result = usuarioService.findAll(pageRequest);
 
         assertThat(result).isNotNull();
         verify(usuarioRepository).findAll(eq(pageRequest));
@@ -220,9 +214,8 @@ class UsuarioServiceTest extends DefaultTest {
     void update() {
         when(usuarioRepository.findById(any())).thenReturn(Optional.of(new Usuario()));
 
-        usuarioService.update(usuarioDTO);
+        usuarioService.update(usuario);
 
-        verify(usuarioRepository).findById(usuarioDTO.getId());
         verify(usuarioRepository).saveAndFlush(any(Usuario.class));
         verifyNoMoreInteractions(usuarioRepository);
     }
@@ -243,4 +236,4 @@ class UsuarioServiceTest extends DefaultTest {
 
         verify(usuarioRepository).save(any(Usuario.class));
     }
-    }
+}

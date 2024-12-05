@@ -18,12 +18,11 @@ import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.EmprestimoRepository;
 import com.bibliotecaelo.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,11 +30,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService {
+@RequiredArgsConstructor
+public class UsuarioService
+        extends CrudService<Usuario> {
     private static final int EXPIRATION_TIME_NEW_PASSWORD = 5;
     private static final int EXPIRATION_TIME_LOGIN = 120;
 
-    private final UsuarioRepository usuarioRepository;
+    @Getter
+    private final UsuarioRepository repository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -44,17 +46,16 @@ public class UsuarioService {
     private final UsuarioDTOConverter usuarioDTOConverter;
     private final EmprestimoRepository emprestimoRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, EmailService emailService, TokenService tokenService,
-            UsuarioResponseDTOConverter usuarioResponseDTOConverter, UsuarioDTOConverter usuarioDTOConverter,
-            EmprestimoRepository emprestimoRepository) {
-        this.usuarioRepository = usuarioRepository;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
-        this.tokenService = tokenService;
-        this.usuarioResponseDTOConverter = usuarioResponseDTOConverter;
-        this.usuarioDTOConverter = usuarioDTOConverter;
-        this.emprestimoRepository = emprestimoRepository;
+    @Override
+    public void beforeUpdate(Usuario usuario) {
+        validaSenha(usuario.getSenha(), usuario.getSenha());
+    }
+
+    @Override
+    public void beforeDelete(UUID id) {
+        if (emprestimoRepository.existsByUsuarioId(id)) {
+            throw new ValidationException("Usuário Possui Empréstimo vinculado, portanto NÃO será excluído!");
+        }
     }
 
     public UsuarioResponseDTO novoUsuario(UsuarioDTO usuarioDTO) {
@@ -66,18 +67,18 @@ public class UsuarioService {
         novoUsuario.setSituacao(SituacaoUsuarioEnum.INATIVO);
         novoUsuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
 
-        return usuarioResponseDTOConverter.to(usuarioRepository.save(novoUsuario));
+        return usuarioResponseDTOConverter.to(repository.save(novoUsuario));
     }
 
     public void resetPassword(HttpServletRequest request, String email) throws IOException {
         String userMail = email.replace("{\"email\":\"", "").replace("\"}", "");
 
-        Usuario usuario = usuarioRepository.findByEmail(userMail).orElseThrow(
+        Usuario usuario = repository.findByEmail(userMail).orElseThrow(
                 () -> new IllegalArgumentException("Não corresponde a um e-mail Cadastrado"));
 
         String token = tokenService.gerarToken(usuario, EXPIRATION_TIME_NEW_PASSWORD);
         usuario.setResetToken(token);
-        usuarioRepository.saveAndFlush(usuario);
+        repository.saveAndFlush(usuario);
 
         String html = montaHtml(token, usuario);
 
@@ -99,13 +100,13 @@ public class UsuarioService {
             throw new ValidationException("Token Inválido ou expirado, tente novamente!");
         }
 
-        Usuario usuario = usuarioRepository.findByResetToken(newPasswordDTO.getToken()).orElseThrow(
+        Usuario usuario = repository.findByResetToken(newPasswordDTO.getToken()).orElseThrow(
                 () -> new ValidationException("Token Não Encontrado, tente novamente!"));
 
         validaSenha(newPasswordDTO.getSenha(), newPasswordDTO.getSenhaConfirmacao());
         usuario.setSenha(passwordEncoder.encode(newPasswordDTO.getSenha()));
         usuario.setResetToken(null);
-        usuarioRepository.save(usuario);
+        repository.save(usuario);
     }
 
     public String gerarToken(LoginDTO login) {
@@ -123,11 +124,11 @@ public class UsuarioService {
     }
 
     public void validaUsuario(UsuarioDTO usuarioDTO) {
-        if (usuarioRepository.findByLogin(usuarioDTO.getLogin()) != null) {
+        if (repository.findByLogin(usuarioDTO.getLogin()) != null) {
             throw new ValidationException("Usuário já existe, tente novamente!");
         }
 
-        if (usuarioRepository.findByEmail(usuarioDTO.getEmail()).isPresent()) {
+        if (repository.findByEmail(usuarioDTO.getEmail()).isPresent()) {
             throw new ValidationException("E-mail já cadastrado, tente novamente!");
         }
 
@@ -146,7 +147,7 @@ public class UsuarioService {
                     ("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
         }
 
-        if (!senha.equals(senhaConfirmacao)){
+        if (!senha.equals(senhaConfirmacao)) {
             throw new ValidationException("Senha e Senha de Confirmação não Conferem, tente novamente!");
         }
     }
@@ -159,34 +160,5 @@ public class UsuarioService {
                 .authenticate(usernamePasswordAuthenticationToken);
 
         return (Usuario) authentication.getPrincipal();
-    }
-
-    public UsuarioResponseDTO findById(UUID usuarioId) {
-        return usuarioResponseDTOConverter.to(usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado")));
-    }
-
-    public UsuarioResponseDTO update(UsuarioDTO usuarioDTO) {
-
-        final Usuario usuarioToUpdate = usuarioRepository.findById(usuarioDTO.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado"));
-
-        usuarioDTOConverter.from(usuarioDTO, usuarioToUpdate);
-
-        usuarioRepository.saveAndFlush(usuarioToUpdate);
-
-        return new UsuarioResponseDTOConverter().to(usuarioToUpdate);
-    }
-
-    public void deleteById(UUID usuarioId) {
-        if (emprestimoRepository.existsByUsuarioId(usuarioId)) {
-            throw new ValidationException("Usuário Possui Empréstimo vinculado, portanto NÃO será excluído!");
-        }
-
-        usuarioRepository.deleteById(usuarioId);
-    }
-
-    public Page<UsuarioResponseDTO> findAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable).map(usuarioResponseDTOConverter::to);
     }
 }

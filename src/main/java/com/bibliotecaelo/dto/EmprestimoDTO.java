@@ -5,12 +5,14 @@ import java.util.UUID;
 
 import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
+import com.bibliotecaelo.interfaces.EntidadeDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 
 @Data
-public class EmprestimoDTO {
+public class EmprestimoDTO
+        implements EntidadeDTO {
 
     private UUID id;
 

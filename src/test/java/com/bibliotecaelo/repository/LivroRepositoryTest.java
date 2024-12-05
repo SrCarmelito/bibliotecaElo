@@ -1,7 +1,6 @@
 package com.bibliotecaelo.repository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 import com.bibliotecaelo.DefaultTest;
@@ -17,7 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql(scripts = {
         "/sql/livro.sql", "/sql/emprestimo.sql"
 })
-class LivroRepositoryTest extends DefaultTest {
+class LivroRepositoryTest
+        extends DefaultTest {
 
     @Autowired
     LivroRepository repository;
@@ -67,6 +67,8 @@ class LivroRepositoryTest extends DefaultTest {
         assertThat(livrobuscado.getIsbn()).isEqualTo(4475598957534L);
     }
 
+/* TODO REMOVER...
+
     @Test
     void livrosEmprestadosPorUsuarioId() {
         List<Livro> livros = repository.livrosEmprestadosPorUsuarioId(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"));
@@ -82,13 +84,11 @@ class LivroRepositoryTest extends DefaultTest {
         List<Livro> livros = repository.findAllByCategoria(CategoriaLivroEnum.FICCAO_POLICIAL);
 
         assertThat(livros).size().isEqualTo(2);
-    }
+    }*/
 
     @Test
     void findAllByIsbn() {
-        List<Livro> livros = repository.findAllByIsbn(4475598957534L);
-
-        assertThat(livros).size().isEqualTo(1);
+        assertThat(repository.existsByIsbn(4475598957534L)).isTrue();
     }
 
 }

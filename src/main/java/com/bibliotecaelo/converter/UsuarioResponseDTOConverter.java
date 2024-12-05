@@ -2,21 +2,34 @@ package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
-import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
 
-public class UsuarioResponseDTOConverter implements DTOConverter<Usuario, UsuarioResponseDTO> {
+@Component
+public class UsuarioResponseDTOConverter
+        implements DTOConverter<Usuario, UsuarioResponseDTO> {
 
     @Override
     public Usuario from(UsuarioResponseDTO dto, Usuario entity) {
-        throw new NotImplementedException("UsuarioResponseDTOConverter.from Not Implemented YET");
+        if (isNull(entity)) {
+            entity = new Usuario();
+        }
+
+        entity.setId(dto.getId());
+        entity.setNome(dto.getNome());
+        entity.setEmail(dto.getEmail());
+        entity.setDataCadastro(dto.getDataCadastro());
+        entity.setTelefone(dto.getTelefone());
+        entity.setLogin(dto.getLogin());
+
+        return entity;
     }
 
     @Override
     public UsuarioResponseDTO to(Usuario entity) {
 
-        if(isNull(entity)) {
+        if (isNull(entity)) {
             return new UsuarioResponseDTO();
         }
 

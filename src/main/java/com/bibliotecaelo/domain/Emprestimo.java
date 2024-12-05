@@ -7,6 +7,7 @@ import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
+import com.bibliotecaelo.interfaces.Entidade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -38,7 +39,8 @@ import org.hibernate.envers.NotAudited;
 @Data
 @Audited
 @EntityListeners(AuditListener.class)
-public class Emprestimo implements Auditable {
+public class Emprestimo
+        implements Auditable, Entidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
