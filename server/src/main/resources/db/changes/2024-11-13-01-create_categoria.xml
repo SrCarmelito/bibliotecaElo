@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_table_categoria" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela categoria já existe">
+            <not>
+                <tableExists tableName="categoria" schemaName="biblioteca"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="biblioteca" tableName="categoria">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="categoria_pk" nullable="false"/>
+            </column>
+            <column name="descricao" type="varchar(1000)"><constraints nullable="false"/></column>
+            <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
+            <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
+            <column name="usuarioalteracao" type="varchar(60)"><constraints nullable="false"/></column>
+        </createTable>
+        <addUniqueConstraint schemaName="biblioteca" tableName="categoria" columnNames="id"
+                             constraintName="u_categoria_id"/>
+    </changeSet>
+
+    <changeSet id="create_table_categoria_aud" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela categoria_aud já existe">
+            <not>
+                <tableExists tableName="categoria_aud" schemaName="biblioteca"/>
+            </not>
+        </preConditions>
+        <createTable tableName="categoria_aud" schemaName="biblioteca">
+            <column name="rev" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="revtype" type="numeric(10)"><constraints nullable="false"/></column>
+            <column name="id" type="uuid"><constraints nullable="false"/></column>
+            <column name="descricao" type="varchar(1000)"/>
+        </createTable>
+        <addPrimaryKey schemaName="biblioteca" tableName="categoria_aud" columnNames="id, rev"
+                       constraintName="pk_categoria_aud"/>
+        <addUniqueConstraint schemaName="biblioteca" tableName="categoria_aud" columnNames="id, rev"
+                             constraintName="u_categoria_aud_id"/>
+    </changeSet>
+
+</databaseChangeLog>
