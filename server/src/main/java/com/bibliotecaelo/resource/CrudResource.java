@@ -7,7 +7,6 @@ import com.bibliotecaelo.interfaces.Entidade;
 import com.bibliotecaelo.interfaces.EntidadeDTO;
 import com.bibliotecaelo.service.CrudService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Slf4j
 public abstract class CrudResource<E extends Entidade, D extends EntidadeDTO> {
 
     @Autowired
@@ -40,10 +38,6 @@ public abstract class CrudResource<E extends Entidade, D extends EntidadeDTO> {
         return ResponseEntity.ok(dtoConverter.to(crudService.findById(id)));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<D>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(crudService.findAll(pageable).map(dtoConverter::to));
-    }
     @PutMapping
     public ResponseEntity<D> update(@RequestBody @Valid D dto) {
         return ResponseEntity.ok(dtoConverter.to(
@@ -57,8 +51,8 @@ public abstract class CrudResource<E extends Entidade, D extends EntidadeDTO> {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<Page<D>> findByRsql(String search, Pageable pageable) {
+    @GetMapping("/find")
+    public ResponseEntity<Page<D>> findAllSearch(String search, Pageable pageable) {
         return ResponseEntity.ok(crudService.findByRsql(search, pageable).map(dtoConverter::to));
     }
 

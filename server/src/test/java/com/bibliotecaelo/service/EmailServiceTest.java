@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles(value = "test")
@@ -17,11 +16,15 @@ class EmailServiceTest {
     EmailService emailService;
 
     @Test
-    void enviarEmail() {
+    void enviarEmailSuccess() {
         String retorno = emailService.enviarEmail(
                 "carmelito.benali@hotmail.com", "Assunto do e-mail", "Mensagem do e-mail");
-        assertEquals("Email enviado", retorno);
 
+        assertThat(retorno).contains("Email enviado");
+    }
+
+    @Test
+    void enviarEmailError() {
         String retornoIncorreto = emailService.enviarEmail(
                 "carmelito.benalihotmail.com", "Assunto do e-mail", "Mensagem do e-mail");
 

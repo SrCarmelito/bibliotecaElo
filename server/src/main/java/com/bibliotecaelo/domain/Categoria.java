@@ -2,9 +2,9 @@ package com.bibliotecaelo.domain;
 
 import java.util.UUID;
 
-import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
+import com.bibliotecaelo.audit.domain.AuditInfo;
 import com.bibliotecaelo.interfaces.Entidade;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

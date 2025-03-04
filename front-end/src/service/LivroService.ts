@@ -33,7 +33,7 @@ export const findAll = (
     sortConverter = { sort: "titulo,asc" };
   }
 
-  return axios.get(resource, {
+  return axios.get(`${resource}/find`, {
     params: {
       ...sortConverter,
       ...paginationConverter,

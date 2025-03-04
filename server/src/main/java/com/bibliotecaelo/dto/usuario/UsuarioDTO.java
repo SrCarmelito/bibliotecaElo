@@ -45,6 +45,7 @@ public class UsuarioDTO
     @NotBlank(message = "É Necessário Informar a senha!")
     @Size(min = 6, max = 150, message = "Senha deve ter entre 6 a 150 caracteres.")
     private String senha;
+
     private String senhaConfirmacao;
 
     @Enumerated(EnumType.STRING)

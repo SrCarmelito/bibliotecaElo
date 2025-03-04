@@ -17,14 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class EmprestimoService
-        extends CrudService<Emprestimo> {
+public class EmprestimoService extends CrudService<Emprestimo> {
 
     @Getter
     private final EmprestimoRepository repository;
-
     private final UsuarioService usuarioService;
-
     private final LivroService livroService;
     private final UsuarioRepository usuarioRepository;
     private final LivroRepository livroRepository;
@@ -42,10 +39,8 @@ public class EmprestimoService
         emprestimo.setUsuario(usuarioRepository.findById(emprestimo.getUsuario().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado!")));
 
-
         emprestimo.setLivro(livroRepository.findById(emprestimo.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro Não Encontrado!")));
-
     }
 
     protected void validaDataEmprestimoPosteriorDevolucao(LocalDate dataEmprestimo, LocalDate dataDevolucao) {

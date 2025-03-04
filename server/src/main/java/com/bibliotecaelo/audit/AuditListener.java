@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.bibliotecaelo.audit.domain.AuditInfo;
 import com.bibliotecaelo.domain.Usuario;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;

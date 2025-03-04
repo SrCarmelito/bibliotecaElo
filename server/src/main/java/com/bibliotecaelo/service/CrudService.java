@@ -37,10 +37,6 @@ public abstract class CrudService<E extends Entidade> {
         );
     }
 
-    public Page<E> findAll(Pageable pageable) {
-        return getRepository().findAll(pageable);
-    }
-
     public Page<E> findByRsql(String search, Pageable pageable) {
         return getRepository().findByRsql(search, pageable);
     }

@@ -1,32 +1,30 @@
 package com.bibliotecaelo.audit;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import com.bibliotecaelo.converter.UsuarioDTOConverter;
-import com.bibliotecaelo.dto.usuario.LoginDTO;
+import com.bibliotecaelo.domain.Usuario;
+import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -35,13 +33,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles(value = "test")
-@Transactional
 @Sql(scripts = {
         "/sql/usuario.sql"
 })
-public class AuditListenerTest {
+class AuditListenerTest {
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -57,56 +53,57 @@ public class AuditListenerTest {
     @Autowired
     UsuarioDTOConverter usuarioDTOConverter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).apply(springSecurity()).build();
     }
 
     @Test
-    public void testSetCreatedOn() throws Exception{
+    void testSetCreatedOn() throws Exception{
 
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/usuarios/login")
+        String token = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
-                .andReturn();
-
-        String token = mvcResult.getResponse().getContentAsString();
+                .andReturn().getResponse().getContentAsString();
 
         UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
 
-        MvcResult result = mockMvc.perform(post("/api/usuarios/novo-usuario")
+        String resultAsString = mockMvc.perform(post("/api/usuarios/novo-usuario")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usuarioDTO))
                         .header("Authorization", "Bearer " + token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
-                .andReturn();
-
-        String resultAsString = result.getResponse().getContentAsString();
+                .andReturn().getResponse().getContentAsString();
 
         UsuarioResponseDTO usuarioResponseDTO = objectMapper.readValue(resultAsString, UsuarioResponseDTO.class);
 
-        assertEquals("Carmelito Junior Delcielo Benali", usuarioRepository.findById(usuarioResponseDTO.getId()).orElseThrow().getAudit().getUsuarioAlteracao());
-        assertEquals("Carmelito Junior Delcielo Benali", usuarioRepository.findById(usuarioResponseDTO.getId()).orElseThrow().getAudit().getUsuarioCriacao());
+        Usuario usuarioAudit = usuarioRepository.findById(usuarioResponseDTO.getId()).orElseThrow();
+
+        assertThat(usuarioAudit.getAudit().getUsuarioAlteracao()).isEqualTo("Carmelito Junior Delcielo Benali");
+        assertThat(usuarioAudit.getAudit().getUsuarioCriacao()).isEqualTo("Carmelito Junior Delcielo Benali");
+        assertThat(usuarioAudit.getAudit().getDataCriacao().toLocalDate()).isEqualTo(LocalDate.now());
+        assertThat(usuarioAudit.getAudit().getDataAlteracao().toLocalDate()).isEqualTo(LocalDate.now());
     }
 
     @Test
-    @WithMockUser(username = "junior")
-    public void testSetUpdatedOn() throws Exception {
+    void testSetUpdatedOn() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setLogin("junior");
         loginDTO.setSenha("123");
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/usuarios/login")
+        MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
                 .andReturn();
 
         String token = mvcResult.getResponse().getContentAsString();
@@ -116,6 +113,7 @@ public class AuditListenerTest {
 
         usuarioAlterado.setNome("Nome modificado");
         usuarioAlterado.setTelefone("1234567890");
+        usuarioAlterado.setSenha("123456As");
 
         mockMvc.perform(put("/api/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,8 +123,13 @@ public class AuditListenerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()));
 
-        assertEquals("junior", usuarioRepository.findById(UUID.fromString("ee4ae880-a4db-4563-b330-7e2a27d26115")).orElseThrow().getAudit().getUsuarioAlteracao());
-        assertEquals("Nome modificado", usuarioRepository.findById(UUID.fromString("ee4ae880-a4db-4563-b330-7e2a27d26115")).orElseThrow().getNome());
-        assertEquals("1234567890", usuarioRepository.findById(UUID.fromString("ee4ae880-a4db-4563-b330-7e2a27d26115")).orElseThrow().getTelefone());
+        Usuario usuarioAudit = usuarioRepository.findById(UUID.fromString("ee4ae880-a4db-4563-b330-7e2a27d26115")).orElseThrow();
+
+        assertThat(usuarioAudit.getNome()).isEqualTo("Nome modificado");
+        assertThat(usuarioAudit.getTelefone()).isEqualTo("1234567890");
+
+        assertThat(usuarioAudit.getAudit().getUsuarioAlteracao()).isEqualTo("junior");
+        assertThat(usuarioAudit.getAudit().getUsuarioCriacao()).isEqualTo("system");
+        assertThat(usuarioAudit.getAudit().getDataAlteracao().toLocalDate()).isEqualTo(LocalDate.now());
     }
 }

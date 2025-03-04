@@ -1,4 +1,4 @@
-package com.bibliotecaelo.audit;
+package com.bibliotecaelo.audit.domain;
 
 import java.time.LocalDateTime;
 

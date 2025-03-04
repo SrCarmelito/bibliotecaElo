@@ -1,87 +1,132 @@
 package com.bibliotecaelo.resource;
 
-import com.bibliotecaelo.DefaultTest;
+import java.util.List;
+import java.util.UUID;
+
+import com.bibliotecaelo.ResourceTest;
+import com.bibliotecaelo.domain.Livro;
 import com.bibliotecaelo.dto.LivroDTO;
 import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.service.LivroService;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-public class LivroResourceTest
-        extends DefaultTest {
+class LivroResourceTest extends ResourceTest {
 
     @MockBean
-    private LivroService livroService;
+    LivroService service;
 
-    private final LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
+    Livro livro = LivroFixtures.LivroOProcesso();
+    LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
 
-/*    @Test
-    public void create() throws Exception {
+    @Test
+    void create() throws Exception {
+        when(service.save(any(Livro.class))).thenReturn(livro);
+
         mockMvc.perform(post("/api/livros")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(livroDTO)))
                 .andDo(print())
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.titulo", equalTo("O Processo")))
+                .andExpect(jsonPath("$.autor", equalTo("Franz Kakfa")))
+                .andExpect(jsonPath("$.dataPublicacao", equalTo("2010-05-17")))
+                .andExpect(jsonPath("$.categoria.descricao", equalTo("Policial")));
 
-        verify(livroService).create(livroDTO);
-        verifyNoMoreInteractions(livroService);
-    }*/
-
-    @Test
-    public void findById() throws Exception {
-        mockMvc.perform(get("/api/livros/{livroId}", "c99e64bd-687f-45a3-8410-3109ffe04237")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().is2xxSuccessful());
-
-        verify(livroService).findById(any());
-        verifyNoMoreInteractions(livroService);
+        verify(service).save(any(Livro.class));
+        verifyNoMoreInteractions(service);
     }
 
     @Test
-    public void findAll() throws Exception {
-        mockMvc.perform(get("/api/livros")
+    void findById() throws Exception {
+        when(service.findById(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"))).thenReturn(livro);
+
+        mockMvc.perform(get("/api/livros/{livroId}", "feb95cc3-8d9a-4cfb-be4e-8147fb195ec0")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0")))
+                .andExpect(jsonPath("$.titulo", equalTo("O Processo")))
+                .andExpect(jsonPath("$.autor", equalTo("Franz Kakfa")))
+                .andExpect(jsonPath("$.dataPublicacao", equalTo("2010-05-17")))
+                .andExpect(jsonPath("$.categoria.descricao", equalTo("Policial")));
 
-        verify(livroService).findAll(any());
-        verifyNoMoreInteractions(livroService);
+        verify(service).findById(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"));
+        verifyNoMoreInteractions(service);
     }
 
-/*    @Test
-    public void update() throws Exception {
+    @Test
+    void findAllSearch() throws Exception {
+        Page<Livro> pageToReturn = new PageImpl<>(List.of(livro));
+        Pageable pageable = Pageable.ofSize(20);
+        String search = "titulo=ilike=processo";
+
+        when(service.findByRsql(search, pageable)).thenReturn(pageToReturn);
+
+        mockMvc.perform(get("/api/livros/find?search=" + search)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].id", hasItem("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0")))
+                .andExpect(jsonPath("$.content[*].titulo", hasItem("O Processo")))
+                .andExpect(jsonPath("$.content[*].autor", hasItem("Franz Kakfa")))
+                .andExpect(jsonPath("$.content[*].dataPublicacao", hasItem("2010-05-17")))
+                .andExpect(jsonPath("$.content[*].categoria.descricao", hasItem("Policial")));
+
+        verify(service).findByRsql(search, pageable);
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
+    void update() throws Exception {
+        when(service.findById(livroDTO.getId())).thenReturn(livro);
+        when(service.update(livro)).thenReturn(livro);
+
         mockMvc.perform(put("/api/livros")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(livroDTO)))
                 .andDo(print())
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.titulo", equalTo("O cortiço")))
+                .andExpect(jsonPath("$.autor", equalTo("Aluísio Azevedo")))
+                .andExpect(jsonPath("$.dataPublicacao", equalTo("1987-11-16")))
+                .andExpect(jsonPath("$.categoria.descricao", equalTo("Romance")));
 
-        verify(livroService).update(any());
-        verifyNoMoreInteractions(livroService);
-    }*/
+        verify(service).update(livro);
+        verify(service).findById(livroDTO.getId());
+        verifyNoMoreInteractions(service);
+    }
 
     @Test
-    public void deleteById() throws Exception {
+    void deleteById() throws Exception {
         mockMvc.perform(delete("/api/livros/{livroId}", "c99e64bd-687f-45a3-8410-3109ffe04237")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
 
-        verify(livroService).deleteById(any());
-        verifyNoMoreInteractions(livroService);
+        verify(service).deleteById(UUID.fromString("c99e64bd-687f-45a3-8410-3109ffe04237"));
+        verifyNoMoreInteractions(service);
     }
 
 }
