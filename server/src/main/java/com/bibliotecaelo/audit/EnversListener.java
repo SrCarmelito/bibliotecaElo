@@ -1,8 +1,9 @@
 package com.bibliotecaelo.audit;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.bibliotecaelo.audit.domain.Revision;
 import com.bibliotecaelo.domain.Usuario;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +20,11 @@ public class EnversListener implements RevisionListener {
         Revision revision = (Revision) revisionEntity;
         Usuario user = new Usuario();
 
-        String ANONIMOUS_USER = "anonymousUser";
+        String ANONYMOUS_USER = "anonymousUser";
 
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals(ANONIMOUS_USER)) {
-            user.setLogin(ANONIMOUS_USER);
-            user.setNome(ANONIMOUS_USER);
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals(ANONYMOUS_USER)) {
+            user.setLogin(ANONYMOUS_USER);
+            user.setNome(ANONYMOUS_USER);
             user.setId(UUID.fromString("e25e251b-f4ba-42b9-9861-2bde06584daf"));
         } else {
             user = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -33,7 +34,7 @@ public class EnversListener implements RevisionListener {
         revision.setLogin(user.getLogin());
         revision.setRemoteIpAddress(getIpFromRequest());
         revision.setUserId(user.getId());
-        revision.setRevisionDate(new Date());
+        revision.setRevisionDate(LocalDateTime.now());
     }
 
     private static String getIpFromRequest() {

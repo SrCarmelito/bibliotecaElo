@@ -69,7 +69,6 @@
 
     <changeSet id="insert_categorias" author="carmelito.benali" >
         <sql>
-            INSERT INTO biblioteca.categoria (id, descricao, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) VALUES('7e0e5c78-2cf0-4fa3-ba74-71fa9d560a7a'::uuid, 'Ação e aventura', '2024-11-14 06:33:59.000', '2024-11-14 06:33:59.000', 'system', 'system');
             INSERT INTO biblioteca.categoria (id, descricao, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) VALUES('816efc86-002d-418b-a51f-5d5b0238e528'::uuid, 'Ação e aventura', '2024-11-14 06:33:59.000', '2024-11-14 06:33:59.000', 'system', 'system');
             INSERT INTO biblioteca.categoria (id, descricao, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) VALUES('761e9af7-7e8f-4e5a-8013-490b116458d1'::uuid, 'Arte e Fotografia', '2024-11-14 06:33:59.000', '2024-11-14 06:33:59.000', 'system', 'system');
             INSERT INTO biblioteca.categoria (id, descricao, datacriacao, dataalteracao, usuariocriacao, usuarioalteracao) VALUES('ac72b4f4-edf5-4726-866e-1254bf0bd023'::uuid, 'Autoajuda', '2024-11-14 06:33:59.000', '2024-11-14 06:33:59.000', 'system', 'system');

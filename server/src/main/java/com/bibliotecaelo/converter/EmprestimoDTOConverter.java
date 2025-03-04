@@ -4,18 +4,13 @@ import java.util.Objects;
 
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
 
 @Component
-@RequiredArgsConstructor
 public class EmprestimoDTOConverter
         implements DTOConverter<Emprestimo, EmprestimoDTO> {
-
-    private final UsuarioResponseDTOConverter usuarioResponseDTOConverter;
-    private final LivroDTOConverter livroDTOConverter;
 
     @Override
     public Emprestimo from(EmprestimoDTO dto, Emprestimo entity) {
@@ -31,8 +26,8 @@ public class EmprestimoDTOConverter
             return entity;
         }
 
-        entity.setUsuario(usuarioResponseDTOConverter.from(dto.getUsuario()));
-        entity.setLivro(livroDTOConverter.from(dto.getLivro()));
+        entity.setUsuario(new UsuarioResponseDTOConverter().from(dto.getUsuario()));
+        entity.setLivro(new LivroDTOConverter().from(dto.getLivro()));
         entity.setDataEmprestimo(dto.getDataEmprestimo());
         entity.setDataDevolucao(dto.getDataDevolucao());
         entity.setStatus(dto.getStatus());
@@ -49,8 +44,8 @@ public class EmprestimoDTOConverter
         EmprestimoDTO dto = new EmprestimoDTO();
 
         dto.setId(entity.getId());
-        dto.setUsuario(usuarioResponseDTOConverter.to(entity.getUsuario()));
-        dto.setLivro(livroDTOConverter.to(entity.getLivro()));
+        dto.setUsuario(new UsuarioResponseDTOConverter().to(entity.getUsuario()));
+        dto.setLivro(new LivroDTOConverter().to(entity.getLivro()));
         dto.setDataEmprestimo(entity.getDataEmprestimo());
         dto.setDataDevolucao(entity.getDataDevolucao());
         dto.setStatus(entity.getStatus());

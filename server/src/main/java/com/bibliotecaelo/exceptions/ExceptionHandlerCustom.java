@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import io.github.perplexhub.rsql.UnknownPropertyException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -151,6 +152,15 @@ public class ExceptionHandlerCustom {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<StandardError> requestNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        Set<String> errors = new HashSet<>();
+        errors.add(e.getLocalizedMessage());
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(UnknownPropertyException.class)
+    public ResponseEntity<StandardError> rsqlUnknownProperty(UnknownPropertyException e, HttpServletRequest request) {
         Set<String> errors = new HashSet<>();
         errors.add(e.getLocalizedMessage());
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;

@@ -29,9 +29,9 @@ public class UsuarioFixtures {
         usuarioDTO.setEmail("carmelito.benali@hotmail.com");
         usuarioDTO.setDataCadastro(LocalDate.of(2022, 11, 16));
         usuarioDTO.setTelefone("44988080437");
-        usuarioDTO.setLogin("carmelindo");
-        usuarioDTO.setSenha("Carmelindo2024");
-        usuarioDTO.setSenhaConfirmacao("Carmelindo2024");
+        usuarioDTO.setLogin("carmelito");
+        usuarioDTO.setSenha("Carmelito2024");
+        usuarioDTO.setSenhaConfirmacao("Carmelito2024");
 
         return usuarioDTO;
     }
@@ -46,6 +46,5 @@ public class UsuarioFixtures {
         usuarioResponseDTO.setLogin("alexmartin");
 
         return usuarioResponseDTO;
-
     }
 }

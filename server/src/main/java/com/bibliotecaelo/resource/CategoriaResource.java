@@ -7,5 +7,4 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/categorias")
-public class CategoriaResource extends CrudResource<Categoria, CategoriaDTO>{
-}
+public class CategoriaResource extends CrudResource<Categoria, CategoriaDTO>{}

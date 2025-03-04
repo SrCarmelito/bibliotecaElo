@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import com.bibliotecaelo.audit.AuditInfo;
 import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
+import com.bibliotecaelo.audit.domain.AuditInfo;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.interfaces.Entidade;
 import jakarta.persistence.Column;

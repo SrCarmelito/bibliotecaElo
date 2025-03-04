@@ -1,8 +1,9 @@
-package com.bibliotecaelo.audit;
+package com.bibliotecaelo.audit.domain;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.bibliotecaelo.audit.EnversListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class Revision {
 
     @RevisionTimestamp
     @Column(name = "revisiondate")
-    private Date revisionDate;
+    private LocalDateTime revisionDate;
 
     @Column(name = "username")
     private String userName;

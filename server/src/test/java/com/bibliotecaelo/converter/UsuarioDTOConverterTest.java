@@ -1,18 +1,15 @@
 package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UsuarioDTOConverterTest extends DefaultTest {
+class UsuarioDTOConverterTest  {
 
-    @Autowired
-    UsuarioDTOConverter usuarioDTOConverter;
+    UsuarioDTOConverter usuarioDTOConverter = new UsuarioDTOConverter();
 
     @Test
     void from() {

@@ -1,24 +1,25 @@
 package com.bibliotecaelo.converter;
 
-import com.bibliotecaelo.DefaultTest;
+import java.util.UUID;
+
+import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
-import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class UsuarioResponseDTOConverterTest extends DefaultTest {
+class UsuarioResponseDTOConverterTest {
 
-    @Autowired
-    UsuarioResponseDTOConverter usuarioResponseDTOConverter;
+    UsuarioResponseDTOConverter usuarioResponseDTOConverter = new UsuarioResponseDTOConverter();
 
     @Test
     void from() {
-        assertThrows(NotImplementedException.class,
-                () -> usuarioResponseDTOConverter.from(UsuarioFixtures.usuarioResponseDTOAlexMartin()));
+        Usuario usuario = usuarioResponseDTOConverter.from(UsuarioFixtures.usuarioResponseDTOAlexMartin());
+
+        assertThat(usuario.getNome()).isEqualTo("Alex Martin");
+        assertThat(usuario.getLogin()).isEqualTo("alexmartin");
+        assertThat(usuario.getId()).isEqualTo(UUID.fromString("054bf7ed-f9ba-4333-98fa-7d700e77526e"));
     }
 
     @Test

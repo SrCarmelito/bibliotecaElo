@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import com.bibliotecaelo.domain.Livro;
 import com.bibliotecaelo.dto.LivroDTO;
-import com.bibliotecaelo.enums.CategoriaLivroEnum;
 
 public class LivroFixtures {
 
@@ -15,9 +14,9 @@ public class LivroFixtures {
         livro.setId(UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"));
         livro.setTitulo("O Processo");
         livro.setAutor("Franz Kakfa");
-        livro.setIsbn(6982568746L);
+        livro.setIsbn("6982568746");
         livro.setDataPublicacao(LocalDate.of(2010, 5, 17));
-        livro.setCategoria(CategoriaLivroEnum.DISTOPIA);
+        livro.setCategoria(CategoriaFixtures.CategoriaPolicial());
 
         return livro;
     }
@@ -28,9 +27,9 @@ public class LivroFixtures {
         livroDTO.setId(UUID.fromString("22643a41-68b7-4eff-9893-75356d066a0b"));
         livroDTO.setTitulo("O cortiço");
         livroDTO.setAutor("Aluísio Azevedo");
-        livroDTO.setIsbn(9095506304069L);
+        livroDTO.setIsbn("9095506304069");
         livroDTO.setDataPublicacao(LocalDate.of(1987, 11, 16));
-        livroDTO.setCategoria(CategoriaLivroEnum.FICCAO_CIENTIFICA);
+        livroDTO.setCategoria(CategoriaFixtures.CategoriaDTORomance());
 
         return livroDTO;
     }

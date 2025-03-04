@@ -2,20 +2,17 @@ package com.bibliotecaelo.converter;
 
 import java.time.LocalDate;
 
-import com.bibliotecaelo.DefaultTest;
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class EmprestimoDTOConverterTest extends DefaultTest {
+class EmprestimoDTOConverterTest {
 
-    @Autowired
-    EmprestimoDTOConverter converter;
+    EmprestimoDTOConverter converter = new EmprestimoDTOConverter();
 
     @Test
     void from() {

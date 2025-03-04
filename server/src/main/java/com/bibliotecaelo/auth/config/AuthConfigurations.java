@@ -29,11 +29,11 @@ public class AuthConfigurations {
         httpSecurity.headers(AbstractHttpConfigurer::disable);
         return httpSecurity.csrf(AbstractHttpConfigurer::disable) // ideal habilitar no deploy em prod
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/usuarios/login").permitAll()
-                        .requestMatchers("/api/usuarios/reset-password").permitAll()
-                        .requestMatchers("/api/usuarios/confirm-reset-password").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/reset-password").permitAll()
+                        .requestMatchers("/api/auth/confirm-reset-password").permitAll()
                         .requestMatchers("/h2/**").permitAll()
-                        .requestMatchers("/api/livros/**").permitAll()
+                        .requestMatchers("/api/livros/**").permitAll() // REVISAR APÓS COMPLETAR O FRONT!!!
                         .requestMatchers("/api/livros").permitAll()
                         .requestMatchers("/api/categorias/**").permitAll()
                         .anyRequest().authenticated()
