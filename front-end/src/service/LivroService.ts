@@ -15,7 +15,8 @@ export const deleteById = (livroId?: string): AxiosPromise<void> => {
 export const findAll = (
   pagination?: any,
   sortField?: any,
-  sortOrder?: any
+  sortOrder?: any,
+  search?: string
 ): AxiosPromise<PagedResponse<Livro>> => {
   const paginationConverter: any = {
     page: pagination.current - 1,
@@ -33,10 +34,14 @@ export const findAll = (
     sortConverter = { sort: "titulo,asc" };
   }
 
+  let searchConverter: any = {};
+  search ? (searchConverter = search) : (searchConverter = "");
+
   return axios.get(`${resource}/find`, {
     params: {
       ...sortConverter,
       ...paginationConverter,
+      search: searchConverter,
     },
   });
 };

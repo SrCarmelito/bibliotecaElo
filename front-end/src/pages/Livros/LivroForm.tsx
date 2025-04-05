@@ -17,7 +17,6 @@ import { useNotification } from "../../contexts/notificationContext";
 import { useNavigate, useParams } from "react-router";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
-import localeValues from "antd/locale/pt_BR";
 
 const formItemLayout = {
   labelCol: {
@@ -36,7 +35,7 @@ type Params = {
 
 const initialLivro: Livro = {
   id: "",
-  titulo: "ops",
+  titulo: "",
   autor: "",
   isbn: "",
   dataPublicacao: dayjs,
@@ -157,7 +156,10 @@ const LivroForm: React.FC = () => {
             style={{ display: "inline-block", width: "45%" }}
             rules={[{ required: true, message: "Informe o Isbn!" }]}
           >
-            <InputNumber style={{ display: "inline-block", width: "155%" }} />
+            <InputNumber
+              type="number"
+              style={{ display: "inline-block", width: "155%" }}
+            />
           </Form.Item>
         </Form.Item>
         <Form.Item

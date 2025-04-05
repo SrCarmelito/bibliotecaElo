@@ -13,6 +13,8 @@ import { SorterResult } from "antd/es/table/interface";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import { NotificationType } from "../../type/NotificationType";
+import SearchComponent from "../../components/searchcomponent/SearchComponent";
+import { SearchField } from "../../type/SearchField";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
 
@@ -34,6 +36,34 @@ const getRandomuserParams = (params: TableParams) => ({
   ...params,
 });
 
+const searchFields: SearchField[] = [
+  {
+    label: "Autor",
+    type: "STRING",
+    value: "autor",
+  },
+  {
+    label: "Categoria",
+    type: "STRING",
+    value: "categoria.descricao",
+  },
+  {
+    label: "Isbn",
+    type: "STRING",
+    value: "isbn",
+  },
+  {
+    label: "Publicação",
+    type: "DATE",
+    value: "dataPublicacao",
+  },
+  {
+    label: "Titulo",
+    type: "STRING",
+    value: "titulo",
+  },
+];
+
 const LivroList: React.FC = () => {
   const [livros, setLivros] = useState<Livro[]>([]);
   const [modal, contextHolder] = Modal.useModal();
@@ -44,16 +74,17 @@ const LivroList: React.FC = () => {
     pagination: {
       current: 1,
       pageSize: 20,
-      position: ["bottomCenter"],
+      position: ["topCenter"],
     },
   });
 
-  const fetchData = () => {
+  const fetchData = (search?: any) => {
     setSpinning(true);
     findAll(
       getRandomuserParams(tableParams).pagination,
       getRandomuserParams(tableParams).sortField,
-      getRandomuserParams(tableParams).sortOrder
+      getRandomuserParams(tableParams).sortOrder,
+      search
     ).then((response) => {
       setLivros(response.data.content);
       setTableParams({
@@ -113,14 +144,18 @@ const LivroList: React.FC = () => {
       )}`,
       onOk() {
         deleteById(livro.id)
-          .then(fetchData)
           .then(() => openNotification("success", "Livro Excluído com Sucesso"))
+          .then(() => fetchData())
           .catch((errors) => {
             const erros = errors.response.data.errors;
             if (!erros) {
               throw erros;
             }
             erros.forEach((msg: string) => {
+              if (msg.match("constraint violation")) {
+                msg =
+                  "Não é possível excluir o Livro pois existem registros que dependem dele.";
+              }
               openNotification("error", "Falha ao Excluir o Livro", msg);
             });
           });
@@ -186,6 +221,7 @@ const LivroList: React.FC = () => {
   return (
     <>
       <>
+        <SearchComponent optionsFilters={searchFields} runSearch={fetchData} />
         <Table<Livro>
           rowKey={"id"}
           dataSource={livros}
