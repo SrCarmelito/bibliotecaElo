@@ -17,17 +17,7 @@ import { useNotification } from "../../contexts/notificationContext";
 import { useNavigate, useParams } from "react-router";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 2 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 2 },
-    sm: { span: 6 },
-  },
-};
+import { formItemLayout } from "../../styles/FormItemLayout";
 
 type Params = {
   id: string;
@@ -181,7 +171,7 @@ const LivroForm: React.FC = () => {
         </Form.Item>
         <Form.Item label={null}>
           <Button type="primary" htmlType="submit">
-            Submit
+            Confirmar
           </Button>
         </Form.Item>
       </Form>

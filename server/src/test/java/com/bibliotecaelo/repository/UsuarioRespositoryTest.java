@@ -32,7 +32,7 @@ class UsuarioRespositoryTest {
         assertThat(usuario.getId()).isNotNull();
         assertThat(usuario.getNome()).isEqualTo("Edson Arantes do Nascimento");
         assertThat(usuario.getLogin()).isEqualTo("pele");
-        assertThat(usuario.getDataCadastro()).isEqualTo(LocalDate.of(1962, 9, 14));
+        assertThat(usuario.getDataNascimento()).isEqualTo(LocalDate.of(1962, 9, 14));
     }
 
     @Test
@@ -43,7 +43,7 @@ class UsuarioRespositoryTest {
         usuarioToUpdate.setNome("Nome Modificado");
         usuarioToUpdate.setEmail("modified@modified.com");
         usuarioToUpdate.setLogin("modified");
-        usuarioToUpdate.setDataCadastro(LocalDate.of(2024, 11, 15));
+        usuarioToUpdate.setDataNascimento(LocalDate.of(2024, 11, 15));
 
         Usuario usuarioUpdated = repository.saveAndFlush(usuarioToUpdate);
 
@@ -51,7 +51,7 @@ class UsuarioRespositoryTest {
         assertThat(usuarioUpdated.getNome()).isEqualTo("Nome Modificado");
         assertThat(usuarioUpdated.getEmail()).isEqualTo("modified@modified.com");
         assertThat(usuarioUpdated.getLogin()).isEqualTo("modified");
-        assertThat(usuarioUpdated.getDataCadastro()).isEqualTo(LocalDate.of(2024, 11, 15));
+        assertThat(usuarioUpdated.getDataNascimento()).isEqualTo(LocalDate.of(2024, 11, 15));
     }
 
     @Test

@@ -52,7 +52,7 @@ class UsuarioResourceTest extends ResourceTest {
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.nome", equalTo("Alex Martin")))
                 .andExpect(jsonPath("$.email", equalTo("alex.martin@gmail.com")))
-                .andExpect(jsonPath("$.dataCadastro", equalTo("2020-12-08")))
+                .andExpect(jsonPath("$.dataNascimento", equalTo("2020-12-08")))
                 .andExpect(jsonPath("$.login", equalTo("alexmartin")));
 
         verify(usuarioService).novoUsuario(usuarioDTO);
@@ -70,7 +70,7 @@ class UsuarioResourceTest extends ResourceTest {
                 .andExpect(jsonPath("$.nome", equalTo("Edson Arantes do Nascimento")))
                 .andExpect(jsonPath("$.email", equalTo("carmelito.benali@ig.com")))
                 .andExpect(jsonPath("$.login", equalTo("pele")))
-                .andExpect(jsonPath("$.dataCadastro", equalTo("1962-09-14")));
+                .andExpect(jsonPath("$.dataNascimento", equalTo("1962-09-14")));
 
         verify(usuarioService).findById(any());
         verifyNoMoreInteractions(usuarioService);
@@ -90,7 +90,7 @@ class UsuarioResourceTest extends ResourceTest {
                 .andExpect(jsonPath("$.nome", equalTo("Carmelito Junior")))
                 .andExpect(jsonPath("$.email", equalTo("carmelito.benali@hotmail.com")))
                 .andExpect(jsonPath("$.login", equalTo("carmelito")))
-                .andExpect(jsonPath("$.dataCadastro", equalTo("2022-11-16")));
+                .andExpect(jsonPath("$.dataNascimento", equalTo("2022-11-16")));
 
         verify(usuarioService).update(usuario);
         verify(usuarioService).findById(usuarioDTO.getId());

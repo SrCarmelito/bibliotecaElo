@@ -18,7 +18,7 @@
             </column>
             <column name="nome" type="varchar(150)"><constraints nullable="false"/></column>
             <column name="email" type="varchar(150)"><constraints nullable="false"/></column>
-            <column name="data_cadastro" type="datetime"><constraints nullable="false"/></column>
+            <column name="data_nascimento" type="datetime"><constraints nullable="false"/></column>
             <column name="telefone" type="varchar(11)"><constraints nullable="false"/></column>
             <column name="login" type="varchar(150)"><constraints nullable="false"/></column>
             <column name="senha" type="varchar(150)"><constraints nullable="false"/></column>
@@ -45,7 +45,7 @@
             <column name="id" type="uuid" ><constraints nullable="false"/></column>
             <column name="nome" type="varchar(150)"/>
             <column name="email" type="varchar(150)"/>
-            <column name="data_cadastro" type="datetime"/>
+            <column name="data_nascimento" type="datetime"/>
             <column name="telefone" type="varchar(11)"/>
             <column name="login" type="varchar(150)"/>
             <column name="senha" type="varchar(150)"/>

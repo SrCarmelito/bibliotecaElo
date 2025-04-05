@@ -36,6 +36,7 @@ public class AuthConfigurations {
                         .requestMatchers("/api/livros/**").permitAll() // REVISAR APÓS COMPLETAR O FRONT!!!
                         .requestMatchers("/api/livros").permitAll()
                         .requestMatchers("/api/categorias/**").permitAll()
+                        .requestMatchers("/api/usuarios/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

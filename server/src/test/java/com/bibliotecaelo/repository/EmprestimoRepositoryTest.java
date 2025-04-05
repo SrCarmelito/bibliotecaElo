@@ -42,7 +42,7 @@ class EmprestimoRepositoryTest {
 
         assertThat(emprestimoSalvo.getUsuario().getId()).isEqualTo(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"));
         assertThat(emprestimoSalvo.getUsuario().getNome()).isEqualTo("Ozzy Osbourne");
-        assertThat(emprestimoSalvo.getUsuario().getDataCadastro()).isEqualTo(LocalDate.of(1970, 7, 2));
+        assertThat(emprestimoSalvo.getUsuario().getDataNascimento()).isEqualTo(LocalDate.of(1970, 7, 2));
 
         assertThat(emprestimoSalvo.getLivro().getId()).isEqualTo(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f"));
         assertThat(emprestimoSalvo.getLivro().getTitulo()).isEqualTo("As areias do Tempo");

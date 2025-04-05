@@ -5,7 +5,7 @@ import React from "react";
 
 import { AuthProvider } from "./contexts/auth";
 import { NotificationProvider } from "./contexts/notificationContext";
-import RoutesApp from "./routes";
+import RoutesApp from "./routes/Routes";
 
 const globalLocale: typeof pt_BR = {
   ...pt_BR,
