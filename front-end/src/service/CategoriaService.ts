@@ -29,7 +29,7 @@ export const findAll = (
     ? (searchValue = { search: `descricao=ilike=${filter}` })
     : (searchValue = { search: "" });
 
-  return axios.get(`${resource}/search`, {
+  return axios.get(`${resource}/find`, {
     params: {
       ...sortConverter,
       ...paginationConverter,
