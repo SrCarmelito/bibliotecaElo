@@ -7,6 +7,7 @@ import SignIn from "../pages/SignIn";
 import Signup from "../pages/SignUp";
 import LivroList from "../pages/Livros/LivroList";
 import LivroForm from "../pages/Livros/LivroForm";
+import CreateUser from "../pages/CreateUser/CreateUser";
 
 const Private = ({ Item }) => {
   const { signed } = useAuth();
@@ -23,7 +24,7 @@ const RoutesApp = () => {
           <Route path="/livro/:id" element={<LivroForm />} />
           <Route path="/livros" element={<LivroList />} />
           <Route path="/" element={<SignIn />} />
-          <Route exact path="/signup" element={<Signup />} />
+          <Route exact path="/signup" element={<CreateUser />} />
           <Route path="*" element={<SignIn />} />
         </Routes>
       </Fragment>

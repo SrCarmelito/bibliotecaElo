@@ -16,8 +16,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UsuarioDTO
-        implements EntidadeDTO {
+public class UsuarioDTO implements EntidadeDTO {
 
     private UUID id;
 
@@ -31,8 +30,8 @@ public class UsuarioDTO
 
     @NotNull(message = "Não é permitido Data de Cadastro Vazia!")
     @PastOrPresent(message = "Não é permitido Data de Cadastro no futuro!")
-    @Column(name = "data_cadastro")
-    private LocalDate dataCadastro;
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
 
     @NotBlank(message = "É Necessário Informar o Telefone!")
     @Size(min = 10, max = 11, message = "Deve ser entre 10 e 11 caracteres com DDD")

@@ -17,7 +17,7 @@ public class UsuarioDTOConverter
 
         entity.setNome(dto.getNome());
         entity.setEmail(dto.getEmail());
-        entity.setDataCadastro(dto.getDataCadastro());
+        entity.setDataNascimento(dto.getDataNascimento());
         entity.setTelefone(dto.getTelefone());
         entity.setLogin(dto.getLogin());
         entity.setSituacao(dto.getSituacao());
@@ -37,7 +37,7 @@ public class UsuarioDTOConverter
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
         dto.setEmail(entity.getEmail());
-        dto.setDataCadastro(entity.getDataCadastro());
+        dto.setDataNascimento(entity.getDataNascimento());
         dto.setTelefone(entity.getTelefone());
         dto.setLogin(entity.getLogin());
         dto.setSituacao(entity.getSituacao());

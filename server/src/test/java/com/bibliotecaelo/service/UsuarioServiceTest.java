@@ -63,7 +63,7 @@ class UsuarioServiceTest {
         assertThat(usuarioResponseDTO.getId()).isNotNull();
         assertThat(usuarioResponseDTO.getNome()).isEqualTo("Edson Arantes do Nascimento");
         assertThat(usuarioResponseDTO.getEmail()).isEqualTo("carmelito.benali@ig.com");
-        assertThat(usuarioResponseDTO.getDataCadastro()).isEqualTo(LocalDate.of(1962, 9, 14));
+        assertThat(usuarioResponseDTO.getDataNascimento()).isEqualTo(LocalDate.of(1962, 9, 14));
         assertThat(usuarioResponseDTO.getTelefone()).isEqualTo("4499999999");
         assertThat(usuarioResponseDTO.getLogin()).isEqualTo("pele");
 
@@ -83,7 +83,7 @@ class UsuarioServiceTest {
         assertThat(usuarioFindById.getId()).isEqualTo(UUID.fromString("f5070c94-c1ec-4be1-96cf-db855e3c5a1b"));
         assertThat(usuarioFindById.getNome()).isEqualTo("Edson Arantes do Nascimento");
         assertThat(usuarioFindById.getEmail()).isEqualTo("carmelito.benali@ig.com");
-        assertThat(usuarioFindById.getDataCadastro()).isEqualTo(LocalDate.of(1962, 9, 14));
+        assertThat(usuarioFindById.getDataNascimento()).isEqualTo(LocalDate.of(1962, 9, 14));
         assertThat(usuarioFindById.getTelefone()).isEqualTo("4499999999");
         assertThat(usuarioFindById.getLogin()).isEqualTo("pele");
 
@@ -104,7 +104,7 @@ class UsuarioServiceTest {
         assertThat(result).extracting(Usuario::getId).containsOnlyOnce(UUID.fromString("f5070c94-c1ec-4be1-96cf-db855e3c5a1b"));
         assertThat(result).extracting(Usuario::getNome).containsOnlyOnce("Edson Arantes do Nascimento");
         assertThat(result).extracting(Usuario::getEmail).containsOnlyOnce("carmelito.benali@ig.com");
-        assertThat(result).extracting(Usuario::getDataCadastro).containsOnlyOnce(LocalDate.of(1962, 9, 14));
+        assertThat(result).extracting(Usuario::getDataNascimento).containsOnlyOnce(LocalDate.of(1962, 9, 14));
         assertThat(result).extracting(Usuario::getTelefone).containsOnlyOnce("4499999999");
         assertThat(result).extracting(Usuario::getLogin).containsOnlyOnce("pele");
 
@@ -126,7 +126,7 @@ class UsuarioServiceTest {
         assertThat(usuarioUpdated.getId()).isEqualTo(UUID.fromString("f5070c94-c1ec-4be1-96cf-db855e3c5a1b"));
         assertThat(usuarioUpdated.getNome()).isEqualTo("Edson Arantes do Nascimento");
         assertThat(usuarioUpdated.getEmail()).isEqualTo("email.modificado@test.com.br");
-        assertThat(usuarioUpdated.getDataCadastro()).isEqualTo(LocalDate.of(1962, 9, 14));
+        assertThat(usuarioUpdated.getDataNascimento()).isEqualTo(LocalDate.of(1962, 9, 14));
         assertThat(usuarioUpdated.getTelefone()).isEqualTo("987654321");
         assertThat(usuarioUpdated.getLogin()).isEqualTo("pele");
         assertThat(usuarioUpdated.getSituacao()).isEqualTo(SituacaoUsuarioEnum.INATIVO);

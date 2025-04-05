@@ -16,7 +16,7 @@ public class UsuarioResponseDTO
     private UUID id;
     private String nome;
     private String email;
-    private LocalDate dataCadastro;
+    private LocalDate dataNascimento;
     private String telefone;
     private String login;
 
