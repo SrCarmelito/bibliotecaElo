@@ -30,8 +30,8 @@ public class UsuarioFixtures {
         usuarioDTO.setDataNascimento(LocalDate.of(2022, 11, 16));
         usuarioDTO.setTelefone("44988080437");
         usuarioDTO.setLogin("carmelito");
-        usuarioDTO.setSenha("Carmelito2024");
-        usuarioDTO.setSenhaConfirmacao("Carmelito2024");
+        usuarioDTO.setSenha("PassW0!");
+        usuarioDTO.setSenhaConfirmacao("PassW0!");
 
         return usuarioDTO;
     }

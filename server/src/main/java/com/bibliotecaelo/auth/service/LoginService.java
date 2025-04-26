@@ -10,6 +10,7 @@ import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +75,11 @@ public class LoginService {
     }
 
     public String gerarToken(LoginDTO login) {
+
+        if (repository.findByLogin(login.getLogin()) == null) {
+            throw new EntityNotFoundException("Usuário não encontrado, tente novamente");
+        }
+
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setSenha(login.getSenha());
         usuarioDTO.setLogin(login.getLogin());

@@ -2,11 +2,13 @@ package com.bibliotecaelo.auth.service;
 
 import java.util.Optional;
 
+import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,6 +131,17 @@ class LoginServiceTest {
         verify(usuarioRepository).findByResetToken(newPasswordDTO.getToken());
         verifyNoMoreInteractions(usuarioRepository);
         verifyNoMoreInteractions(tokenService);
+    }
+
+    @Test
+    void gerarTokenUsuarioNaoEncontrado() {
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setLogin("junior");
+        loginDTO.setSenha("1234567");
+
+        when(usuarioRepository.existsByLogin("junior")).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> loginService.gerarToken(loginDTO));
     }
 
 }

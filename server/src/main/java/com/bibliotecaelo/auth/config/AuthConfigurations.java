@@ -32,15 +32,12 @@ public class AuthConfigurations {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/reset-password").permitAll()
                         .requestMatchers("/api/auth/confirm-reset-password").permitAll()
+                        .requestMatchers("/api/usuarios/novo-usuario").permitAll()
                         .requestMatchers("/h2/**").permitAll()
-                        .requestMatchers("/api/livros/**").permitAll() // REVISAR APÓS COMPLETAR O FRONT!!!
-                        .requestMatchers("/api/livros").permitAll()
-                        .requestMatchers("/api/categorias/**").permitAll()
-                        .requestMatchers("/api/usuarios/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())
                 .addFilterBefore(filterToken, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

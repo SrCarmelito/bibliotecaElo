@@ -1,11 +1,10 @@
 import { ConfigProvider } from "antd";
 import pt from "antd/es/date-picker/locale/pt_BR";
 import pt_BR from "antd/locale/pt_BR";
-import React from "react";
 
-import { AuthProvider } from "./contexts/auth";
 import { NotificationProvider } from "./contexts/notificationContext";
 import RoutesApp from "./routes/Routes";
+import { LoginProvider } from "./contexts/LoginContext";
 
 const globalLocale: typeof pt_BR = {
   ...pt_BR,
@@ -24,11 +23,11 @@ const globalLocale: typeof pt_BR = {
 const App: React.FC = () => {
   return (
     <ConfigProvider locale={globalLocale}>
-      <AuthProvider>
+      <LoginProvider>
         <NotificationProvider>
           <RoutesApp />
         </NotificationProvider>
-      </AuthProvider>
+      </LoginProvider>
     </ConfigProvider>
   );
 };

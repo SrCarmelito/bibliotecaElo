@@ -32,7 +32,7 @@ public class UserValidations {
     }
 
     public void validaSenha(String senha, String senhaConfirmacao) {
-        Pattern patternSenha = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{6,150}$");
+        Pattern patternSenha = Pattern.compile("^(?=.*\\d)(?=.*[a-zA-Z])(?=.*\\W).{6,150}$");
         Matcher matcherSenha = patternSenha.matcher(senha);
         if (!matcherSenha.find()) {
             throw new ValidationException
