@@ -75,7 +75,7 @@ class EnversListenerTest {
     void executeRevision() throws Exception {
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setLogin("junior");
-        loginDTO.setSenha("123");
+        loginDTO.setSenha("PassW0!");
 
         MvcResult mvcResult = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

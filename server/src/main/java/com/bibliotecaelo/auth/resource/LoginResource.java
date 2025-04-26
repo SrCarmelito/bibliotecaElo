@@ -5,8 +5,10 @@ import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +38,14 @@ public class LoginResource {
     public ResponseEntity<Void> confirmResetPassword(@RequestBody NewPasswordDTO newPasswordDTO) {
         loginService.confirmResetPassword(newPasswordDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("verify-token")
+    public boolean verifyToken() {
+        try {
+            return true;
+        } catch (Exception e) {
+            throw new ValidationException("Token Inválido ou expirado, tente novamente!");
+        }
     }
 }

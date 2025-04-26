@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, GetProp, Modal, notification, Table, TableProps } from "antd";
+import { Button, GetProp, Modal, Table, TableProps } from "antd";
 
 import { deleteById, findAll } from "../../service/LivroService";
 import { Livro } from "../../type/Livro";
@@ -10,11 +10,11 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { SorterResult } from "antd/es/table/interface";
-import { format } from "date-fns";
 import { useNavigate } from "react-router";
-import { NotificationType } from "../../type/NotificationType";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
-import { SearchField } from "../../type/SearchField";
+import { SearchField } from "../../type/SearchTypes";
+import { useNotification } from "../../contexts/notificationContext";
+import dayjs from "dayjs";
 
 type ColumnsType<T extends object = object> = TableProps<T>["columns"];
 
@@ -68,8 +68,8 @@ const LivroList: React.FC = () => {
   const [livros, setLivros] = useState<Livro[]>([]);
   const [modal, contextHolder] = Modal.useModal();
   const navigate = useNavigate();
-  const [api, contextHolderNotification] = notification.useNotification();
-  const [spinning, setSpinning] = React.useState(true);
+  const openNotification = useNotification();
+  const [spinning, setSpinning] = useState(true);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -106,17 +106,6 @@ const LivroList: React.FC = () => {
     JSON.stringify(tableParams.filters),
   ]);
 
-  const openNotification = (
-    type: NotificationType,
-    message?: string,
-    description?: string
-  ) => {
-    api[type]({
-      message: message,
-      description: description,
-    });
-  };
-
   const handleTableChange: TableProps<Livro>["onChange"] = (
     pagination,
     filters,
@@ -138,10 +127,9 @@ const LivroList: React.FC = () => {
     modal.confirm({
       title: "Confirma Exclusão do Livro?",
       icon: <ExclamationCircleFilled />,
-      content: `${livro.titulo} - ${livro.categoria?.descricao} - ${format(
-        livro.dataPublicacao,
-        "dd/MM/yyyy"
-      )}`,
+      content: `${livro.titulo} - ${livro.categoria?.descricao} - ${dayjs(
+        livro.dataPublicacao
+      ).format("DD/MM/YYYY")}`,
       onOk() {
         deleteById(livro.id)
           .then(() => openNotification("success", "Livro Excluído com Sucesso"))
@@ -193,7 +181,7 @@ const LivroList: React.FC = () => {
       title: "Publicação",
       dataIndex: "dataPublicacao",
       key: "Date",
-      render: (text) => format(text, "dd/MM/yyyy"),
+      render: (text) => dayjs(text).format("DD/MM/YYYY"),
       sorter: true,
     },
     {
@@ -201,7 +189,6 @@ const LivroList: React.FC = () => {
       width: 100,
       render: (livro: Livro) => (
         <>
-          {contextHolderNotification}
           <Button
             danger
             icon={<EditTwoTone />}

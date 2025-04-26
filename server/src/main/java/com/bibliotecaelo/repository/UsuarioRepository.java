@@ -12,5 +12,5 @@ public interface UsuarioRepository extends RsqlRepository<Usuario, UUID> {
     Usuario findByLogin(String login);
     Optional<Usuario> findByEmail(String email);
     Optional<Usuario> findByResetToken(String resetToken);
-
+    boolean existsByLogin(String login);
 }

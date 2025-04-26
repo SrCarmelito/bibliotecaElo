@@ -77,7 +77,7 @@ class UserValidationsTest {
 
     @Test
     void validaSenhaDiferenteConfirmacao() {
-        usuarioDTO.setSenha("Aaaaa1");
+        usuarioDTO.setSenha("PassW0!&*");
         String mensagemSenhaDiferenteConfirmacao = assertThrows(ValidationException.class,
                 () -> userValidations.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao())).getMessage();
 

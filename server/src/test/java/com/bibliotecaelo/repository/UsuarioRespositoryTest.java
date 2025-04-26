@@ -103,4 +103,10 @@ class UsuarioRespositoryTest {
         assertThat(usuario.getTelefone()).isEqualTo("44988080437");
     }
 
+    @Test
+    void existsByLogin() {
+        assertThat(repository.existsByLogin("junior")).isTrue();
+        assertThat(repository.existsByLogin("123")).isFalse();
+    }
+
 }

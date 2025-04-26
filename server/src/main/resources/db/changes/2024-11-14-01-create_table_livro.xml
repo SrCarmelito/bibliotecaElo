@@ -19,7 +19,7 @@
             <column name="titulo" type="varchar(1000)"><constraints nullable="false"/></column>
             <column name="autor" type="varchar(1000)"><constraints nullable="false"/></column>
             <column name="isbn" type="varchar(13)"><constraints nullable="false"/></column>
-            <column name="data_publicacao" type="datetime"><constraints nullable="false"/></column>
+            <column name="data_publicacao" type="date"><constraints nullable="false"/></column>
             <column name="categoria_id" type="uuid">
                 <constraints nullable="false"
                              foreignKeyName="livro_cat_fk"

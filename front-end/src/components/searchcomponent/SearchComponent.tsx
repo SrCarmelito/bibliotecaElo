@@ -1,17 +1,18 @@
 import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import { useEffect, useState } from "react";
-import { SearchField } from "../../type/SearchField";
+import {
+  ButtonFilters,
+  Fields,
+  Props,
+  SearchField,
+} from "../../type/SearchTypes";
 import { BaseOptionType } from "antd/es/select";
 import { CloseCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSearchParams } from "react-router-dom";
-
-type Props = { optionsFilters: SearchField[]; runSearch(search: string): void };
-
-type Fields = {
-  field: string;
-  operator: string;
-  search: any;
-};
+import {
+  numericOrDateOperators,
+  stringOperators,
+} from "../../type/OperatorsType";
 
 const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [form] = Form.useForm();
@@ -20,16 +21,12 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [componentSelector, setComponentSelector] = useState<SearchField>(
     optionsFilters[0]
   );
-  const [filters, setFilters] = useState<{ id: string; label: string }[]>([]);
+  const [filters, setFilters] = useState<ButtonFilters[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [listSearch, setListSearch] = useState<string[]>([]);
 
   useEffect(() => {
-    const initialSearchParam: string | null = searchParams.get("search");
-
-    if (initialSearchParam) {
-      setListSearch([...listSearch, initialSearchParam]);
-    }
+    buildFiltersFromUrl();
   }, []);
 
   useEffect(() => {
@@ -43,92 +40,131 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   useEffect(() => {
     if (listSearch.length > 1) {
       setSearchParams({ search: listSearch.join(";") });
-      runSearch(listSearch.join(";"));
+      runSearch(listSearch.join(";").replaceAll("__", ""));
     } else {
       setSearchParams({ search: listSearch.join("") });
-      runSearch(listSearch.join(""));
+      runSearch(listSearch.join("").replaceAll("__", ""));
     }
   }, [listSearch, setSearchParams]);
 
+  const clearValues = () => {
+    form.setFieldValue("field", "");
+    form.setFieldValue("operator", "");
+    form.setFieldValue("search", "");
+  };
+
   const changeOperators = (option: SearchField) => {
-    let newOperators: any = [];
-
-    switch (option.type) {
-      case "STRING":
-        newOperators = [
-          { label: "Contém", value: "=ilike=" },
-          { label: "Igual", value: "==" },
-          { label: "Diferente de", value: "=notlike=" },
-        ];
-        break;
-      case "NUMERIC":
-      case "DATE":
-        newOperators = [
-          { label: "Igual", value: "==" },
-          { label: "Maior", value: ">" },
-          { label: "Menor", value: "<" },
-          { label: "Maior ou igual", value: ">=" },
-          { label: "Menor ou igual", value: "<=" },
-        ];
-        break;
-    }
-
     form.setFieldValue("search", "");
     setComponentSelector(option);
-    setOperators(newOperators);
+    setOperators(
+      option.type === "STRING" ? stringOperators : numericOrDateOperators
+    );
+  };
+
+  const buildFiltersFromUrl = () => {
+    const searchParam: string | null = searchParams.get("search");
+
+    if (searchParam) {
+      let arraySearch: string[] = searchParam?.split(";");
+
+      let filtersFromUrl: ButtonFilters[] = [];
+      arraySearch.map((search) => {
+        const label = optionsFilters.filter(
+          (option) => option.value === search.split("__")[0]
+        );
+
+        const operator =
+          label[0].type === "STRING"
+            ? stringOperators
+            : numericOrDateOperators?.filter(
+                (o) => o.value === search.split("__")[1]
+              );
+
+        filtersFromUrl.push({
+          id: search,
+          label:
+            label[0].label +
+            " " +
+            operator[0].label +
+            " " +
+            search.replace(/"/g, "").split("__")[2],
+        });
+      });
+
+      setFilters(filtersFromUrl);
+
+      setListSearch([...listSearch, searchParam]);
+    }
   };
 
   const executeSearch = (values: Fields) => {
-    let converter = values.search;
+    let searchConverter;
 
-    if (componentSelector.type === "DATE" && values.search) {
-      converter = values.search.format("YYYY-MM-DD");
+    if (values.search) {
+      switch (componentSelector.type) {
+        case "DATE":
+          searchConverter = values.search.format("YYYY-MM-DD");
+          break;
+        case "STRING":
+          searchConverter = `"${String(values.search)
+            .replace(/"/g, '\\"')
+            .replace(/\\/g, "\\\\")
+            .replace(/"/g, '\\"')}"`;
+          break;
+        default:
+          searchConverter = values.search;
+      }
     }
 
-    const newSearch: string = `${values.field}${values.operator}${converter}`;
+    const newSearch: string = `${values.field}__${values.operator}__${searchConverter}`;
 
     if (listSearch.includes(newSearch)) {
       return;
     }
 
-    setListSearch([...listSearch, newSearch]);
+    listSearch[0]?.split(";").length >= 1
+      ? setListSearch([listSearch.join("").concat(";", newSearch)])
+      : setListSearch([listSearch.join("").concat(newSearch)]);
 
     clearValues();
 
     const fieldLabel = options.find(
       (item) => item.value === values.field
     )?.label;
+
     const operatorLabel = operators.find(
       (item) => item.value === values.operator
     )?.label;
 
     if (fieldLabel && operatorLabel) {
-      const label = `${fieldLabel} ${operatorLabel} ${converter}`;
-      addFilter(newSearch, label);
+      const label = `${fieldLabel} ${operatorLabel} ${searchConverter}`;
+      addFilter({ id: newSearch, label });
     }
   };
 
-  const addFilter = (id: string, label: string) => {
-    setFilters([...filters, { id, label }]);
+  const addFilter = (buttonFilter: ButtonFilters) => {
+    setFilters([
+      ...filters,
+      { id: buttonFilter.id, label: buttonFilter.label.replace(/"/g, "") },
+    ]);
   };
 
-  const removeFilter = (id?: string) => {
-    if (id) {
-      const updatedFilters = filters.filter((filter) => filter.id !== id);
-      const updatedListSearch = listSearch.filter((item) => item !== id);
+  const removeFilter = (buttonFilter?: ButtonFilters) => {
+    if (buttonFilter?.id) {
+      setFilters(filters.filter((filter) => filter.id !== buttonFilter.id));
 
-      setFilters(updatedFilters);
-      setListSearch(updatedListSearch);
+      listSearch[0].split(";").length - 1 >= 1
+        ? setListSearch([
+            listSearch[0]
+              .split(";")
+              .filter((item) => item !== buttonFilter.id)
+              .join(";"),
+          ])
+        : setListSearch([]);
     } else {
       setFilters([]);
       setListSearch([]);
     }
-  };
-
-  const clearValues = () => {
-    form.setFieldValue("field", "");
-    form.setFieldValue("operator", "");
-    form.setFieldValue("search", "");
   };
 
   return (
@@ -217,7 +253,7 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
         {filters.map((filter) => (
           <Button key={filter.id} style={{ margin: "0 0 7px 7px" }}>
             {filter.label}{" "}
-            <CloseCircleOutlined onClick={() => removeFilter(filter.id)} />
+            <CloseCircleOutlined onClick={() => removeFilter(filter)} />
           </Button>
         ))}
       </div>
