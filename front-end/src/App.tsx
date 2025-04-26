@@ -4,7 +4,7 @@ import pt_BR from "antd/locale/pt_BR";
 
 import { NotificationProvider } from "./contexts/notificationContext";
 import RoutesApp from "./routes/Routes";
-import { LoginProvider } from "./contexts/LoginContext";
+import { AuthProvider } from "./contexts/authContext";
 
 const globalLocale: typeof pt_BR = {
   ...pt_BR,
@@ -23,11 +23,11 @@ const globalLocale: typeof pt_BR = {
 const App: React.FC = () => {
   return (
     <ConfigProvider locale={globalLocale}>
-      <LoginProvider>
+      <AuthProvider>
         <NotificationProvider>
           <RoutesApp />
         </NotificationProvider>
-      </LoginProvider>
+      </AuthProvider>
     </ConfigProvider>
   );
 };

@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-import { useAuth } from "../contexts/LoginContext";
+import { useAuth } from "../contexts/authContext";
 
 type MenuItem = Required<MenuProps>["items"][number];
 

@@ -35,7 +35,7 @@ const init = (): string => {
   return localStorage.getItem("token") || "";
 };
 
-export const LoginProvider: React.FC<Prop> = ({ children }) => {
+export const AuthProvider: React.FC<Prop> = ({ children }) => {
   const [user, dispatch] = useReducer(reducer, "", init);
   const [modal, contextHolder] = Modal.useModal();
 
