@@ -4,7 +4,7 @@ import { LoginDTO } from "../../type/LoginDTO";
 import { login, resetPassword } from "../../service/AuthService";
 import { useNotification } from "../../contexts/notificationContext";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/LoginContext";
+import { useAuth } from "../../contexts/authContext";
 import Title from "antd/lib/typography/Title";
 import {
   CheckCircleFilled,
