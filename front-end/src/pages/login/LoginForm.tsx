@@ -54,7 +54,7 @@ const LoginForm: React.FC = () => {
         modal.success({
           title: "Alteração de Senha solicitada com sucesso",
           content: "Verifique seu e-mail e siga as instruções",
-          icon: <CheckCircleFilled style={{ color: "green" }} />,
+          icon: <CheckCircleFilled />,
         });
         setOpen(!open);
       })
@@ -74,57 +74,43 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <Form<LoginDTO> onFinish={onSubmit}>
+      <Form<LoginDTO> onFinish={onSubmit} id="styledform">
         <Spin spinning={spinning} fullscreen />
-        <div
-          style={{
-            width: "20%",
-            height: "65%",
-            margin: "100px auto",
-            padding: "40px",
-            borderRadius: "15px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            backgroundColor: "#f9f9f9",
-          }}
+        <Title level={3}>Entrar</Title>
+        <Form.Item
+          name="login"
+          rules={[{ required: true, message: "Informe o login!" }]}
         >
-          <Title level={3} style={{ textAlign: "center" }}>
-            Entrar
-          </Title>
-          <Form.Item
-            name="login"
-            rules={[{ required: true, message: "Informe o login!" }]}
-          >
-            <Input
-              autoComplete={"user"}
-              prefix={<UserOutlined />}
-              placeholder="Informe o seu login."
-            />
-          </Form.Item>
-          <Form.Item
-            name="senha"
-            rules={[{ required: true, message: "Informe a Senha!" }]}
-          >
-            <Input.Password
-              autoComplete={"password"}
-              prefix={<LockOutlined />}
-              placeholder="Informe a senha."
-            />
-          </Form.Item>
+          <Input
+            autoComplete={"user"}
+            prefix={<UserOutlined />}
+            placeholder="Informe o seu login."
+          />
+        </Form.Item>
+        <Form.Item
+          name="senha"
+          rules={[{ required: true, message: "Informe a Senha!" }]}
+        >
+          <Input.Password
+            autoComplete={"password"}
+            prefix={<LockOutlined />}
+            placeholder="Informe a senha."
+          />
+        </Form.Item>
 
-          <Form.Item label={null}>
-            <Button block type="primary" htmlType="submit">
-              Login
-            </Button>
-          </Form.Item>
-          <Form.Item>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <a href="/signup">Crie sua conta</a>
-              <a type="link" onClick={() => setOpen(!open)}>
-                Esqueceu sua senha?
-              </a>
-            </div>
-          </Form.Item>
-        </div>
+        <Form.Item>
+          <Button block type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <a href="/signup">Crie sua conta</a>
+            <a type="link" onClick={() => setOpen(!open)}>
+              Esqueceu sua senha?
+            </a>
+          </div>
+        </Form.Item>
       </Form>
       <Modal
         open={open}
@@ -133,12 +119,12 @@ const LoginForm: React.FC = () => {
         onCancel={() => setOpen(!open)}
       >
         <Spin spinning={spinning} fullscreen />
-        <p style={{ textAlign: "justify" }}>
+        <p>
           Insira seu e-mail no campo abaixo e clique em Altear senha. Será
           encaminhado um e-mail com as instruções para confirmação da troca de
           sua senha.
         </p>
-        <Form<Email> form={form} onFinish={changePassword}>
+        <Form<Email> form={form} onFinish={changePassword} id="styledform">
           <Form.Item
             name="email"
             rules={[{ required: true, message: "Informe o e-mail." }]}

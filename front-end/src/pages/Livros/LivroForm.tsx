@@ -1,12 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Modal,
-  Input,
-  InputNumber,
-  Select,
-} from "antd";
+import { Button, DatePicker, Form, Modal, Input, Select } from "antd";
 
 import { findAll } from "../../service/CategoriaService";
 import { saveOrUpdate, findById } from "../../service/LivroService";
@@ -18,6 +10,7 @@ import { useNavigate, useParams } from "react-router";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
+import { formItemLayout } from "../../styles/FormItemLayout";
 
 type Params = {
   id: string;
@@ -101,92 +94,71 @@ const LivroForm: React.FC = () => {
   return (
     <>
       <Form<Livro>
-        // {...formItemLayout}
         initialValues={form}
         form={form}
         onFinish={onSubmit}
+        id="styledform"
+        style={{ maxWidth: "30em" }}
+        {...formItemLayout}
       >
-        <div
-          style={{
-            width: "30%",
-            height: "30%",
-            margin: "3% auto",
-            padding: "40px",
-            borderRadius: "15px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            backgroundColor: "#f9f9f9",
-          }}
+        <Title level={3}>
+          {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}
+        </Title>
+        <Form.Item name="id" noStyle />
+        <Form.Item
+          label="Título"
+          name="titulo"
+          rules={[{ required: true, message: "Informe o Título!" }]}
         >
-          <Title level={3} style={{ textAlign: "center" }}>
-            {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}
-          </Title>
-          <Form.Item
-            label="Título"
-            name="titulo"
-            rules={[{ required: true, message: "Informe o Título!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Autor"
-            name="autor"
-            rules={[{ required: true, message: "Informe o Autor!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Publicação" style={{ marginBottom: 0 }}>
-            <Form.Item
-              name="dataPublicacao"
-              style={{ display: "inline-block", width: "calc(32%)" }}
-              rules={[
-                { required: true, message: "Informe a Data de Publicação!" },
-              ]}
-            >
-              <DatePicker />
-            </Form.Item>
-            <span
-              style={{
-                display: "inline-block",
-                width: "5%",
-                lineHeight: "32px",
-                textAlign: "center",
-              }}
-            ></span>
-            <Form.Item
-              label="Isbn"
-              name="isbn"
-              style={{ display: "inline-block", width: "45%" }}
-              rules={[{ required: true, message: "Informe o Isbn!" }]}
-            >
-              <InputNumber
-                type="number"
-                style={{ display: "inline-block", width: "155%" }}
-              />
-            </Form.Item>
-          </Form.Item>
-          <Form.Item
-            label="Categoria"
-            name="categoria"
-            rules={[{ required: true, message: "Informe a Categoria!" }]}
-          >
-            <Select
-              showSearch
-              filterOption={(input, option) =>
-                (option?.descricao ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              onSearch={findCategorias}
-              options={options}
-              fieldNames={{ label: "descricao", value: "id" }}
-            />
-          </Form.Item>
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
-              Confirmar
-            </Button>
-          </Form.Item>
-        </div>
+          <Input placeholder="Digite o título" />
+        </Form.Item>
+        <Form.Item
+          label="Autor"
+          name="autor"
+          rules={[{ required: true, message: "Informe o Autor!" }]}
+        >
+          <Input placeholder="Digite o autor" />
+        </Form.Item>
+
+        <Form.Item
+          name="dataPublicacao"
+          rules={[{ required: true, message: "Informe a Data de Publicação!" }]}
+          label="Publicação"
+        >
+          <DatePicker style={{ display: "block" }} />
+        </Form.Item>
+
+        <Form.Item
+          label="Isbn"
+          name="isbn"
+          rules={[{ required: true, message: "Informe o Isbn!" }]}
+        >
+          <Input type="number" placeholder="Digite o isbn" />
+        </Form.Item>
+
+        <Form.Item
+          label="Categoria"
+          name="categoria"
+          rules={[{ required: true, message: "Informe a Categoria!" }]}
+        >
+          <Select
+            showSearch
+            filterOption={(input, option) =>
+              (option?.descricao ?? "")
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+            onSearch={findCategorias}
+            options={options}
+            fieldNames={{ label: "descricao", value: "id" }}
+            placeholder="Selecione a categoria"
+          />
+        </Form.Item>
+        <Form.Item label={null} noStyle>
+          <Button block type="primary" htmlType="submit">
+            Confirmar
+          </Button>
+        </Form.Item>
       </Form>
       {contextHolder}
       <Button

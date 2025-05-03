@@ -1,0 +1,25 @@
+#form {
+  border-radius: 5px;
+  background-color: rgba(5, 5, 5, 0.06);
+  margin: 0.5em;
+  max-width: 100em;
+}
+
+#filter {
+  width: 45em;
+  margin: 7px;
+}
+
+#searchbtn {
+  font-weight: bold;
+  margin: 5% 0;
+}
+
+#searchdiv {
+  margin-left: 1em;
+  margin-top: 0;
+}
+
+#searchfilters {
+  margin: 0 0 7px 7px;
+}

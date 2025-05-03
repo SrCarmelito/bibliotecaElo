@@ -10,7 +10,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { SorterResult } from "antd/es/table/interface";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { SearchField } from "../../type/SearchTypes";
 import { useNotification } from "../../contexts/notificationContext";
@@ -28,6 +28,7 @@ interface TableParams {
   sortField?: SorterResult<any>["field"];
   sortOrder?: SorterResult<any>["order"];
   filters?: Parameters<GetProp<TableProps, "onChange">>[1];
+  search?: string;
 }
 
 const getRandomuserParams = (params: TableParams) => ({
@@ -67,6 +68,7 @@ const searchFields: SearchField[] = [
 const LivroList: React.FC = () => {
   const [livros, setLivros] = useState<Livro[]>([]);
   const [modal, contextHolder] = Modal.useModal();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const openNotification = useNotification();
   const [spinning, setSpinning] = useState(true);
@@ -76,15 +78,16 @@ const LivroList: React.FC = () => {
       pageSize: 20,
       position: ["topCenter"],
     },
+    search: undefined,
   });
 
-  const fetchData = (search?: any) => {
+  const fetchData = (search?: string) => {
     setSpinning(true);
     findAll(
       getRandomuserParams(tableParams).pagination,
       getRandomuserParams(tableParams).sortField,
       getRandomuserParams(tableParams).sortOrder,
-      search
+      search || searchParams.get("search")?.replaceAll("__", "")
     ).then((response) => {
       setLivros(response.data.content);
       setTableParams({
@@ -93,6 +96,7 @@ const LivroList: React.FC = () => {
           ...tableParams.pagination,
           total: response.data.totalElements,
         },
+        search: search || searchParams.get("search")?.replaceAll("__", ""),
       });
     });
     setSpinning(false);
