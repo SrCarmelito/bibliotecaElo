@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import CreateUser from "../pages/CreateUser/CreateUser";
-import LoginForm from "../pages/Login/LoginForm";
+
 import PrivateRoutes from "./PrivateRoutes";
 import LivroForm from "../pages/Livros/LivroForm";
 import LivroList from "../pages/Livros/LivroList";
+import LoginForm from "../pages/login/LoginForm";
 
 const RoutesApp = () => {
   return (

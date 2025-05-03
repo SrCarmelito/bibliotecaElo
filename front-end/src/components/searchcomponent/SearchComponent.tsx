@@ -1,3 +1,4 @@
+import "./SearchComponent.css";
 import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -168,23 +169,17 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "rgba(0, 0, 0, 0.25) rgba(5, 5, 5, 0.06)",
-        marginTop: "1em",
-        borderRadius: "5px",
-      }}
-    >
+    <>
       <Form<Fields>
         form={form}
         id="form"
         onFinish={executeSearch}
         layout="inline"
-        style={{ marginLeft: "1em", marginBottom: "1em", marginTop: "1em" }}
       >
         <Form.Item
           name="field"
-          style={{ width: "15%", margin: "7px" }}
+          id="searchselect"
+          style={{ width: "15em", margin: "7px" }}
           rules={[{ required: true, message: "Informe o Campo!" }]}
         >
           <Select
@@ -198,7 +193,7 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
 
         <Form.Item
           name="operator"
-          style={{ width: "15%", margin: "7px" }}
+          style={{ width: "15em", margin: "7px" }}
           rules={[{ required: true, message: "Informe o Operador!" }]}
         >
           <Select
@@ -207,6 +202,7 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
             placeholder="Selecione um operador"
           />
         </Form.Item>
+
         <Form.Item
           name="search"
           rules={[{ required: true, message: "Informe o filtro desejado!" }]}
@@ -214,34 +210,27 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
           {componentSelector.type === "NUMERIC" && (
             <InputNumber
               type="number"
-              style={{ width: "45em" }}
               placeholder="Informe um número"
+              id="filter"
             />
           )}
-          {componentSelector.type === "DATE" && (
-            <DatePicker style={{ width: "45em", margin: "7px" }} />
-          )}
+          {componentSelector.type === "DATE" && <DatePicker id="filter" />}
           {componentSelector.type === "STRING" && (
-            <Input
-              type="text"
-              style={{ width: "45em", margin: "7px" }}
-              placeholder="Informe um texto"
-            />
+            <Input type="text" id="filter" placeholder="Informe um texto" />
           )}
         </Form.Item>
+
         <Form.Item>
-          <Button
-            htmlType="submit"
-            style={{ margin: "7px", fontWeight: "bold" }}
-          >
+          <Button htmlType="submit" id="searchbtn">
             <SearchOutlined />
             Pesquisar
           </Button>
         </Form.Item>
+
         <Form.Item>
           <Button
             htmlType="button"
-            style={{ margin: "7px", fontWeight: "bold" }}
+            id="searchbtn"
             onClick={() => removeFilter()}
           >
             Limpar Filtros
@@ -249,15 +238,15 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
         </Form.Item>
       </Form>
 
-      <div style={{ marginLeft: "1em", marginTop: "0" }}>
+      <div id="searchdiv">
         {filters.map((filter) => (
-          <Button key={filter.id} style={{ margin: "0 0 7px 7px" }}>
+          <Button key={filter.id} id="searchfilters">
             {filter.label}{" "}
             <CloseCircleOutlined onClick={() => removeFilter(filter)} />
           </Button>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

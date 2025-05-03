@@ -20,7 +20,7 @@ const CreateUser: React.FC = () => {
           title: "Usuário cadastrado com sucesso.",
           content:
             "Entre em contato com o administrador do software para ativar sua conta.",
-          icon: <CheckCircleFilled style={{ color: "green" }} />,
+          icon: <CheckCircleFilled />,
           onOk() {
             navigate("/sigin");
           },
@@ -38,78 +38,60 @@ const CreateUser: React.FC = () => {
   };
 
   return (
-    <Form<Usuario> onFinish={onSubmit}>
-      <div
-        style={{
-          width: "20%",
-          height: "30%",
-          margin: "3% auto",
-          padding: "40px",
-          borderRadius: "15px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-          backgroundColor: "#f9f9f9",
-        }}
+    <Form<Usuario> onFinish={onSubmit} id="styledform">
+      <Title level={3}>Crie sua conta</Title>
+      <Form.Item
+        name="nome"
+        rules={[{ required: true, message: "Informe o nome." }]}
       >
-        <Title level={3} style={{ textAlign: "center" }}>
-          Crie sua conta
-        </Title>
-        <Form.Item
-          name="nome"
-          rules={[{ required: true, message: "Informe o nome." }]}
-        >
-          <Input placeholder="Informe o seu nome" />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          rules={[{ required: true, message: "Informe o e-mail." }]}
-        >
-          <Input type="email" placeholder="E-mail" />
-        </Form.Item>
-        <Form.Item
-          name="dataNascimento"
-          rules={[
-            { required: true, message: "Informe sua data de nascimento." },
-          ]}
-        >
-          <DatePicker
-            placeholder="Data de nascimento"
-            style={{ display: "block" }}
-          />
-        </Form.Item>
-        <Form.Item
-          name="telefone"
-          rules={[{ required: true, message: "Informe o telefone." }]}
-        >
-          <Input type="number" placeholder="Telefone" />
-        </Form.Item>
-        <Form.Item
-          name="login"
-          rules={[{ required: true, message: "Informe o login." }]}
-        >
-          <Input placeholder="Login." />
-        </Form.Item>
-        <Form.Item
-          name="senha"
-          rules={[{ required: true, message: "Informe a senha." }]}
-        >
-          <Input.Password placeholder="Senha." />
-        </Form.Item>
-        <Form.Item
-          name="senhaConfirmacao"
-          rules={[
-            { required: true, message: "Informe a senha de confirmação." },
-          ]}
-        >
-          <Input.Password placeholder="Confirme sua senha" />
-        </Form.Item>
-        {contextHolder}
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" block>
-            Cadastrar
-          </Button>
-        </Form.Item>
-        <a href="/">« Voltar</a>
-      </div>
+        <Input placeholder="Informe o seu nome" />
+      </Form.Item>
+      <Form.Item
+        name="email"
+        rules={[{ required: true, message: "Informe o e-mail." }]}
+      >
+        <Input type="email" placeholder="E-mail" />
+      </Form.Item>
+      <Form.Item
+        name="dataNascimento"
+        rules={[{ required: true, message: "Informe sua data de nascimento." }]}
+      >
+        <DatePicker
+          placeholder="Data de nascimento"
+          style={{ display: "block" }}
+        />
+      </Form.Item>
+      <Form.Item
+        name="telefone"
+        rules={[{ required: true, message: "Informe o telefone." }]}
+      >
+        <Input type="number" placeholder="Telefone" />
+      </Form.Item>
+      <Form.Item
+        name="login"
+        rules={[{ required: true, message: "Informe o login." }]}
+      >
+        <Input placeholder="Login." />
+      </Form.Item>
+      <Form.Item
+        name="senha"
+        rules={[{ required: true, message: "Informe a senha." }]}
+      >
+        <Input.Password placeholder="Senha." />
+      </Form.Item>
+      <Form.Item
+        name="senhaConfirmacao"
+        rules={[{ required: true, message: "Informe a senha de confirmação." }]}
+      >
+        <Input.Password placeholder="Confirme sua senha" />
+      </Form.Item>
+      {contextHolder}
+      <Form.Item label={null}>
+        <Button type="primary" htmlType="submit" block>
+          Cadastrar
+        </Button>
+      </Form.Item>
+      <a href="/">« Voltar</a>
     </Form>
   );
 };
