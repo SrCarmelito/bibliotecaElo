@@ -29,6 +29,10 @@ form {
   padding: 2em;
 }
 
+.ant-table .ant-table-thead > tr > th {
+  text-align: center;
+}
+
 /*
 a {
   color: #fafafa;

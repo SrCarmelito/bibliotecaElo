@@ -66,4 +66,9 @@ class CategoriaRepositoryTest {
         assertThat(repository.existsByDescricao("Humorr")).isFalse();
     }
 
+    @Test
+    void existsByDescricaoAndIdNot() {
+        assertThat(repository.existsByDescricaoAndIdNot("Ficção Científica", UUID.fromString("51f797f6-23f3-4482-8423-cc7a06004486"))).isTrue();
+    }
+
 }

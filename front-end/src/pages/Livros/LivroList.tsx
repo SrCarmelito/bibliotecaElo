@@ -23,14 +23,6 @@ type TablePaginationConfig = Exclude<
   boolean
 >;
 
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: SorterResult<any>["field"];
-  sortOrder?: SorterResult<any>["order"];
-  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
-  search?: string;
-}
-
 const getRandomuserParams = (params: TableParams) => ({
   results: params.pagination?.pageSize,
   page: params.pagination?.current,
@@ -225,16 +217,15 @@ const LivroList: React.FC = () => {
         />
         {contextHolder}
       </>
-      <>
-        <Button
-          onClick={() => navigate("/livro/new")}
-          type="primary"
-          size="large"
-          shape="circle"
-          icon={<PlusOutlined />}
-          style={{ position: "fixed", zIndex: 1, bottom: 40, right: 40 }}
-        />
-      </>
+
+      <Button
+        onClick={() => navigate("/livro/new")}
+        type="primary"
+        size="large"
+        shape="circle"
+        icon={<PlusOutlined />}
+        style={{ position: "fixed", zIndex: 1, bottom: 40, right: 40 }}
+      />
     </>
   );
 };

@@ -14,26 +14,39 @@ export const deleteById = (categoriaId?: string): AxiosPromise<void> => {
   return axios.delete(`${resource}/${categoriaId}`);
 };
 
+export const saveOrUpdate = (categoria: Categoria) => {
+  return categoria.id
+    ? axios.put(resource, categoria)
+    : axios.post(resource, categoria);
+};
+
 export const findAll = (
-  filter?: string
+  pagination?: any,
+  sortField?: any,
+  sortOrder?: any,
+  search?: string
 ): AxiosPromise<PagedResponse<Categoria>> => {
-  const paginationConverter = {
-    page: 0,
-    size: 20,
+  const paginationConverter: any = {
+    page: pagination?.current - 1 || 0,
+    size: pagination?.pageSize || 20,
   };
 
-  const sortConverter = { sort: "descricao,asc" };
-
-  let searchValue: any = "";
-  filter
-    ? (searchValue = { search: `descricao=ilike=${filter}` })
-    : (searchValue = { search: "" });
+  let sortConverter: any = {};
+  if (sortField) {
+    sortConverter = {
+      sort: `${sortField},${
+        sortOrder?.substring(0, 1) === "a" ? "asc" : "desc"
+      }`,
+    };
+  } else {
+    sortConverter = { sort: "descricao,asc" };
+  }
 
   return axios.get(`${resource}/find`, {
     params: {
       ...sortConverter,
       ...paginationConverter,
-      ...searchValue,
+      search,
     },
   });
 };

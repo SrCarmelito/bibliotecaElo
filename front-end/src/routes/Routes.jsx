@@ -6,6 +6,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import LivroForm from "../pages/Livros/LivroForm";
 import LivroList from "../pages/Livros/LivroList";
 import LoginForm from "../pages/login/LoginForm";
+import CategoriaList from "../pages/Categorias/CategoriaList";
 
 const RoutesApp = () => {
   return (
@@ -18,6 +19,7 @@ const RoutesApp = () => {
           <Route element={<PrivateRoutes />}>
             <Route path="/livro/:id" element={<LivroForm />} />
             <Route path="/livros" element={<LivroList />} />
+            <Route path="/categorias" element={<CategoriaList />} />
           </Route>
         </>
       </Routes>

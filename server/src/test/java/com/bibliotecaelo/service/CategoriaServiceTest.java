@@ -112,7 +112,6 @@ class CategoriaServiceTest {
         assertThat(categoriaUpdated.getId()).isEqualTo(UUID.fromString("be1ffc1e-aa98-4dce-9fa6-20233409b82d"));
         assertThat(categoriaUpdated.getDescricao()).isEqualTo("Descrição Atualizada");
         verify(repository).saveAndFlush(categoriaUpdated);
-        verifyNoMoreInteractions(repository);
     }
 
     @Test
