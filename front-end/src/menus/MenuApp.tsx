@@ -1,8 +1,5 @@
-import {
-  BookFilled,
-  LogoutOutlined,
-  UnorderedListOutlined,
-} from "@ant-design/icons";
+import "./MenuApp.css";
+import { BookFilled, LogoutOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { useAuth } from "../contexts/authContext";
@@ -19,13 +16,8 @@ export const MenuApp: React.FC = () => {
       children: [
         {
           key: "1",
-          label: <a href="/livro/new">Cadastrar Livro</a>,
+          label: <a href="/livros">Livros</a>,
           icon: <BookFilled />,
-        },
-        {
-          key: "2",
-          label: <a href="/livros">Listar Livros</a>,
-          icon: <UnorderedListOutlined />,
         },
         {
           key: "sub2",
@@ -39,13 +31,7 @@ export const MenuApp: React.FC = () => {
   return (
     <div id="divdomenu">
       <Menu
-        style={{
-          width: 69,
-          position: "fixed",
-          zIndex: "1000",
-          height: "100%",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-        }}
+        id="menu"
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
         mode="inline"

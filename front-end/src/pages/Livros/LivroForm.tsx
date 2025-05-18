@@ -10,7 +10,6 @@ import { useNavigate, useParams } from "react-router";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
-import { formItemLayout } from "../../styles/FormItemLayout";
 
 type Params = {
   id: string;
@@ -23,6 +22,17 @@ const initialLivro: Livro = {
   isbn: "",
   dataPublicacao: dayjs,
   categoria: undefined,
+};
+
+const formItemLabelLayout = {
+  labelCol: {
+    xs: { span: 3 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 2 },
+    sm: { span: 18 },
+  },
 };
 
 const LivroForm: React.FC = () => {
@@ -99,7 +109,7 @@ const LivroForm: React.FC = () => {
         onFinish={onSubmit}
         id="styledform"
         style={{ maxWidth: "30em" }}
-        {...formItemLayout}
+        {...formItemLabelLayout}
       >
         <Title level={3}>
           {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}

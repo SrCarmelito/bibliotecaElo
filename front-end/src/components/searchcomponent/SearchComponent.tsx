@@ -48,12 +48,6 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     }
   }, [listSearch, setSearchParams]);
 
-  const clearValues = () => {
-    form.setFieldValue("field", "");
-    form.setFieldValue("operator", "");
-    form.setFieldValue("search", "");
-  };
-
   const changeOperators = (option: SearchField) => {
     form.setFieldValue("search", "");
     setComponentSelector(option);
@@ -127,7 +121,7 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
       ? setListSearch([listSearch.join("").concat(";", newSearch)])
       : setListSearch([listSearch.join("").concat(newSearch)]);
 
-    clearValues();
+    form.setFieldValue("search", "");
 
     const fieldLabel = options.find(
       (item) => item.value === values.field
@@ -203,22 +197,24 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
           />
         </Form.Item>
 
-        <Form.Item
-          name="search"
-          rules={[{ required: true, message: "Informe o filtro desejado!" }]}
-        >
-          {componentSelector.type === "NUMERIC" && (
-            <InputNumber
-              type="number"
-              placeholder="Informe um número"
-              id="filter"
-            />
-          )}
-          {componentSelector.type === "DATE" && <DatePicker id="filter" />}
-          {componentSelector.type === "STRING" && (
-            <Input type="text" id="filter" placeholder="Informe um texto" />
-          )}
-        </Form.Item>
+        <div id="filterdate">
+          <Form.Item
+            name="search"
+            rules={[{ required: true, message: "Informe o filtro desejado!" }]}
+          >
+            {componentSelector.type === "NUMERIC" && (
+              <InputNumber
+                type="number"
+                placeholder="Informe um número"
+                id="filter"
+              />
+            )}
+            {componentSelector.type === "DATE" && <DatePicker />}
+            {componentSelector.type === "STRING" && (
+              <Input type="text" id="filter" placeholder="Informe um texto" />
+            )}
+          </Form.Item>
+        </div>
 
         <Form.Item>
           <Button htmlType="submit" id="searchbtn">

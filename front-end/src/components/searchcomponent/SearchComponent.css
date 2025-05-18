@@ -7,6 +7,10 @@
 
 #filter {
   width: 45em;
+}
+
+#filterdate {
+  width: 45em;
   margin: 7px;
 }
 
