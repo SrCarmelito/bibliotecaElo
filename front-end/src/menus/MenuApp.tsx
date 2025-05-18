@@ -1,5 +1,9 @@
 import "./MenuApp.css";
-import { BookFilled, LogoutOutlined } from "@ant-design/icons";
+import {
+  BookFilled,
+  LogoutOutlined,
+  OrderedListOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { useAuth } from "../contexts/authContext";
@@ -18,6 +22,11 @@ export const MenuApp: React.FC = () => {
           key: "1",
           label: <a href="/livros">Livros</a>,
           icon: <BookFilled />,
+        },
+        {
+          key: "2",
+          label: <a href="/categorias">Categorias</a>,
+          icon: <OrderedListOutlined />,
         },
         {
           key: "sub2",

@@ -232,16 +232,15 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
             Limpar Filtros
           </Button>
         </Form.Item>
+        <div id="searchdiv">
+          {filters.map((filter) => (
+            <Button key={filter.id} id="searchfilters">
+              {filter.label}{" "}
+              <CloseCircleOutlined onClick={() => removeFilter(filter)} />
+            </Button>
+          ))}
+        </div>
       </Form>
-
-      <div id="searchdiv">
-        {filters.map((filter) => (
-          <Button key={filter.id} id="searchfilters">
-            {filter.label}{" "}
-            <CloseCircleOutlined onClick={() => removeFilter(filter)} />
-          </Button>
-        ))}
-      </div>
     </>
   );
 };

@@ -21,4 +21,11 @@ public class CategoriaService
             throw new ValidationException("Já existe uma categoria cadastrada com esta descrição");
         }
     }
+
+    @Override
+    public void beforeUpdate(Categoria entity) {
+        if(repository.existsByDescricaoAndIdNot(entity.getDescricao(), entity.getId())) {
+            throw new ValidationException("Já existe uma categoria cadastrada com esta descrição");
+        }
+    }
 }

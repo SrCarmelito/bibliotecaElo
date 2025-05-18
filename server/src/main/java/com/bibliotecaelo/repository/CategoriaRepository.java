@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface CategoriaRepository extends RsqlRepository<Categoria, UUID> {
 
     boolean existsByDescricao(String descricao);
+    boolean existsByDescricaoAndIdNot(String descricao, UUID id);
 }
