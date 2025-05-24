@@ -1,6 +1,7 @@
 import { PagedResponse } from "../interfaces/PagedResponse";
 import { Livro } from "./../type/Livro.d";
 import axios, { AxiosPromise } from "axios";
+import { sortResolver } from "./sortResolver";
 
 const resource = "http://localhost:8080/api/livros";
 
@@ -14,34 +15,18 @@ export const deleteById = (livroId?: string): AxiosPromise<void> => {
 
 export const findAll = (
   pagination?: any,
-  sortField?: any,
-  sortOrder?: any,
+  sortField?: string,
+  sortOrder?: string,
   search?: string
 ): AxiosPromise<PagedResponse<Livro>> => {
-  const paginationConverter: any = {
-    page: pagination.current - 1,
-    size: pagination.pageSize,
-  };
-
-  let sortConverter: any = {};
-  if (sortField) {
-    sortConverter = {
-      sort: `${sortField},${
-        sortOrder?.substring(0, 1) === "a" ? "asc" : "desc"
-      }`,
-    };
-  } else {
-    sortConverter = { sort: "titulo,asc" };
-  }
-
-  let searchConverter: any = {};
-  search ? (searchConverter = search) : (searchConverter = "");
-
   return axios.get(`${resource}/find`, {
     params: {
-      ...sortConverter,
-      ...paginationConverter,
-      search: searchConverter,
+      ...sortResolver(sortField, sortOrder, "titulo", "asc"),
+      ...{
+        page: pagination.current - 1,
+        size: pagination.pageSize,
+      },
+      search,
     },
   });
 };

@@ -1,13 +1,4 @@
-import {
-  Button,
-  Form,
-  GetProp,
-  Input,
-  Modal,
-  Spin,
-  Table,
-  TableProps,
-} from "antd";
+import { Button, Form, Input, Modal, Spin, Table, TableProps } from "antd";
 import React, { useEffect, useState } from "react";
 import { Categoria } from "../../type/Categoria";
 import { ColumnsType } from "antd/es/table";
@@ -26,6 +17,8 @@ import {
   saveOrUpdate,
 } from "../../service/CategoriaService";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
+import { TableParams } from "../../interfaces/ItableParams";
+import { getRandomUserParams } from "../../consts/getRandomUserParams";
 
 const searchFields: SearchField[] = [
   {
@@ -34,12 +27,6 @@ const searchFields: SearchField[] = [
     value: "descricao",
   },
 ];
-
-const getRandomuserParams = (params: TableParams) => ({
-  results: params.pagination?.pageSize,
-  page: params.pagination?.current,
-  ...params,
-});
 
 const initialCategoria: Categoria = {
   id: "",
@@ -96,6 +83,12 @@ const CategoriaList: React.FC = () => {
     setOpen(!open);
   };
 
+  const handleCloseModal = () => {
+    form.setFieldValue("id", "");
+    form.setFieldValue("descricao", "");
+    setOpen(!open);
+  };
+
   const onRemove = (categoria: Categoria) => {
     modal.confirm({
       title: "Confirma Exclusão da Categoria?",
@@ -127,9 +120,9 @@ const CategoriaList: React.FC = () => {
   const fetchData = (search?: string) => {
     setSpinning(true);
     findAll(
-      getRandomuserParams(tableParams).pagination,
-      getRandomuserParams(tableParams).sortField,
-      getRandomuserParams(tableParams).sortOrder,
+      getRandomUserParams(tableParams).pagination,
+      getRandomUserParams(tableParams).sortField,
+      getRandomUserParams(tableParams).sortOrder,
       search || searchParams.get("search")?.replaceAll("__", "")
     ).then((response) => {
       setCategorias(response.data.content);
@@ -178,7 +171,7 @@ const CategoriaList: React.FC = () => {
             ? "Categoria Atualizada com Sucesso!"
             : "Categoria Cadastrada com Sucesso!";
         openNotification("success", msg);
-        setOpen(!open);
+        handleCloseModal();
       })
       .then(() => fetchData())
       .catch((errors) => {
@@ -218,7 +211,7 @@ const CategoriaList: React.FC = () => {
         open={open}
         footer
         title="Editando a Categoria"
-        onCancel={() => setOpen(!open)}
+        onCancel={() => handleCloseModal()}
       >
         <Spin spinning={spinning} fullscreen />
         <Form<Categoria>
