@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, GetProp, Modal, Table, TableProps } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, Table, TableProps } from "antd";
 
 import { deleteById, findAll } from "../../service/LivroService";
 import { Livro } from "../../type/Livro";
@@ -9,25 +9,14 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from "@ant-design/icons";
-import { SorterResult } from "antd/es/table/interface";
 import { useNavigate, useSearchParams } from "react-router";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { SearchField } from "../../type/SearchTypes";
 import { useNotification } from "../../contexts/notificationContext";
 import dayjs from "dayjs";
-
-type ColumnsType<T extends object = object> = TableProps<T>["columns"];
-
-type TablePaginationConfig = Exclude<
-  GetProp<TableProps, "pagination">,
-  boolean
->;
-
-const getRandomuserParams = (params: TableParams) => ({
-  results: params.pagination?.pageSize,
-  page: params.pagination?.current,
-  ...params,
-});
+import { ColumnsType } from "antd/es/table";
+import { TableParams } from "../../interfaces/ItableParams";
+import { getRandomUserParams } from "../../consts/getRandomUserParams";
 
 const searchFields: SearchField[] = [
   {
@@ -76,9 +65,9 @@ const LivroList: React.FC = () => {
   const fetchData = (search?: string) => {
     setSpinning(true);
     findAll(
-      getRandomuserParams(tableParams).pagination,
-      getRandomuserParams(tableParams).sortField,
-      getRandomuserParams(tableParams).sortOrder,
+      getRandomUserParams(tableParams).pagination,
+      getRandomUserParams(tableParams).sortField,
+      getRandomUserParams(tableParams).sortOrder,
       search || searchParams.get("search")?.replaceAll("__", "")
     ).then((response) => {
       setLivros(response.data.content);

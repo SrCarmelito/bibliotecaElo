@@ -142,7 +142,13 @@ const LivroForm: React.FC = () => {
         <Form.Item
           label="Isbn"
           name="isbn"
-          rules={[{ required: true, message: "Informe o Isbn!" }]}
+          rules={[
+            {
+              required: true,
+              message: "Isbn deve conter no mínimo 1 e máximo 13 caracteres!",
+              max: 13,
+            },
+          ]}
         >
           <Input type="number" placeholder="Digite o isbn" />
         </Form.Item>

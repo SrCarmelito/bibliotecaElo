@@ -1,4 +1,4 @@
-interface TableParams {
+export interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: SorterResult<any>["field"];
   sortOrder?: SorterResult<any>["order"];
