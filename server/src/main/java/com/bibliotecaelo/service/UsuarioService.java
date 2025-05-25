@@ -1,5 +1,7 @@
 package com.bibliotecaelo.service;
 
+import java.util.UUID;
+
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.converter.UsuarioDTOConverter;
 import com.bibliotecaelo.converter.UsuarioResponseDTOConverter;
@@ -25,6 +27,16 @@ public class UsuarioService extends CrudService<Usuario> {
     @Override
     public void beforeSave(Usuario usuario) {
         throw new IllegalStateException("Utilize o end-point /novo-usuario para criar um novo usuário!");
+    }
+
+    @Override
+    public void beforeDelete(UUID id) {
+        throw new IllegalStateException("Não é permitido apagar o cadastro de um usuário!");
+    }
+
+    @Override
+    public void beforeUpdate(Usuario entity) {
+        entity.setSenha(passwordEncoder.encode(entity.getSenha()));
     }
 
     public UsuarioResponseDTO novoUsuario(UsuarioDTO usuarioDTO) {

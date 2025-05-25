@@ -3,6 +3,7 @@ import {
   BookFilled,
   LogoutOutlined,
   OrderedListOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -27,6 +28,11 @@ export const MenuApp: React.FC = () => {
           key: "2",
           label: <a href="/categorias">Categorias</a>,
           icon: <OrderedListOutlined />,
+        },
+        {
+          key: "3",
+          label: <a href="/minhaconta">Minha conta</a>,
+          icon: <UserOutlined />,
         },
         {
           key: "sub2",

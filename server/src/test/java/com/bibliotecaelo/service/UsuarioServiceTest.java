@@ -135,12 +135,4 @@ class UsuarioServiceTest {
         verifyNoMoreInteractions(usuarioRepository);
     }
 
-    @Test
-    void deleteById() {
-        usuarioService.deleteById(UUID.fromString("f3dbaf3c-46fd-459b-b4ba-71a585bf0e7a"));
-
-        verify(usuarioRepository).deleteById(UUID.fromString("f3dbaf3c-46fd-459b-b4ba-71a585bf0e7a"));
-        verifyNoMoreInteractions(usuarioRepository);
-    }
-
 }

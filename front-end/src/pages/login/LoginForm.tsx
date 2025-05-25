@@ -21,9 +21,9 @@ const LoginForm: React.FC = () => {
   const [form] = Form.useForm();
   const openNotification = useNotification();
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
+  const { signIn, token } = useAuth();
 
-  if (user) {
+  if (token) {
     navigate("/livros");
   }
 

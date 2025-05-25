@@ -20,6 +20,7 @@ const RoutesApp = () => {
             <Route path="/livro/:id" element={<LivroForm />} />
             <Route path="/livros" element={<LivroList />} />
             <Route path="/categorias" element={<CategoriaList />} />
+            <Route path="/minhaconta" element={<CreateUser />} />
           </Route>
         </>
       </Routes>
