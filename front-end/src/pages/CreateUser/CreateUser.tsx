@@ -27,7 +27,7 @@ const CreateUser: React.FC = () => {
     }
   };
 
-  useEffect(fetchData, [token]);
+  useEffect(fetchData, [token, form]);
 
   const onSubmit = (usuario: Usuario) => {
     saveOrUpdate(usuario)

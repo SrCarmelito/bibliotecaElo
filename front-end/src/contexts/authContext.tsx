@@ -1,15 +1,8 @@
 import axios from "axios";
-import {
-  createContext,
-  useContext,
-  useLayoutEffect,
-  useReducer,
-  useState,
-} from "react";
+import { createContext, useContext, useLayoutEffect, useReducer } from "react";
 import { verifyToken } from "../service/AuthService";
 import { Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { Usuario } from "../type/Usuario";
 
 type Prop = { children: any };
 
@@ -45,7 +38,6 @@ const init = (): string => {
 export const AuthProvider: React.FC<Prop> = ({ children }) => {
   const [token, dispatch] = useReducer(reducer, "", init);
   const [modal, contextHolder] = Modal.useModal();
-  const [user, setUser] = useState<Usuario>();
 
   useLayoutEffect(() => {
     const token = localStorage.getItem("token");
