@@ -1,5 +1,5 @@
 import { Button, DatePicker, Form, Input, Modal } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Usuario } from "../../type/Usuario";
 import { useNotification } from "../../contexts/notificationContext";
 
@@ -7,22 +7,43 @@ import { saveOrUpdate } from "../../service/UsuarioService";
 import { CheckCircleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Title from "antd/lib/typography/Title";
+import { me } from "../../service/AuthService";
+import { useAuth } from "../../contexts/authContext";
+import dayjs from "dayjs";
 
 const CreateUser: React.FC = () => {
   const openNotification = useNotification();
   const [modal, contextHolder] = Modal.useModal();
+  const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { token } = useAuth();
+
+  const fetchData = () => {
+    if (token) {
+      me().then((response) => {
+        response.data.dataNascimento = dayjs(response.data.dataNascimento);
+        form.setFieldsValue(response.data);
+      });
+    }
+  };
+
+  useEffect(fetchData, [token]);
 
   const onSubmit = (usuario: Usuario) => {
     saveOrUpdate(usuario)
       .then(() => {
         modal.success({
-          title: "Usuário cadastrado com sucesso.",
-          content:
-            "Entre em contato com o administrador do software para ativar sua conta.",
+          title: token
+            ? "Usuário atualizado com sucesso."
+            : "Usuário atualizado com sucesso.",
+          content: token
+            ? ""
+            : "Entre em contato com o administrador do software para ativar sua conta.",
           icon: <CheckCircleFilled />,
           onOk() {
-            navigate("/sigin");
+            if (!token) {
+              navigate("/sigin");
+            }
           },
         });
       })
@@ -32,14 +53,22 @@ const CreateUser: React.FC = () => {
           throw erros;
         }
         erros.forEach((msg: string) => {
-          openNotification("error", "Falha ao cadastrar o usuário.", msg);
+          openNotification(
+            "error",
+            token
+              ? "Falha ao atualizar o usuário."
+              : "Falha ao cadastrar o usuário.",
+            msg
+          );
         });
       });
   };
 
   return (
-    <Form<Usuario> onFinish={onSubmit} id="styledform">
-      <Title level={3}>Crie sua conta</Title>
+    <Form<Usuario> form={form} onFinish={onSubmit} id="styledform">
+      <Title level={3}>{token ? "Sua conta" : "Crie sua conta"}</Title>
+      <Form.Item name="id" noStyle />
+      <Form.Item name="situacao" noStyle />
       <Form.Item
         name="nome"
         rules={[{ required: true, message: "Informe o nome." }]}
@@ -88,7 +117,7 @@ const CreateUser: React.FC = () => {
       {contextHolder}
       <Form.Item label={null}>
         <Button type="primary" htmlType="submit" block>
-          Cadastrar
+          {token ? "Atualizar" : "Cadastrar"}
         </Button>
       </Form.Item>
       <a href="/">« Voltar</a>

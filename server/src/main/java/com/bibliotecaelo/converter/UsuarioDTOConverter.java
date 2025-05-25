@@ -21,6 +21,7 @@ public class UsuarioDTOConverter
         entity.setTelefone(dto.getTelefone());
         entity.setLogin(dto.getLogin());
         entity.setSituacao(dto.getSituacao());
+        entity.setSenha(dto.getSenha());
 
         return entity;
     }

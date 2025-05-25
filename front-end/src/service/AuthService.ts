@@ -1,6 +1,7 @@
 import axios, { AxiosPromise } from "axios";
 import { LoginDTO } from "../type/LoginDTO";
 import { Email } from "../type/Email";
+import { Usuario } from "../type/Usuario";
 
 const resource = "http://localhost:8080/api/auth";
 
@@ -14,4 +15,8 @@ export const resetPassword = (email: Email): AxiosPromise => {
 
 export const verifyToken = (): AxiosPromise => {
   return axios.get(resource + "/verify-token");
+};
+
+export const me = (): AxiosPromise<Usuario> => {
+  return axios.get(resource + "/me");
 };

@@ -3,10 +3,10 @@ import { useAuth } from "../contexts/authContext";
 import { MenuApp } from "../menus/MenuApp";
 
 const PrivateRoutes = () => {
-  const { user } = useAuth();
+  const { token } = useAuth();
   const location = useLocation();
 
-  return user || location.pathname.includes("/signup") ? (
+  return token || location.pathname.includes("/signup") ? (
     <div style={{ display: "flex" }}>
       <MenuApp />
       <div style={{ width: "100%", marginLeft: "80px" }}>
