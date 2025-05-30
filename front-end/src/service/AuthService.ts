@@ -3,7 +3,7 @@ import { LoginDTO } from "../type/LoginDTO";
 import { Email } from "../type/Email";
 import { Usuario } from "../type/Usuario";
 
-const resource = "http://localhost:8080/api/auth";
+const resource = `${process.env.REACT_APP_URL_SERVER}/api/auth`;
 
 export const login = (loginDTO: LoginDTO) => {
   return axios.post(resource + "/login", loginDTO);

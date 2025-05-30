@@ -3,7 +3,7 @@ import { Categoria } from "../type/Categoria";
 import axios, { AxiosPromise } from "axios";
 import { sortResolver } from "./sortResolver";
 
-const resource = "http://localhost:8080/api/categorias";
+const resource = `${process.env.REACT_APP_URL_SERVER}/api/categorias`;
 
 export const findById = (
   categoriaId: string
