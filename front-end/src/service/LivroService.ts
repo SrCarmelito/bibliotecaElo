@@ -3,7 +3,7 @@ import { Livro } from "./../type/Livro.d";
 import axios, { AxiosPromise } from "axios";
 import { sortResolver } from "./sortResolver";
 
-const resource = "http://localhost:8080/api/livros";
+const resource = `${process.env.REACT_APP_URL_SERVER}/api/livros`;
 
 export const findById = (livroId: string): AxiosPromise<Livro> => {
   return axios.get(`${resource}/${livroId}`);
