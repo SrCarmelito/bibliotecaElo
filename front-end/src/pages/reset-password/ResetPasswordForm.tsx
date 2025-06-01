@@ -17,8 +17,6 @@ const ResetPasswordForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = (resetPassword: string[]) => {
-    console.log(resetPassword);
-
     confirmResetPassword(resetPassword)
       .then(() => {
         modal.success({
