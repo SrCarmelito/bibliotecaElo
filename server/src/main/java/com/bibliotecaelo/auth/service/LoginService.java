@@ -3,10 +3,10 @@ package com.bibliotecaelo.auth.service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.bibliotecaelo.auth.validations.UserValidations;
-import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
+import com.bibliotecaelo.auth.validations.UserValidations;
+import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.UsuarioRepository;
@@ -45,16 +45,16 @@ public class LoginService {
         usuario.setResetToken(token);
         repository.saveAndFlush(usuario);
 
-        String html = montaHtml(token, usuario);
+        String html = montaHtml(request.getHeader("Origin"), token, usuario);
 
         emailService.enviarEmail(userMail, "Carmelito - App", html);
     }
 
-    private String montaHtml(String token, Usuario usuario) throws IOException {
+    private String montaHtml(String origin, String token, Usuario usuario) throws IOException {
         ClassPathResource resource = new ClassPathResource("templates/new-password.html");
         String html = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         final String replaceHref = html.replace("href-reset-password-to-replace",
-                "http://127.0.0.1:5500/usuario/confirm-new-password.html?token=" + token);
+                origin + "/confirm-new-password?token=" + token);
         return replaceHref.replace("usuario_to_replace", usuario.getNome());
     }
 

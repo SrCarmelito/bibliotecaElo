@@ -72,7 +72,7 @@ class UserValidationsTest {
 
         assertThat(mensagemSenhaInvalida)
                 .isEqualTo(
-                        "Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
+                        "Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 Caractere especial, 1 letra maiúscula, 1 minúscula e 1 número!");
     }
 
     @Test
