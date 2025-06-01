@@ -7,6 +7,7 @@ import LivroForm from "../pages/Livros/LivroForm";
 import LivroList from "../pages/Livros/LivroList";
 import LoginForm from "../pages/login/LoginForm";
 import CategoriaList from "../pages/Categorias/CategoriaList";
+import ResetPasswordForm from "../pages/reset-password/ResetPasswordForm";
 
 const RoutesApp = () => {
   return (
@@ -15,6 +16,7 @@ const RoutesApp = () => {
         <>
           <Route path="/" element={<LoginForm />} />
           <Route path="/signup" element={<CreateUser />} />
+          <Route path="/confirm-new-password" element={<ResetPasswordForm />} />
           <Route path="*" element={<LoginForm />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/livro/:id" element={<LivroForm />} />

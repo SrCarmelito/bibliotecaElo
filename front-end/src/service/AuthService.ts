@@ -13,6 +13,12 @@ export const resetPassword = (email: Email): AxiosPromise => {
   return axios.post(resource + "/reset-password", email);
 };
 
+export const confirmResetPassword = (
+  confirmResetPassword: string[]
+): AxiosPromise => {
+  return axios.post(resource + "/confirm-reset-password", confirmResetPassword);
+};
+
 export const verifyToken = (): AxiosPromise => {
   return axios.get(resource + "/verify-token");
 };

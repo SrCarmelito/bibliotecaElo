@@ -32,11 +32,11 @@ public class UserValidations {
     }
 
     public void validaSenha(String senha, String senhaConfirmacao) {
-        Pattern patternSenha = Pattern.compile("^(?=.*\\d)(?=.*[a-zA-Z])(?=.*\\W).{6,150}$");
+        Pattern patternSenha = Pattern.compile("^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^\\w\\s]).{6,150}$");
         Matcher matcherSenha = patternSenha.matcher(senha);
         if (!matcherSenha.find()) {
             throw new ValidationException
-                    ("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 letra maiúscula, 1 minúscula e 1 número!");
+                    ("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 Caractere especial, 1 letra maiúscula, 1 minúscula e 1 número!");
         }
 
         if (!senha.equals(senhaConfirmacao)) {
