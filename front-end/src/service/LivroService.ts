@@ -5,7 +5,7 @@ import { sortResolver } from "./sortResolver";
 
 const resource = `${process.env.REACT_APP_URL_SERVER}/api/livros`;
 
-export const findById = (livroId: string): AxiosPromise<Livro> => {
+export const findById = (livroId?: string): AxiosPromise<Livro> => {
   return axios.get(`${resource}/${livroId}`);
 };
 

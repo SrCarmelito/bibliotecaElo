@@ -1,6 +1,7 @@
 package com.bibliotecaelo.service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.enums.StatusEmprestimoEnum;
@@ -28,7 +29,7 @@ public class EmprestimoService extends CrudService<Emprestimo> {
 
     @Override
     public void beforeSave(Emprestimo emprestimo) {
-        validaDataEmprestimoPosteriorDevolucao(emprestimo.getDataEmprestimo(), emprestimo.getDataEmprestimo());
+        validaDataEmprestimoPosteriorDevolucao(emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
 
         if (repository.existsByLivroIdAndStatus(
                 emprestimo.getLivro().getId(),
@@ -41,6 +42,15 @@ public class EmprestimoService extends CrudService<Emprestimo> {
 
         emprestimo.setLivro(livroRepository.findById(emprestimo.getLivro().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Livro Não Encontrado!")));
+    }
+
+    @Override public void beforeUpdate(Emprestimo emprestimo) {
+        validaDataEmprestimoPosteriorDevolucao(emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
+    }
+
+    @Override
+    public void beforeDelete(UUID id) {
+        throw new IllegalStateException("Não é permitido deletar um empréstimo.");
     }
 
     protected void validaDataEmprestimoPosteriorDevolucao(LocalDate dataEmprestimo, LocalDate dataDevolucao) {

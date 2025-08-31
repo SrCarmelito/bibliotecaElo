@@ -36,6 +36,7 @@ const initialCategoria: Categoria = {
 const CategoriaList: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [modal, contextHolder] = Modal.useModal();
+  const [titleModal, setTitleModal] = useState<string>();
   const [open, setOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [form] = Form.useForm();
@@ -79,6 +80,9 @@ const CategoriaList: React.FC = () => {
   ];
 
   const handleOpenModal = (categoria?: Categoria) => {
+    categoria
+      ? setTitleModal(`Editando a Categoria: ${categoria.descricao}`)
+      : setTitleModal("Crie uma nova Categoria");
     form.setFieldsValue(categoria);
     setOpen(!open);
   };
@@ -210,7 +214,7 @@ const CategoriaList: React.FC = () => {
       <Modal
         open={open}
         footer
-        title="Editando a Categoria"
+        title={titleModal}
         onCancel={() => handleCloseModal()}
       >
         <Spin spinning={spinning} fullscreen />

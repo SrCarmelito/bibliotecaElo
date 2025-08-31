@@ -35,7 +35,7 @@ const CreateUser: React.FC = () => {
         modal.success({
           title: token
             ? "Usuário atualizado com sucesso."
-            : "Usuário atualizado com sucesso.",
+            : "Usuário cadastrado com sucesso.",
           content: token
             ? ""
             : "Entre em contato com o administrador do software para ativar sua conta.",

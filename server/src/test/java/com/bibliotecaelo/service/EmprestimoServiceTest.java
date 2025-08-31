@@ -216,10 +216,8 @@ class EmprestimoServiceTest {
 
     @Test
     void deleteById() {
-        service.deleteById(UUID.fromString("9c1c8796-6a91-41d3-a412-bc96d1b0ab6f"));
-
-        verify(emprestimoRepository).deleteById(UUID.fromString("9c1c8796-6a91-41d3-a412-bc96d1b0ab6f"));
-        verifyNoMoreInteractions(emprestimoRepository);
+        assertThrows(IllegalStateException.class,
+                () -> service.deleteById(UUID.fromString("9c1c8796-6a91-41d3-a412-bc96d1b0ab6f")));
     }
 
 }
