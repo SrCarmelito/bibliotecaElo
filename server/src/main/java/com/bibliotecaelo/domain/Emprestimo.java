@@ -58,7 +58,7 @@ public class Emprestimo
     private LocalDate dataDevolucao;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "É Necessário Informar a Status do Livro!")
+    @NotNull(message = "É Necessário Informar a Status do Empréstimo!")
     private StatusEmprestimoEnum status;
 
     @Embedded

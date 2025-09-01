@@ -8,6 +8,7 @@ import LivroList from "../pages/Livros/LivroList";
 import LoginForm from "../pages/login/LoginForm";
 import CategoriaList from "../pages/Categorias/CategoriaList";
 import ResetPasswordForm from "../pages/reset-password/ResetPasswordForm";
+import EmprestimoList from "../pages/Emprestimos/EmprestimoList";
 
 const RoutesApp = () => {
   return (
@@ -23,6 +24,7 @@ const RoutesApp = () => {
             <Route path="/livros" element={<LivroList />} />
             <Route path="/categorias" element={<CategoriaList />} />
             <Route path="/minhaconta" element={<CreateUser />} />
+            <Route path="/emprestimos" element={<EmprestimoList />} />
           </Route>
         </>
       </Routes>

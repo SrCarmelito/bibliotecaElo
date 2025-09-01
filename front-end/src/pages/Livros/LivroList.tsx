@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, Table, TableProps } from "antd";
-
 import { deleteById, findAll } from "../../service/LivroService";
 import { Livro } from "../../type/Livro";
 import {

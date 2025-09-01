@@ -1,26 +1,48 @@
 import axios from "axios";
-import { createContext, useContext, useLayoutEffect, useReducer } from "react";
-import { verifyToken } from "../service/AuthService";
+import {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from "react";
+import { me, verifyToken } from "../service/AuthService";
 import { Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Usuario } from "../type/Usuario";
 
 type Prop = { children: any };
 
 type AuthContextType = {
   token: string | undefined;
+  usuario: Usuario | undefined;
   signIn: (token: string) => void;
   signOut: () => void;
 };
 
 export const useAuth = () => useContext(AuthContext);
 
+const initialUsuario: Usuario = {
+  id: "",
+  nome: "",
+  email: "",
+  dataNascimento: "",
+  telefone: "",
+  login: "",
+  situacao: "",
+};
+
 export const AuthContext = createContext<AuthContextType>({
   token: undefined,
+  usuario: initialUsuario,
   signIn: () => {},
   signOut: () => {},
 });
 
-type Action = { type: "SET_TOKEN"; payload: string | null };
+type Action = {
+  type: "SET_TOKEN" | "SET_USUARIO";
+  payload: any;
+};
 
 const reducer = (state: string, action: Action): string => {
   switch (action.type) {
@@ -37,6 +59,10 @@ const init = (): string => {
 
 export const AuthProvider: React.FC<Prop> = ({ children }) => {
   const [token, dispatch] = useReducer(reducer, "", init);
+  const [usuario, setUsuario] = useState<Usuario>(() => {
+    const usuario = localStorage.getItem("usuario");
+    return usuario ? JSON.parse(usuario) : initialUsuario;
+  });
   const [modal, contextHolder] = Modal.useModal();
 
   useLayoutEffect(() => {
@@ -63,6 +89,10 @@ export const AuthProvider: React.FC<Prop> = ({ children }) => {
     ] = `Bearer ${localStorage.getItem("token")}`;
 
     dispatch({ type: "SET_TOKEN", payload: token });
+    me().then((response) => {
+      localStorage.setItem("usuario", JSON.stringify(response.data));
+      setUsuario(response.data);
+    });
   };
 
   const signOut = () => {
@@ -71,13 +101,15 @@ export const AuthProvider: React.FC<Prop> = ({ children }) => {
       icon: <ExclamationCircleFilled />,
       onOk() {
         localStorage.removeItem("token");
+        localStorage.removeItem("usuario");
         dispatch({ type: "SET_TOKEN", payload: null });
+        dispatch({ type: "SET_USUARIO", payload: null });
       },
     });
   };
 
   return (
-    <AuthContext.Provider value={{ token, signIn, signOut }}>
+    <AuthContext.Provider value={{ token, usuario, signIn, signOut }}>
       {children}
       {contextHolder}
     </AuthContext.Provider>

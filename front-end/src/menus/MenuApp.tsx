@@ -1,6 +1,7 @@
 import "./MenuApp.css";
 import {
-  BookFilled,
+  BookTwoTone,
+  DollarTwoTone,
   LogoutOutlined,
   OrderedListOutlined,
   UserOutlined,
@@ -22,7 +23,7 @@ export const MenuApp: React.FC = () => {
         {
           key: "1",
           label: <a href="/livros">Livros</a>,
-          icon: <BookFilled />,
+          icon: <BookTwoTone />,
         },
         {
           key: "2",
@@ -31,6 +32,11 @@ export const MenuApp: React.FC = () => {
         },
         {
           key: "3",
+          label: <a href="/emprestimos">Empréstimos</a>,
+          icon: <DollarTwoTone />,
+        },
+        {
+          key: "4",
           label: <a href="/minhaconta">Minha conta</a>,
           icon: <UserOutlined />,
         },
@@ -47,7 +53,6 @@ export const MenuApp: React.FC = () => {
     <div id="divdomenu">
       <Menu
         id="menu"
-        defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
         mode="inline"
         theme="light"
