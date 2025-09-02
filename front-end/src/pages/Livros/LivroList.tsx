@@ -12,7 +12,6 @@ import { useNavigate, useSearchParams } from "react-router";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { SearchField } from "../../type/SearchTypes";
 import { useNotification } from "../../contexts/notificationContext";
-import dayjs from "dayjs";
 import { ColumnsType } from "antd/es/table";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
@@ -111,9 +110,9 @@ const LivroList: React.FC = () => {
     modal.confirm({
       title: "Confirma Exclusão do Livro?",
       icon: <ExclamationCircleFilled />,
-      content: `${livro.titulo} - ${livro.categoria?.descricao} - ${dayjs(
-        livro.dataPublicacao
-      ).format("DD/MM/YYYY")}`,
+      content: `${livro.titulo} - ${
+        livro.categoria?.descricao
+      } - ${livro.dataPublicacao.format("DD/MM/YYYY")}`,
       onOk() {
         deleteById(livro.id)
           .then(() => openNotification("success", "Livro Excluído com Sucesso"))
@@ -165,7 +164,7 @@ const LivroList: React.FC = () => {
       title: "Publicação",
       dataIndex: "dataPublicacao",
       key: "Date",
-      render: (text) => dayjs(text).format("DD/MM/YYYY"),
+      render: (dataPublicacao) => dataPublicacao.format("DD/MM/YYYY"),
       sorter: true,
     },
     {

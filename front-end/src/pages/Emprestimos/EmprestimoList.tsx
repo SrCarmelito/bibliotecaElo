@@ -22,7 +22,6 @@ import {
   findById as findLivroById,
 } from "../../service/LivroService";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
-import dayjs from "dayjs";
 import { StatusEmprestimoEnum } from "../../enums/StatusEmprestimoEnum";
 import { Livro } from "../../type/Livro";
 import { useAuth } from "../../contexts/authContext";
@@ -92,14 +91,14 @@ const EmprestimoList: React.FC = () => {
       title: "Data Empréstimo",
       dataIndex: "dataEmprestimo",
       key: "dataEmprestimo",
-      render: (text) => dayjs(text).format("DD/MM/YYYY"),
+      render: (dataEmprestimo) => dataEmprestimo.format("DD/MM/YYYY"),
       sorter: true,
     },
     {
       title: "Devolução",
       dataIndex: "dataDevolucao",
       key: "Date",
-      render: (text) => dayjs(text).format("DD/MM/YYYY"),
+      render: (dataDevolucao) => dataDevolucao.format("DD/MM/YYYY"),
       sorter: true,
     },
     {
@@ -180,13 +179,9 @@ const EmprestimoList: React.FC = () => {
   useEffect(findLivros, [setLivros]);
 
   const handleOpenModal = (emprestimo?: Emprestimo) => {
-    if (emprestimo) {
-      setTitleModal("Editando o Empréstimo");
-      emprestimo.dataEmprestimo = dayjs(emprestimo?.dataEmprestimo);
-      emprestimo.dataDevolucao = dayjs(emprestimo?.dataDevolucao);
-    } else {
-      setTitleModal("Faça um novo Empréstimo");
-    }
+    emprestimo
+      ? setTitleModal("Editando o Empréstimo")
+      : setTitleModal("Faça um novo Empréstimo");
 
     if (emprestimo) {
       form.setFieldsValue(emprestimo);
