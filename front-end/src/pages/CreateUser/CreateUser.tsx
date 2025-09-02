@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import Title from "antd/lib/typography/Title";
 import { me } from "../../service/AuthService";
 import { useAuth } from "../../contexts/authContext";
-import dayjs from "dayjs";
 
 const CreateUser: React.FC = () => {
   const openNotification = useNotification();
@@ -21,7 +20,6 @@ const CreateUser: React.FC = () => {
   const fetchData = () => {
     if (token) {
       me().then((response) => {
-        response.data.dataNascimento = dayjs(response.data.dataNascimento);
         form.setFieldsValue(response.data);
       });
     }

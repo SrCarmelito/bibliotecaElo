@@ -7,7 +7,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Livro } from "../../type/Livro";
 import { useNotification } from "../../contexts/notificationContext";
 import { useNavigate, useParams } from "react-router";
-import dayjs from "dayjs";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 
@@ -20,7 +19,7 @@ const initialLivro: Livro = {
   titulo: "",
   autor: "",
   isbn: "",
-  dataPublicacao: dayjs,
+  dataPublicacao: "",
   categoria: undefined,
 };
 
@@ -57,7 +56,6 @@ const LivroForm: React.FC = () => {
   const fetchData = () => {
     if (isEditing && id) {
       findById(id).then(({ data }) => {
-        data.dataPublicacao = dayjs(data.dataPublicacao);
         form.setFieldsValue(data || initialLivro);
         form.setFieldValue("categoria", data.categoria?.id);
       });
