@@ -31,8 +31,8 @@ export const findAll = (
     params: {
       ...sortResolver(sortField, sortOrder, "descricao", "asc"),
       ...{
-        page: pagination.current - 1,
-        size: pagination.pageSize,
+        page: pagination.current - 1 || 0,
+        size: pagination.pageSize || 20,
       },
       search,
     },

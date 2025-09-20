@@ -44,7 +44,7 @@ const LivroForm: React.FC = () => {
 
   const findCategorias = (search?: string) => {
     search ? (search = `descricao=ilike=${search}`) : (search = "");
-    findAll(search).then((response) => {
+    findAll(0, "", "", search).then((response) => {
       setOptions(response.data.content);
     });
   };
