@@ -26,6 +26,7 @@ import { Livro } from "../../type/Livro";
 import { useAuth } from "../../contexts/authContext";
 import { useNotification } from "../../contexts/notificationContext";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
+import { useLoading } from "../../components/searchcomponent/useLoading";
 
 const searchFields: SearchField[] = [
   {
@@ -66,7 +67,7 @@ const EmprestimoList: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [titleModal, setTitleModal] = useState<string>();
   const [form] = Form.useForm();
-  const [spinning, setSpinning] = useState(true);
+  const [loading, setLoading] = useLoading();
   const [livros, setLivros] = useState<Livro[]>([]);
   const { token, usuario } = useAuth();
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -140,24 +141,24 @@ const EmprestimoList: React.FC = () => {
   };
 
   const fetchData = (search?: string) => {
-    setSpinning(true);
-    findAll(
-      getRandomUserParams(tableParams).pagination,
-      getRandomUserParams(tableParams).sortField,
-      getRandomUserParams(tableParams).sortOrder,
-      getSearchParam()
-    ).then((response) => {
-      setEmprestimos(response.data.content);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.data.totalElements,
-        },
-        search: getSearchParam(),
-      });
-    });
-    setSpinning(false);
+    setLoading(
+      findAll(
+        getRandomUserParams(tableParams).pagination,
+        getRandomUserParams(tableParams).sortField,
+        getRandomUserParams(tableParams).sortOrder,
+        getSearchParam()
+      ).then((response) => {
+        setEmprestimos(response.data.content);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: response.data.totalElements,
+          },
+          search: getSearchParam(),
+        });
+      })
+    );
   };
 
   const findLivros = (search?: string) => {
@@ -207,26 +208,28 @@ const EmprestimoList: React.FC = () => {
       emprestimo.usuario = usuario;
     }
 
-    saveOrUpdate(emprestimo)
-      .then((res) => {
-        const msg =
-          res.config.method === "put"
-            ? "Empréstimo Atualizado com Sucesso!"
-            : "Empréstimo Cadastrado com Sucesso!";
-        openNotification("success", msg);
-        handleCloseModal();
-        fetchData();
-      })
-      .then(() => fetchData())
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", "Falha ao Cadastrar o Empréstimo", msg);
-        });
-      });
+    setLoading(
+      saveOrUpdate(emprestimo)
+        .then((res) => {
+          const msg =
+            res.config.method === "put"
+              ? "Empréstimo Atualizado com Sucesso!"
+              : "Empréstimo Cadastrado com Sucesso!";
+          openNotification("success", msg);
+          handleCloseModal();
+          fetchData();
+        })
+        .then(() => fetchData())
+        .catch((errors) => {
+          const erros = errors.response?.data.errors;
+          if (!erros) {
+            throw erros;
+          }
+          erros.forEach((msg: string) => {
+            openNotification("error", "Falha ao Cadastrar o Empréstimo", msg);
+          });
+        })
+    );
   };
 
   return (
@@ -240,7 +243,7 @@ const EmprestimoList: React.FC = () => {
           bordered
           size="small"
           pagination={tableParams.pagination}
-          loading={spinning}
+          loading={loading}
           onChange={handleTableChange}
         />
         {contextHolder}
@@ -251,7 +254,7 @@ const EmprestimoList: React.FC = () => {
         title={titleModal}
         onCancel={() => handleCloseModal()}
       >
-        <Spin spinning={spinning} fullscreen />
+        <Spin spinning={loading} fullscreen />
         <Form<Emprestimo>
           initialValues={initialEmprestimo}
           form={form}

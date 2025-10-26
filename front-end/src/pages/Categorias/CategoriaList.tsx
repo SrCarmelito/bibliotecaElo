@@ -19,6 +19,7 @@ import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
+import { useLoading } from "../../components/searchcomponent/useLoading";
 
 const searchFields: SearchField[] = [
   {
@@ -40,7 +41,7 @@ const CategoriaList: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const openNotification = useNotification();
-  const [spinning, setSpinning] = useState(true);
+  const [loading, setLoading] = useLoading();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -121,24 +122,24 @@ const CategoriaList: React.FC = () => {
   };
 
   const fetchData = (search?: string) => {
-    setSpinning(true);
-    findAll(
-      getRandomUserParams(tableParams).pagination,
-      getRandomUserParams(tableParams).sortField,
-      getRandomUserParams(tableParams).sortOrder,
-      getSearchParam()
-    ).then((response) => {
-      setCategorias(response.data.content);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.data.totalElements,
-        },
-        search: getSearchParam(),
-      });
-    });
-    setSpinning(false);
+    setLoading(
+      findAll(
+        getRandomUserParams(tableParams).pagination,
+        getRandomUserParams(tableParams).sortField,
+        getRandomUserParams(tableParams).sortOrder,
+        getSearchParam()
+      ).then((response) => {
+        setCategorias(response.data.content);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: response.data.totalElements,
+          },
+          search: getSearchParam(),
+        });
+      })
+    );
   };
 
   useEffect(fetchData, [
@@ -167,25 +168,27 @@ const CategoriaList: React.FC = () => {
   };
 
   const onSubmit = (categoria: Categoria) => {
-    saveOrUpdate(categoria)
-      .then((res) => {
-        const msg =
-          res.config.method === "put"
-            ? "Categoria Atualizada com Sucesso!"
-            : "Categoria Cadastrada com Sucesso!";
-        openNotification("success", msg);
-        handleCloseModal();
-      })
-      .then(() => fetchData())
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", "Falha ao Cadastrar a Categoria", msg);
-        });
-      });
+    setLoading(
+      saveOrUpdate(categoria)
+        .then((res) => {
+          const msg =
+            res.config.method === "put"
+              ? "Categoria Atualizada com Sucesso!"
+              : "Categoria Cadastrada com Sucesso!";
+          openNotification("success", msg);
+          handleCloseModal();
+        })
+        .then(() => fetchData())
+        .catch((errors) => {
+          const erros = errors.response?.data.errors;
+          if (!erros) {
+            throw erros;
+          }
+          erros.forEach((msg: string) => {
+            openNotification("error", "Falha ao Cadastrar a Categoria", msg);
+          });
+        })
+    );
   };
 
   return (
@@ -199,7 +202,7 @@ const CategoriaList: React.FC = () => {
         dataSource={categorias}
         pagination={tableParams.pagination}
         onChange={handleTableChange}
-        loading={spinning}
+        loading={loading}
       />
       {contextHolder}
       <Button
@@ -216,7 +219,7 @@ const CategoriaList: React.FC = () => {
         title={titleModal}
         onCancel={() => handleCloseModal()}
       >
-        <Spin spinning={spinning} fullscreen />
+        <Spin spinning={loading} fullscreen />
         <Form<Categoria>
           initialValues={initialCategoria}
           form={form}

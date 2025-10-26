@@ -16,6 +16,7 @@ import { ColumnsType } from "antd/es/table";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
+import { useLoading } from "../../components/searchcomponent/useLoading";
 
 const searchFields: SearchField[] = [
   {
@@ -48,9 +49,9 @@ const searchFields: SearchField[] = [
 const LivroList: React.FC = () => {
   const [livros, setLivros] = useState<Livro[]>([]);
   const [modal, contextHolder] = Modal.useModal();
+  const [loading, setLoading] = useLoading();
   const navigate = useNavigate();
   const openNotification = useNotification();
-  const [spinning, setSpinning] = useState(true);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -61,24 +62,24 @@ const LivroList: React.FC = () => {
   });
 
   const fetchData = () => {
-    setSpinning(true);
-    findAll(
-      getRandomUserParams(tableParams).pagination,
-      getRandomUserParams(tableParams).sortField,
-      getRandomUserParams(tableParams).sortOrder,
-      getSearchParam()
-    ).then((response) => {
-      setLivros(response.data.content);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.data.totalElements,
-        },
-        search: getSearchParam(),
-      });
-    });
-    setSpinning(false);
+    setLoading(
+      findAll(
+        getRandomUserParams(tableParams).pagination,
+        getRandomUserParams(tableParams).sortField,
+        getRandomUserParams(tableParams).sortOrder,
+        getSearchParam()
+      ).then((response) => {
+        setLivros(response.data.content);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: response.data.totalElements,
+          },
+          search: getSearchParam(),
+        });
+      })
+    );
   };
 
   useEffect(fetchData, [
@@ -199,7 +200,7 @@ const LivroList: React.FC = () => {
           bordered
           size="small"
           pagination={tableParams.pagination}
-          loading={spinning}
+          loading={loading}
           onChange={handleTableChange}
         />
         {contextHolder}
