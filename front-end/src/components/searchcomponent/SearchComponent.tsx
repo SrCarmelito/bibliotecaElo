@@ -151,16 +151,14 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     if (buttonFilter?.id) {
       setFilters(filters.filter((filter) => filter.id !== buttonFilter.id));
 
-      if (listSearch[0].split(";").length - 1 >= 1) {
-        setListSearch([
-          listSearch[0]
-            .split(";")
-            .filter((item) => item !== buttonFilter.id)
-            .join(";"),
-        ]);
-      } else {
-        setListSearch([]);
-      }
+      listSearch[0].split(";").length - 1 >= 1
+        ? setListSearch([
+            listSearch[0]
+              .split(";")
+              .filter((item) => item !== buttonFilter.id)
+              .join(";"),
+          ])
+        : setListSearch([]);
     } else {
       setFilters([]);
       setListSearch([]);
@@ -168,85 +166,79 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   };
 
   return (
-    <>
-      <Form<Fields>
-        form={form}
-        id="form"
-        onFinish={executeSearch}
-        layout="inline"
+    <Form<Fields>
+      form={form}
+      id="form"
+      onFinish={executeSearch}
+      layout="inline"
+    >
+      <Form.Item
+        name="field"
+        id="searchselect"
+        style={{ width: "15em", margin: "7px" }}
+        rules={[{ required: true, message: "Informe o Campo!" }]}
       >
+        <Select
+          options={options}
+          onSelect={(value, option) => {
+            changeOperators(option);
+          }}
+          placeholder="Selecione um filtro"
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="operator"
+        style={{ width: "15em", margin: "7px" }}
+        rules={[{ required: true, message: "Informe o Operador!" }]}
+      >
+        <Select
+          options={operators}
+          disabled={operators.length === 0}
+          placeholder="Selecione um operador"
+        />
+      </Form.Item>
+
+      <div id="filterdate">
         <Form.Item
-          name="field"
-          id="searchselect"
-          style={{ width: "15em", margin: "7px" }}
-          rules={[{ required: true, message: "Informe o Campo!" }]}
+          name="search"
+          rules={[{ required: true, message: "Informe o filtro desejado!" }]}
         >
-          <Select
-            options={options}
-            onSelect={(value, option) => {
-              changeOperators(option);
-            }}
-            placeholder="Selecione um filtro"
-          />
+          {componentSelector.type === "NUMERIC" && (
+            <InputNumber
+              type="number"
+              placeholder="Informe um número"
+              id="filter"
+            />
+          )}
+          {componentSelector.type === "DATE" && <DatePicker />}
+          {componentSelector.type === "STRING" && (
+            <Input type="text" id="filter" placeholder="Informe um texto" />
+          )}
         </Form.Item>
+      </div>
 
-        <Form.Item
-          name="operator"
-          style={{ width: "15em", margin: "7px" }}
-          rules={[{ required: true, message: "Informe o Operador!" }]}
-        >
-          <Select
-            options={operators}
-            disabled={operators.length === 0}
-            placeholder="Selecione um operador"
-          />
-        </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit" id="searchbtn">
+          <SearchOutlined />
+          Pesquisar
+        </Button>
+      </Form.Item>
 
-        <div id="filterdate">
-          <Form.Item
-            name="search"
-            rules={[{ required: true, message: "Informe o filtro desejado!" }]}
-          >
-            {componentSelector.type === "NUMERIC" && (
-              <InputNumber
-                type="number"
-                placeholder="Informe um número"
-                id="filter"
-              />
-            )}
-            {componentSelector.type === "DATE" && <DatePicker />}
-            {componentSelector.type === "STRING" && (
-              <Input type="text" id="filter" placeholder="Informe um texto" />
-            )}
-          </Form.Item>
-        </div>
-
-        <Form.Item>
-          <Button htmlType="submit" id="searchbtn">
-            <SearchOutlined />
-            Pesquisar
+      <Form.Item>
+        <Button htmlType="button" id="searchbtn" onClick={() => removeFilter()}>
+          Limpar Filtros
+        </Button>
+      </Form.Item>
+      <div id="searchdiv">
+        {filters.map((filter) => (
+          <Button key={filter.id} id="searchfilters">
+            {filter.label}{" "}
+            <CloseCircleOutlined onClick={() => removeFilter(filter)} />
           </Button>
-        </Form.Item>
-
-        <Form.Item>
-          <Button
-            htmlType="button"
-            id="searchbtn"
-            onClick={() => removeFilter()}
-          >
-            Limpar Filtros
-          </Button>
-        </Form.Item>
-        <div id="searchdiv">
-          {filters.map((filter) => (
-            <Button key={filter.id} id="searchfilters">
-              {filter.label}{" "}
-              <CloseCircleOutlined onClick={() => removeFilter(filter)} />
-            </Button>
-          ))}
-        </div>
-      </Form>
-    </>
+        ))}
+      </div>
+    </Form>
   );
 };
 
