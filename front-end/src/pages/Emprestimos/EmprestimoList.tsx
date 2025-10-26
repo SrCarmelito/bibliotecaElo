@@ -14,7 +14,6 @@ import { SearchField } from "../../type/SearchTypes";
 import { Emprestimo } from "../../type/Emprestimo";
 import { ColumnsType } from "antd/es/table";
 import { TableParams } from "../../interfaces/ItableParams";
-import { useSearchParams } from "react-router-dom";
 import { EditTwoTone, PlusOutlined } from "@ant-design/icons";
 import { findAll, saveOrUpdate } from "../../service/EmprestimoService";
 import {
@@ -26,10 +25,11 @@ import { StatusEmprestimoEnum } from "../../enums/StatusEmprestimoEnum";
 import { Livro } from "../../type/Livro";
 import { useAuth } from "../../contexts/authContext";
 import { useNotification } from "../../contexts/notificationContext";
+import { getSearchParam } from "../../components/searchcomponent/searchFunction";
 
 const searchFields: SearchField[] = [
   {
-    label: "Livro",
+    label: "Livro - Título",
     type: "STRING",
     value: "livro.titulo",
   },
@@ -67,7 +67,6 @@ const EmprestimoList: React.FC = () => {
   const [titleModal, setTitleModal] = useState<string>();
   const [form] = Form.useForm();
   const [spinning, setSpinning] = useState(true);
-  const [searchParams] = useSearchParams();
   const [livros, setLivros] = useState<Livro[]>([]);
   const { token, usuario } = useAuth();
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -76,7 +75,7 @@ const EmprestimoList: React.FC = () => {
       pageSize: 20,
       position: ["topCenter"],
     },
-    search: undefined,
+    search: getSearchParam(),
   });
 
   const columns: ColumnsType<Emprestimo> = [
@@ -146,7 +145,7 @@ const EmprestimoList: React.FC = () => {
       getRandomUserParams(tableParams).pagination,
       getRandomUserParams(tableParams).sortField,
       getRandomUserParams(tableParams).sortOrder,
-      search || searchParams.get("search")?.replaceAll("__", "")
+      getSearchParam()
     ).then((response) => {
       setEmprestimos(response.data.content);
       setTableParams({
@@ -155,7 +154,7 @@ const EmprestimoList: React.FC = () => {
           ...tableParams.pagination,
           total: response.data.totalElements,
         },
-        search: search || searchParams.get("search")?.replaceAll("__", ""),
+        search: getSearchParam(),
       });
     });
     setSpinning(false);

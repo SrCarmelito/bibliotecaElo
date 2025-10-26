@@ -116,6 +116,9 @@ class CategoriaServiceTest {
 
     @Test
     void deleteById() {
+        when(repository.findById(UUID.fromString("1462f305-8356-4b10-9b4e-e87f54177a96"))).thenReturn(
+                Optional.ofNullable(categoria));
+
         service.deleteById(UUID.fromString("1462f305-8356-4b10-9b4e-e87f54177a96"));
 
         verify(repository).deleteById(UUID.fromString("1462f305-8356-4b10-9b4e-e87f54177a96"));

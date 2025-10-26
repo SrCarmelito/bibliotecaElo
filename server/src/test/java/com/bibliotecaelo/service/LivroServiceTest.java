@@ -160,6 +160,8 @@ class LivroServiceTest {
 
     @Test
     void deleteById() {
+        when(repository.findById(UUID.fromString("e7053b9c-d057-4b8f-9571-9459b0c78d50"))).thenReturn(Optional.ofNullable(livro));
+
         service.deleteById(UUID.fromString("e7053b9c-d057-4b8f-9571-9459b0c78d50"));
 
         verify(repository).deleteById(UUID.fromString("e7053b9c-d057-4b8f-9571-9459b0c78d50"));

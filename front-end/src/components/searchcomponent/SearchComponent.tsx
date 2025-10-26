@@ -17,7 +17,7 @@ import {
 
 const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [form] = Form.useForm();
-  const [options, setOptions] = useState(optionsFilters);
+  const options = optionsFilters;
   const [operators, setOperators] = useState<BaseOptionType[]>([]);
   const [componentSelector, setComponentSelector] = useState<SearchField>(
     optionsFilters[0]
@@ -26,18 +26,17 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [listSearch, setListSearch] = useState<string[]>([]);
 
+  // constrói os botões de filtro para o usuário manipular quando a página é criada
   useEffect(() => {
     buildFiltersFromUrl();
   }, []);
 
-  useEffect(() => {
-    setOptions(optionsFilters);
-  }, [optionsFilters]);
-
+  // carregar os operadores sem ter que clicar em um option
   useEffect(() => {
     changeOperators(options[0]);
   }, [options]);
 
+  ///revisar para tentar eliminar esse useEffect
   useEffect(() => {
     if (listSearch.length > 1) {
       setSearchParams({ search: listSearch.join(";") });
@@ -48,16 +47,10 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     }
   }, [listSearch, setSearchParams]);
 
-  const changeOperators = (option: SearchField) => {
-    form.setFieldValue("search", "");
-    setComponentSelector(option);
-    setOperators(
-      option.type === "STRING" ? stringOperators : numericOrDateOperators
-    );
-  };
-
+  // função para criar os botões de filtro quando a página é carregada pela 1 vez e setar a listSearch inicial para
+  // posterior manipulação quando for adicionado ou removido um novo filtro
   const buildFiltersFromUrl = () => {
-    const searchParam: string | null = searchParams.get("search");
+    const searchParam = searchParams.get("search");
 
     if (searchParam) {
       let arraySearch: string[] = searchParam?.split(";");
@@ -86,10 +79,20 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
         });
       });
 
+      // cria os botões conforme filtros da url
       setFilters(filtersFromUrl);
 
+      // seta o listsearch com o search da url
       setListSearch([...listSearch, searchParam]);
     }
+  };
+
+  const changeOperators = (option: SearchField) => {
+    form.setFieldValue("search", "");
+    setComponentSelector(option);
+    setOperators(
+      option.type === "STRING" ? stringOperators : numericOrDateOperators
+    );
   };
 
   const executeSearch = (values: Fields) => {
@@ -163,85 +166,79 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   };
 
   return (
-    <>
-      <Form<Fields>
-        form={form}
-        id="form"
-        onFinish={executeSearch}
-        layout="inline"
+    <Form<Fields>
+      form={form}
+      id="form"
+      onFinish={executeSearch}
+      layout="inline"
+    >
+      <Form.Item
+        name="field"
+        id="searchselect"
+        style={{ width: "15em", margin: "7px" }}
+        rules={[{ required: true, message: "Informe o Campo!" }]}
       >
+        <Select
+          options={options}
+          onSelect={(value, option) => {
+            changeOperators(option);
+          }}
+          placeholder="Selecione um filtro"
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="operator"
+        style={{ width: "15em", margin: "7px" }}
+        rules={[{ required: true, message: "Informe o Operador!" }]}
+      >
+        <Select
+          options={operators}
+          disabled={operators.length === 0}
+          placeholder="Selecione um operador"
+        />
+      </Form.Item>
+
+      <div id="filterdate">
         <Form.Item
-          name="field"
-          id="searchselect"
-          style={{ width: "15em", margin: "7px" }}
-          rules={[{ required: true, message: "Informe o Campo!" }]}
+          name="search"
+          rules={[{ required: true, message: "Informe o filtro desejado!" }]}
         >
-          <Select
-            options={options}
-            onSelect={(value, option) => {
-              changeOperators(option);
-            }}
-            placeholder="Selecione um filtro"
-          />
+          {componentSelector.type === "NUMERIC" && (
+            <InputNumber
+              type="number"
+              placeholder="Informe um número"
+              id="filter"
+            />
+          )}
+          {componentSelector.type === "DATE" && <DatePicker />}
+          {componentSelector.type === "STRING" && (
+            <Input type="text" id="filter" placeholder="Informe um texto" />
+          )}
         </Form.Item>
+      </div>
 
-        <Form.Item
-          name="operator"
-          style={{ width: "15em", margin: "7px" }}
-          rules={[{ required: true, message: "Informe o Operador!" }]}
-        >
-          <Select
-            options={operators}
-            disabled={operators.length === 0}
-            placeholder="Selecione um operador"
-          />
-        </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit" id="searchbtn">
+          <SearchOutlined />
+          Pesquisar
+        </Button>
+      </Form.Item>
 
-        <div id="filterdate">
-          <Form.Item
-            name="search"
-            rules={[{ required: true, message: "Informe o filtro desejado!" }]}
-          >
-            {componentSelector.type === "NUMERIC" && (
-              <InputNumber
-                type="number"
-                placeholder="Informe um número"
-                id="filter"
-              />
-            )}
-            {componentSelector.type === "DATE" && <DatePicker />}
-            {componentSelector.type === "STRING" && (
-              <Input type="text" id="filter" placeholder="Informe um texto" />
-            )}
-          </Form.Item>
-        </div>
-
-        <Form.Item>
-          <Button htmlType="submit" id="searchbtn">
-            <SearchOutlined />
-            Pesquisar
+      <Form.Item>
+        <Button htmlType="button" id="searchbtn" onClick={() => removeFilter()}>
+          Limpar Filtros
+        </Button>
+      </Form.Item>
+      <div id="searchdiv">
+        {filters.map((filter) => (
+          <Button key={filter.id} id="searchfilters">
+            {filter.label}{" "}
+            <CloseCircleOutlined onClick={() => removeFilter(filter)} />
           </Button>
-        </Form.Item>
-
-        <Form.Item>
-          <Button
-            htmlType="button"
-            id="searchbtn"
-            onClick={() => removeFilter()}
-          >
-            Limpar Filtros
-          </Button>
-        </Form.Item>
-        <div id="searchdiv">
-          {filters.map((filter) => (
-            <Button key={filter.id} id="searchfilters">
-              {filter.label}{" "}
-              <CloseCircleOutlined onClick={() => removeFilter(filter)} />
-            </Button>
-          ))}
-        </div>
-      </Form>
-    </>
+        ))}
+      </div>
+    </Form>
   );
 };
 

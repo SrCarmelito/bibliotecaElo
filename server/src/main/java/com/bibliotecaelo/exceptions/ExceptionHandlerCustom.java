@@ -163,7 +163,7 @@ public class ExceptionHandlerCustom {
     @ExceptionHandler(UnknownPropertyException.class)
     public ResponseEntity<StandardError> rsqlUnknownProperty(UnknownPropertyException e, HttpServletRequest request) {
         Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
+        errors.add(e.getName());
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
         return ResponseEntity.status(status).body(err);

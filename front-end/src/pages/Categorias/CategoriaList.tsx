@@ -8,7 +8,6 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from "@ant-design/icons";
-import { useSearchParams } from "react-router-dom";
 import { useNotification } from "../../contexts/notificationContext";
 import { SearchField } from "../../type/SearchTypes";
 import {
@@ -19,6 +18,7 @@ import {
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
+import { getSearchParam } from "../../components/searchcomponent/searchFunction";
 
 const searchFields: SearchField[] = [
   {
@@ -38,7 +38,6 @@ const CategoriaList: React.FC = () => {
   const [modal, contextHolder] = Modal.useModal();
   const [titleModal, setTitleModal] = useState<string>();
   const [open, setOpen] = useState(false);
-  const [searchParams] = useSearchParams();
   const [form] = Form.useForm();
   const openNotification = useNotification();
   const [spinning, setSpinning] = useState(true);
@@ -48,7 +47,7 @@ const CategoriaList: React.FC = () => {
       pageSize: 20,
       position: ["topCenter"],
     },
-    search: undefined,
+    search: getSearchParam(),
   });
 
   const columns: ColumnsType<Categoria> = [
@@ -127,7 +126,7 @@ const CategoriaList: React.FC = () => {
       getRandomUserParams(tableParams).pagination,
       getRandomUserParams(tableParams).sortField,
       getRandomUserParams(tableParams).sortOrder,
-      search || searchParams.get("search")?.replaceAll("__", "")
+      getSearchParam()
     ).then((response) => {
       setCategorias(response.data.content);
       setTableParams({
@@ -136,7 +135,7 @@ const CategoriaList: React.FC = () => {
           ...tableParams.pagination,
           total: response.data.totalElements,
         },
-        search: search || searchParams.get("search")?.replaceAll("__", ""),
+        search: getSearchParam(),
       });
     });
     setSpinning(false);

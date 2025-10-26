@@ -7,9 +7,11 @@ import com.bibliotecaelo.repository.RsqlRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+@Slf4j
 public abstract class CrudService<E extends Entidade> {
 
     @PersistenceContext
@@ -28,7 +30,9 @@ public abstract class CrudService<E extends Entidade> {
 
     public E save(E entity) {
         beforeSave(entity);
-        return getRepository().saveAndFlush(entity);
+        E entitySaved = getRepository().saveAndFlush(entity);
+        log.info("Salvando a entidade {} - {}", entity.getClass().getSimpleName(), entitySaved);
+        return entitySaved;
     }
 
     public E findById(UUID id) {
@@ -43,11 +47,15 @@ public abstract class CrudService<E extends Entidade> {
 
     public E update(E entity) {
         beforeUpdate(entity);
-        return getRepository().saveAndFlush(entity);
+        E entityUpdated = getRepository().saveAndFlush(entity);
+        log.info("Atualizando a entidade {} - {}", entity.getClass().getSimpleName(), entityUpdated);
+        return entityUpdated;
     }
 
     public void deleteById(UUID id) {
         beforeDelete(id);
+        E entityDeleted = findById(id);
         getRepository().deleteById(id);
+        log.info("Deletado a entidade {}", entityDeleted);
     }
 }
