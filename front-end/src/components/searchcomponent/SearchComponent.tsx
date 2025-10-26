@@ -17,7 +17,7 @@ import {
 
 const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [form] = Form.useForm();
-  const [options, setOptions] = useState(optionsFilters);
+  const options = optionsFilters;
   const [operators, setOperators] = useState<BaseOptionType[]>([]);
   const [componentSelector, setComponentSelector] = useState<SearchField>(
     optionsFilters[0]
@@ -26,18 +26,17 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [listSearch, setListSearch] = useState<string[]>([]);
 
+  // constrói os botões de filtro para o usuário manipular quando a página é criada
   useEffect(() => {
     buildFiltersFromUrl();
   }, []);
 
-  useEffect(() => {
-    setOptions(optionsFilters);
-  }, [optionsFilters]);
-
+  // carregar os operadores sem ter que clicar em um option
   useEffect(() => {
     changeOperators(options[0]);
   }, [options]);
 
+  ///revisar para tentar eliminar esse useEffect
   useEffect(() => {
     if (listSearch.length > 1) {
       setSearchParams({ search: listSearch.join(";") });
@@ -48,16 +47,10 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     }
   }, [listSearch, setSearchParams]);
 
-  const changeOperators = (option: SearchField) => {
-    form.setFieldValue("search", "");
-    setComponentSelector(option);
-    setOperators(
-      option.type === "STRING" ? stringOperators : numericOrDateOperators
-    );
-  };
-
+  // função para criar os botões de filtro quando a página é carregada pela 1 vez e setar a listSearch inicial para
+  // posterior manipulação quando for adicionado ou removido um novo filtro
   const buildFiltersFromUrl = () => {
-    const searchParam: string | null = searchParams.get("search");
+    const searchParam = searchParams.get("search");
 
     if (searchParam) {
       let arraySearch: string[] = searchParam?.split(";");
@@ -86,10 +79,20 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
         });
       });
 
+      // cria os botões conforme filtros da url
       setFilters(filtersFromUrl);
 
+      // seta o listsearch com o search da url
       setListSearch([...listSearch, searchParam]);
     }
+  };
+
+  const changeOperators = (option: SearchField) => {
+    form.setFieldValue("search", "");
+    setComponentSelector(option);
+    setOperators(
+      option.type === "STRING" ? stringOperators : numericOrDateOperators
+    );
   };
 
   const executeSearch = (values: Fields) => {
@@ -148,14 +151,16 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     if (buttonFilter?.id) {
       setFilters(filters.filter((filter) => filter.id !== buttonFilter.id));
 
-      listSearch[0].split(";").length - 1 >= 1
-        ? setListSearch([
-            listSearch[0]
-              .split(";")
-              .filter((item) => item !== buttonFilter.id)
-              .join(";"),
-          ])
-        : setListSearch([]);
+      if (listSearch[0].split(";").length - 1 >= 1) {
+        setListSearch([
+          listSearch[0]
+            .split(";")
+            .filter((item) => item !== buttonFilter.id)
+            .join(";"),
+        ]);
+      } else {
+        setListSearch([]);
+      }
     } else {
       setFilters([]);
       setListSearch([]);

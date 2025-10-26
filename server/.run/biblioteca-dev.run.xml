@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="biblioteca-dev" type="Application" factoryName="Application">
     <envs>
-      <env name="DATABASE_PASSWORD" value="eloconta" />
+      <env name="DATABASE_PASSWORD" value="elo" />
       <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5432/postgres" />
-      <env name="DATABASE_USERNAME" value="elotech" />
+      <env name="DATABASE_USERNAME" value="postgres" />
       <env name="liquibaseSchema" value="biblioteca" />
-      <env name="spring.profiles.active" value="dev" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.bibliotecaelo.BibliotecaeloApplication" />
     <module name="bibliotecaelo" />
