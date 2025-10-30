@@ -65,11 +65,10 @@ const EmprestimoList: React.FC = () => {
   const openNotification = useNotification();
   const [modal, contextHolder] = Modal.useModal();
   const [open, setOpen] = useState(false);
-  const [titleModal, setTitleModal] = useState<string>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useLoading();
   const [livros, setLivros] = useState<Livro[]>([]);
-  const { token, usuario } = useAuth();
+  const { usuario } = useAuth();
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
@@ -179,11 +178,8 @@ const EmprestimoList: React.FC = () => {
   useEffect(findLivros, [setLivros]);
 
   const handleOpenModal = (emprestimo?: Emprestimo) => {
-    emprestimo
-      ? setTitleModal("Editando o Empréstimo")
-      : setTitleModal("Faça um novo Empréstimo");
-
     if (emprestimo) {
+      const isNew = form.getFieldValue("id") ? true : false;
       form.setFieldsValue(emprestimo);
       findLivroById(emprestimo?.livro?.id).then((response) => {
         setLivros([...livros, ...[response?.data]]);
@@ -251,7 +247,11 @@ const EmprestimoList: React.FC = () => {
       <Modal
         open={open}
         footer
-        title={titleModal}
+        title={
+          form.getFieldValue("id")
+            ? "Editando o Empréstimo"
+            : "Faça um novo Empréstimo"
+        }
         onCancel={() => handleCloseModal()}
       >
         <Spin spinning={loading} fullscreen />
@@ -320,7 +320,7 @@ const EmprestimoList: React.FC = () => {
           </Form.Item>
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit" block>
-              {token ? "Atualizar" : "Cadastrar"}
+              {form.getFieldValue("id") ? "Atualizar" : "Cadastrar"}
             </Button>
           </Form.Item>
         </Form>
