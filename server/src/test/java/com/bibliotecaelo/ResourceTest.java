@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles(value = "test")
+@ActiveProfiles("test")
 public class ResourceTest {
 
     @Autowired

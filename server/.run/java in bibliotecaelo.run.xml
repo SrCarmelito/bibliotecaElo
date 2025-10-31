@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="biblioteca-h2[test]" type="Application" factoryName="Application">
+  <configuration default="false" name="java in bibliotecaelo" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="bibliotecaelo" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
     <envs>
-      <env name="DATABASE_PASSWORD" value="eloconta" />
-      <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5432/postgres" />
-      <env name="DATABASE_USERNAME" value="elotech" />
-      <env name="liquibaseSchema" value="biblioteca" />
       <env name="spring.profiles.active" value="test" />
       <env name="ALGORITHM_SECRET_TOKEN" value="24c191160-f816-4385-8e98-5f9e3438060c" />
       <env name="MAIL_HOST" value="smtp.gmail.com" />
@@ -12,8 +12,7 @@
       <env name="MAIL_USERNAME" value="springappjava@gmail.com" />
       <env name="MAIL_PASSWORD" value="e m n s b q s s v p k t d y v b" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="com.bibliotecaelo.BibliotecaeloApplication" />
-    <module name="bibliotecaelo" />
+    <dir value="$PROJECT_DIR$/server/src/test/java" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
