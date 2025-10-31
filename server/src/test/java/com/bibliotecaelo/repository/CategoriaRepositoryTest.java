@@ -14,7 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles(value = "test")
+@ActiveProfiles("test")
 @Sql(scripts = {
         "/sql/categoria.sql"
 })
