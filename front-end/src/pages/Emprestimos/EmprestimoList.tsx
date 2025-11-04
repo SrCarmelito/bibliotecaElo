@@ -179,7 +179,6 @@ const EmprestimoList: React.FC = () => {
 
   const handleOpenModal = (emprestimo?: Emprestimo) => {
     if (emprestimo) {
-      const isNew = form.getFieldValue("id") ? true : false;
       form.setFieldsValue(emprestimo);
       findLivroById(emprestimo?.livro?.id).then((response) => {
         setLivros([...livros, ...[response?.data]]);
@@ -213,7 +212,6 @@ const EmprestimoList: React.FC = () => {
               : "Empréstimo Cadastrado com Sucesso!";
           openNotification("success", msg);
           handleCloseModal();
-          fetchData();
         })
         .then(() => fetchData())
         .catch((errors) => {
