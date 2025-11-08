@@ -2,6 +2,7 @@ import "./MenuApp.css";
 import {
   BookTwoTone,
   DollarTwoTone,
+  HomeOutlined,
   LogoutOutlined,
   OrderedListOutlined,
   UserOutlined,
@@ -22,21 +23,26 @@ export const MenuApp: React.FC = () => {
       children: [
         {
           key: "1",
+          label: <a href="/inicio">Recomendações</a>,
+          icon: <HomeOutlined />,
+        },
+        {
+          key: "2",
           label: <a href="/livros">Livros</a>,
           icon: <BookTwoTone />,
         },
         {
-          key: "2",
+          key: "3",
           label: <a href="/categorias">Categorias</a>,
           icon: <OrderedListOutlined />,
         },
         {
-          key: "3",
+          key: "4",
           label: <a href="/emprestimos">Empréstimos</a>,
           icon: <DollarTwoTone />,
         },
         {
-          key: "4",
+          key: "5",
           label: <a href="/minhaconta">Minha conta</a>,
           icon: <UserOutlined />,
         },

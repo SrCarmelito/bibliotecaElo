@@ -15,7 +15,7 @@ public class RecomendacaoService {
 
     private final LivroRepository livroRepository;
 
-    public Page<Livro> getRecomendacoes(UUID usuarioId) {
-        return livroRepository.getRecomendacoes(usuarioId, Pageable.ofSize(20));
+    public Page<Livro> getRecomendacoes(UUID usuarioId, Pageable pageable) {
+        return livroRepository.getRecomendacoes(usuarioId, pageable);
     }
 }

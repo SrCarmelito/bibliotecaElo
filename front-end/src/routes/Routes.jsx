@@ -9,6 +9,7 @@ import LoginForm from "../pages/login/LoginForm";
 import CategoriaList from "../pages/Categorias/CategoriaList";
 import ResetPasswordForm from "../pages/reset-password/ResetPasswordForm";
 import EmprestimoList from "../pages/Emprestimos/EmprestimoList";
+import Recomendacoes from "../pages/Recomendacoes/Recomendacoes";
 
 const RoutesApp = () => {
   return (
@@ -25,6 +26,7 @@ const RoutesApp = () => {
             <Route path="/categorias" element={<CategoriaList />} />
             <Route path="/minhaconta" element={<CreateUser />} />
             <Route path="/emprestimos" element={<EmprestimoList />} />
+            <Route path="/inicio" element={<Recomendacoes />} />
           </Route>
         </>
       </Routes>
