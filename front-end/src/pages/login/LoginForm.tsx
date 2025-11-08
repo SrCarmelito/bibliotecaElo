@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
   const { signIn, token } = useAuth();
 
   if (token) {
-    navigate("/livros");
+    navigate("/inicio");
   }
 
   const onSubmit = (loginDTO: LoginDTO) => {
@@ -32,7 +32,7 @@ const LoginForm: React.FC = () => {
     login(loginDTO)
       .then((data) => {
         signIn(data.data);
-        navigate("/livros");
+        navigate("/inicio");
       })
       .then(() => setSpinning(false))
       .catch((errors) => {

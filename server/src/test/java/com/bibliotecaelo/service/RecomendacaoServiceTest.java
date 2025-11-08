@@ -34,10 +34,11 @@ class RecomendacaoServiceTest {
     void getRecomendacoes() {
         UUID usuarioId = UUID.randomUUID();
         Page<Livro> pageToReturn = new PageImpl<>(List.of(LivroFixtures.LivroOProcesso()));
+        Pageable pageable = Pageable.ofSize(20);
 
-        when(livroRepository.getRecomendacoes(usuarioId, Pageable.ofSize(20))).thenReturn(pageToReturn);
+        when(livroRepository.getRecomendacoes(usuarioId, pageable)).thenReturn(pageToReturn);
 
-        Page<Livro> result = recomendacaoService.getRecomendacoes(usuarioId);
+        Page<Livro> result = recomendacaoService.getRecomendacoes(usuarioId, pageable);
 
         assertThat(result).extracting(Livro::getId).containsOnlyOnce(
                 UUID.fromString("feb95cc3-8d9a-4cfb-be4e-8147fb195ec0"));
@@ -49,7 +50,7 @@ class RecomendacaoServiceTest {
                 UUID.fromString("be1ffc1e-aa98-4dce-9fa6-20233409b82d"));
         assertThat(result).extracting(l -> l.getCategoria().getDescricao()).containsOnlyOnce("Policial");
 
-        verify(livroRepository).getRecomendacoes(usuarioId, Pageable.ofSize(20));
+        verify(livroRepository).getRecomendacoes(usuarioId, pageable);
         verifyNoMoreInteractions(livroRepository);
     }
 }
