@@ -22,12 +22,11 @@ const Recomendacoes = () => {
     <>
       <Row gutter={12}>
         {livros.map((livro) => (
-          <Col span={6}>
+          <Col span={6} key={livro.id}>
             <Card
               loading={loading}
               title={livro.titulo}
               variant="outlined"
-              key={livro.id}
               size="small"
               hoverable
             >
