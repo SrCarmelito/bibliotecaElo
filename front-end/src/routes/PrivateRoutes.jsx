@@ -9,7 +9,7 @@ const PrivateRoutes = () => {
   return token || location.pathname.includes("/signup") ? (
     <div style={{ display: "flex" }}>
       <MenuApp />
-      <div style={{ width: "100%", marginLeft: "80px" }}>
+      <div style={{ width: "100%", marginLeft: "80px", marginTop: "2%" }}>
         <Outlet />
       </div>
     </div>
