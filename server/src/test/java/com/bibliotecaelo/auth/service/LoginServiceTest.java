@@ -2,14 +2,16 @@ package com.bibliotecaelo.auth.service;
 
 import java.util.Optional;
 
+import com.bibliotecaelo.auth.dto.EmailDTO;
 import com.bibliotecaelo.auth.dto.LoginDTO;
+import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,26 +49,33 @@ class LoginServiceTest {
     @Mock
     UserValidations userValidations;
 
-    Usuario usuario = UsuarioFixtures.usuarioPele();
+    @BeforeEach
+    void setUp(){
+        usuario = UsuarioFixtures.usuarioPele();
+        emailDTO = new EmailDTO();
+        emailDTO.setEmail("carmelito.benali@ig.com");
+    }
+
+    Usuario usuario;
+    EmailDTO emailDTO;
 
     @Test
     void resetPassword() throws Exception {
-        int EXPIRATION_TIME_NEW_PASSWORD = 5;
-        String userMail = usuario.getEmail().replace("{\"email\":\"", "").replace("\"}", "");
+        int EXPIRATION_INT_MINUTES_NEW_PASSWORD = 5;
 
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
 
-        when(usuarioRepository.findByEmail(any(String.class))).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmail(emailDTO.getEmail())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.saveAndFlush(usuario)).thenReturn(usuario);
-        when(tokenService.gerarToken(usuario, EXPIRATION_TIME_NEW_PASSWORD)).thenReturn("123");
-        when(emailService.enviarEmail(eq(userMail), eq("Carmelito - App"), any(String.class))).thenReturn("123");
+        when(tokenService.gerarToken(usuario, EXPIRATION_INT_MINUTES_NEW_PASSWORD)).thenReturn("123");
+        when(emailService.enviarEmail(eq(emailDTO.getEmail()), eq("Carmelito - App"), any(String.class))).thenReturn("123");
 
-        loginService.resetPassword(servletRequest, usuario.getEmail());
+        loginService.resetPassword(servletRequest, emailDTO);
 
         verify(usuarioRepository).findByEmail(any());
         verify(usuarioRepository).saveAndFlush(any());
-        verify(tokenService).gerarToken(usuario, EXPIRATION_TIME_NEW_PASSWORD);
-        verify(emailService).enviarEmail(eq(userMail), eq("Carmelito - App"), any(String.class));
+        verify(tokenService).gerarToken(usuario, EXPIRATION_INT_MINUTES_NEW_PASSWORD);
+        verify(emailService).enviarEmail(eq(emailDTO.getEmail()), eq("Carmelito - App"), any(String.class));
         verifyNoMoreInteractions(usuarioRepository);
     }
 
@@ -77,10 +86,10 @@ class LoginServiceTest {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.empty());
 
         String mensagemEmailNaoCadastrado = assertThrows(IllegalArgumentException.class,
-                () -> loginService.resetPassword(servletRequest, "12345"))
+                () -> loginService.resetPassword(servletRequest, emailDTO))
                 .getMessage();
 
-        assertThat(mensagemEmailNaoCadastrado).isEqualTo("Não corresponde a um e-mail Cadastrado");
+        assertThat(mensagemEmailNaoCadastrado).isEqualTo("Não corresponde a um e-mail cadastrado.");
     }
 
     @Test

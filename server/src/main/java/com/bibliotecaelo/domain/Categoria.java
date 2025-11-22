@@ -6,6 +6,7 @@ import com.bibliotecaelo.audit.AuditListener;
 import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.audit.domain.AuditInfo;
 import com.bibliotecaelo.interfaces.Entidade;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -30,8 +31,9 @@ public class Categoria implements Auditable, Entidade {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(unique = true)
     @Size(max = 1000)
-    @NotBlank(message = "É necessário informar a descricao da Categoria")
+    @NotBlank(message = "É necessário informar a descrição da categoria")
     private String descricao;
 
     @Embedded

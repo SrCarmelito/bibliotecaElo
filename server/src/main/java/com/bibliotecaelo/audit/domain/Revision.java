@@ -3,7 +3,7 @@ package com.bibliotecaelo.audit.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.bibliotecaelo.audit.EnversListener;
+import com.bibliotecaelo.audit.RevisionListenerImpl;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,15 +16,15 @@ import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
-@Table(name = "revision", schema = "biblioteca")
+@Table(schema = "biblioteca",name = "revision")
 @Data
 @Entity
-@RevisionEntity(EnversListener.class)
+@RevisionEntity(RevisionListenerImpl.class)
 public class Revision {
 
     @Id
     @RevisionNumber
-    @SequenceGenerator(name = "seq_revision", schema = "biblioteca", sequenceName = "seq_revision", allocationSize=1)
+    @SequenceGenerator(schema = "biblioteca", name = "seq_revision", sequenceName = "seq_revision", allocationSize=1)
     @GeneratedValue(generator = "seq_revision")
     @Column(name = "revisionnumber")
     private Long revisionNumber;

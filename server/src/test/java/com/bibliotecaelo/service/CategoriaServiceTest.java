@@ -9,6 +9,7 @@ import com.bibliotecaelo.fixtures.CategoriaFixtures;
 import com.bibliotecaelo.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,35 +35,45 @@ class CategoriaServiceTest {
     @Mock
     CategoriaRepository repository;
 
-    Categoria categoria = CategoriaFixtures.CategoriaPolicial();
+    @BeforeEach
+    void setUp() {
+        categoria = CategoriaFixtures.CategoriaPolicial();
+    }
+
+    Categoria categoria;
 
     @Test
-    void beforeSave() {
-        service.beforeSave(categoria);
+    void beforeInsert() {
+        service.beforeInsert(categoria);
 
         verify(repository).existsByDescricao(categoria.getDescricao());
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void save() {
-        when(repository.saveAndFlush(categoria)).thenReturn(categoria);
+    void insert() {
+        Categoria categoriaToSave = CategoriaFixtures.CategoriaPolicial();
+        categoriaToSave.setId(null);
 
-        Categoria categoriaSaved = service.save(categoria);
+        when(repository.saveAndFlush(categoriaToSave)).thenReturn(categoria);
+
+        Categoria categoriaSaved = service.insert(categoriaToSave);
 
         assertThat(categoriaSaved.getId()).isNotNull();
         assertThat(categoriaSaved.getDescricao()).isEqualTo("Policial");
 
-        verify(repository).existsByDescricao(categoria.getDescricao());
-        verify(repository).saveAndFlush(categoria);
+        verify(repository).existsByDescricao(categoriaToSave.getDescricao());
+        verify(repository).saveAndFlush(categoriaToSave);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
     void saveThrowsExistsByDescricaoTrue() {
+        categoria.setId(null);
+
         when(repository.existsByDescricao(categoria.getDescricao())).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> service.save(categoria));
+        assertThrows(ValidationException.class, () -> service.insert(categoria));
     }
 
     @Test

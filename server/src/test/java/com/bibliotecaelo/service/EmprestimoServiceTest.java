@@ -17,6 +17,7 @@ import com.bibliotecaelo.repository.LivroRepository;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,16 +49,23 @@ class EmprestimoServiceTest {
     @Mock
     UsuarioRepository usuarioRepository;
 
-    Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
-    Usuario usuario = UsuarioFixtures.usuarioPele();
-    Livro livro = LivroFixtures.LivroOProcesso();
+    @BeforeEach
+    void setUp() {
+        emprestimo = EmprestimoFixtures.EmprestimoValido();
+        usuario = UsuarioFixtures.usuarioPele();
+        livro = LivroFixtures.LivroOProcesso();
+    }
+
+    Emprestimo emprestimo;
+    Usuario usuario;
+    Livro livro;
 
     @Test
-    void beforeSave() {
+    void beforeInsert() {
         when(usuarioRepository.findById(emprestimo.getUsuario().getId())).thenReturn(Optional.ofNullable(usuario));
         when(livroRepository.findById(emprestimo.getLivro().getId())).thenReturn(Optional.ofNullable(livro));
 
-        service.beforeSave(emprestimo);
+        service.beforeInsert(emprestimo);
 
         verify(emprestimoRepository).existsByLivroIdAndStatus(emprestimo.getLivro().getId(), StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
         verify(usuarioRepository).findById(emprestimo.getUsuario().getId());
@@ -67,12 +75,14 @@ class EmprestimoServiceTest {
     }
 
     @Test
-    void beforeSaveExistsByLivroIdAndStatusTRUE() {
+    void beforeInsertExistsByLivroIdAndStatusTRUE() {
+        emprestimo.setId(null);
+
         when(emprestimoRepository.existsByLivroIdAndStatus(
                 emprestimo.getLivro().getId(),
                 StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> service.save(emprestimo));
+        assertThrows(ValidationException.class, () -> service.insert(emprestimo));
     }
 
     @Test
@@ -85,7 +95,7 @@ class EmprestimoServiceTest {
                         emprestimo.getDataDevolucao()))
         .getMessage();
 
-        assertThat(errorMessage).isEqualTo("Data da Devolução menor que a data do Empréstimo, verifique!");
+        assertThat(errorMessage).isEqualTo("Data da devolução menor que a data do empréstimo, verifique.");
     }
 
     @Test
@@ -98,12 +108,15 @@ class EmprestimoServiceTest {
     }
 
     @Test
-    void save() {
+    void insert() {
+        Emprestimo emprestimoToSave = EmprestimoFixtures.EmprestimoValido();
+        emprestimoToSave.setId(null);
+
         when(usuarioRepository.findById(emprestimo.getUsuario().getId())).thenReturn(Optional.ofNullable(usuario));
         when(livroRepository.findById(emprestimo.getLivro().getId())).thenReturn(Optional.ofNullable(livro));
-        when(emprestimoRepository.saveAndFlush(emprestimo)).thenReturn(emprestimo);
+        when(emprestimoRepository.saveAndFlush(emprestimoToSave)).thenReturn(emprestimo);
 
-        Emprestimo emprestimoSaved = service.save(emprestimo);
+        Emprestimo emprestimoSaved = service.insert(emprestimoToSave);
 
         assertThat(emprestimoSaved.getId()).isNotNull();
         assertThat(emprestimoSaved.getDataEmprestimo()).isEqualTo(LocalDate.of(2021, 12, 8));
@@ -189,7 +202,7 @@ class EmprestimoServiceTest {
     @Test
     void update() {
         Emprestimo emprestimToUpdate = emprestimo;
-        emprestimToUpdate.setDataDevolucao(LocalDate.of(2025, 03, 19));
+        emprestimToUpdate.setDataDevolucao(LocalDate.of(2025, 3, 19));
         emprestimToUpdate.setStatus(StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
 
         when(emprestimoRepository.saveAndFlush(emprestimToUpdate)).thenReturn(emprestimToUpdate);
@@ -197,7 +210,7 @@ class EmprestimoServiceTest {
         Emprestimo emprestimoUpdated = service.update(emprestimToUpdate);
 
         assertThat(emprestimoUpdated.getId()).isEqualTo(UUID.fromString("2cd3f08f-60c7-4214-ac82-b89550ed8992"));
-        assertThat(emprestimoUpdated.getDataDevolucao()).isEqualTo(LocalDate.of(2025, 03, 19));
+        assertThat(emprestimoUpdated.getDataDevolucao()).isEqualTo(LocalDate.of(2025, 3, 19));
         assertThat(emprestimoUpdated.getStatus()).isEqualTo(StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO);
 
         assertThat(emprestimoUpdated.getUsuario().getId()).isEqualTo(UUID.fromString("f5070c94-c1ec-4be1-96cf-db855e3c5a1b"));

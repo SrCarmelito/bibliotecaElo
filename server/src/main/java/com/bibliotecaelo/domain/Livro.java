@@ -35,24 +35,26 @@ public class Livro implements Auditable, Entidade {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(unique = true)
     @Size(max = 1000)
-    @NotBlank(message = "É Necessário Informar o Título do Livro!")
+    @NotBlank(message = "É necessário informar o título do livro.")
     private String titulo;
 
     @Size(max = 1000)
-    @NotBlank(message = "É Necessário Informar o Autor do Livro!")
+    @NotBlank(message = "É necessário informar o autor do livro.")
     private String autor;
 
+    @Column(unique = true)
     @Size(max = 13)
-    @NotBlank(message = "É Necessário Informar o código ISBN do Livro!")
+    @NotBlank(message = "É necessário informar o código ISBN do livro.")
     private String isbn;
 
     @Column(name = "data_publicacao")
-    @NotNull(message = "É Necessário Informar a Data de Publicação do Livro!")
+    @NotNull(message = "É necessário informar a data de publicação do livro.")
     private LocalDate dataPublicacao;
 
     @ManyToOne
-    @NotNull(message = "É Necessário Informar a Categoria do Livro!")
+    @NotNull(message = "É necessário informar a categoria do livro.")
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 

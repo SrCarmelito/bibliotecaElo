@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -29,7 +28,7 @@ class LivroRepositoryTest {
     CategoriaRepository categoriaRepository;
 
     @Test
-    void save() {
+    void insert() {
         Livro livro = LivroFixtures.LivroOProcesso();
         livro.setCategoria(categoriaRepository.findById(UUID.fromString("58aa185e-51ee-4120-bcae-c53fb5b74d5e")).orElseThrow());
 
@@ -45,19 +44,18 @@ class LivroRepositoryTest {
     }
 
     @Test
-    @WithMockUser
     void update() {
         Livro livroParaAtualizar = repository.findById(UUID.fromString("de1c8bd9-755d-4f02-9c9b-781c25674109")).orElseThrow();
 
         livroParaAtualizar.setCategoria(categoriaRepository.findById(UUID.fromString("58aa185e-51ee-4120-bcae-c53fb5b74d5e")).orElseThrow());
-        livroParaAtualizar.setTitulo("Titulo Atualizado no Teste!!!");
+        livroParaAtualizar.setTitulo("Titulo atualizado no teste");
         livroParaAtualizar.setDataPublicacao(LocalDate.of(1995, 12, 28));
-        livroParaAtualizar.setAutor("Autor Modificado");
+        livroParaAtualizar.setAutor("Autor modificado");
 
         Livro livroAtualizado = repository.saveAndFlush(livroParaAtualizar);
 
-        assertThat(livroAtualizado.getTitulo()).isEqualTo("Titulo Atualizado no Teste!!!");
-        assertThat(livroAtualizado.getAutor()).isEqualTo("Autor Modificado");
+        assertThat(livroAtualizado.getTitulo()).isEqualTo("Titulo atualizado no teste");
+        assertThat(livroAtualizado.getAutor()).isEqualTo("Autor modificado");
         assertThat(livroAtualizado.getDataPublicacao()).isEqualTo(LocalDate.of(1995, 12, 28));
 
         assertThat(livroAtualizado.getCategoria().getId()).isEqualTo(UUID.fromString("58aa185e-51ee-4120-bcae-c53fb5b74d5e"));
@@ -79,10 +77,11 @@ class LivroRepositoryTest {
 
     @Test
     void deleteById() {
+        assertThat(repository.existsById(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f"))).isTrue();
+
         repository.deleteById(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f"));
 
-        assertThat(repository.findAll()).extracting(Livro::getId)
-                .doesNotContain(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f"));
+        assertThat(repository.existsById(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f"))).isFalse();
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.bibliotecaelo.domain.Livro;
 import com.bibliotecaelo.dto.LivroDTO;
 import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.service.LivroService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -35,12 +36,18 @@ class LivroResourceTest extends ResourceTest {
     @MockBean
     LivroService service;
 
-    Livro livro = LivroFixtures.LivroOProcesso();
-    LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
+    @BeforeEach
+    void setUpTest() {
+        livro = LivroFixtures.LivroOProcesso();
+        livroDTO = LivroFixtures.LivroDTOOCortico();
+    }
+
+    Livro livro;
+    LivroDTO livroDTO;
 
     @Test
     void create() throws Exception {
-        when(service.save(any(Livro.class))).thenReturn(livro);
+        when(service.insert(any(Livro.class))).thenReturn(livro);
 
         mockMvc.perform(post("/api/livros")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -53,7 +60,7 @@ class LivroResourceTest extends ResourceTest {
                 .andExpect(jsonPath("$.dataPublicacao", equalTo("2010-05-17")))
                 .andExpect(jsonPath("$.categoria.descricao", equalTo("Policial")));
 
-        verify(service).save(any(Livro.class));
+        verify(service).insert(any(Livro.class));
         verifyNoMoreInteractions(service);
     }
 

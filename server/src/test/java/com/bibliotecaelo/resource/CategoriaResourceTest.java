@@ -9,6 +9,7 @@ import com.bibliotecaelo.domain.Categoria;
 import com.bibliotecaelo.dto.CategoriaDTO;
 import com.bibliotecaelo.fixtures.CategoriaFixtures;
 import com.bibliotecaelo.service.CategoriaService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,12 +41,18 @@ class CategoriaResourceTest extends ResourceTest {
     @Autowired
     CategoriaDTOConverter dtoConverter;
 
-    Categoria categoria = CategoriaFixtures.CategoriaPolicial();
-    CategoriaDTO categoriaDTO = CategoriaFixtures.CategoriaDTORomance();
+    @BeforeEach
+    void setUpTest() {
+        categoria = CategoriaFixtures.CategoriaPolicial();
+        categoriaDTO = CategoriaFixtures.CategoriaDTORomance();
+    }
+
+    Categoria categoria;
+    CategoriaDTO categoriaDTO;
 
     @Test
     void create() throws Exception {
-        when(service.save(any(Categoria.class))).thenReturn(dtoConverter.from(categoriaDTO));
+        when(service.insert(any(Categoria.class))).thenReturn(dtoConverter.from(categoriaDTO));
 
         mockMvc.perform(post("/api/categorias")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +62,7 @@ class CategoriaResourceTest extends ResourceTest {
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.descricao", equalTo("Romance")));
 
-        verify(service).save(any(Categoria.class));
+        verify(service).insert((any(Categoria.class)));
         verifyNoMoreInteractions(service);
     }
 

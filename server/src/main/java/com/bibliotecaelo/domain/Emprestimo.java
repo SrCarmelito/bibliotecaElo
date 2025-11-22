@@ -40,25 +40,25 @@ public class Emprestimo
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @NotNull(message = "É Necessário Informar o usuário!")
+    @NotNull(message = "É necessário informar o usuário.")
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "livro_id")
-    @NotNull(message = "É Necessário Informar o Livro!")
+    @NotNull(message = "É necessário informar o livro.")
     private Livro livro;
 
     @Column(name = "data_emprestimo")
-    @PastOrPresent(message = "Data de Empréstimo não pode ser futura!")
-    @NotNull(message = "É Necessário Informar a Data de Empréstimo do Livro!")
+    @PastOrPresent(message = "Data do empréstimo não pode ser futura.")
+    @NotNull(message = "É necessário informar a data de empréstimo do livro.")
     private LocalDate dataEmprestimo;
 
     @Column(name = "data_devolucao")
-    @NotNull(message = "É Necessário Informar a Data de Devolução do Livro!")
+    @NotNull(message = "É necessário informar a data de devolução do livro.")
     private LocalDate dataDevolucao;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "É Necessário Informar a Status do Empréstimo!")
+    @NotNull(message = "É necessário informar o status do empréstimo.")
     private StatusEmprestimoEnum status;
 
     @Embedded

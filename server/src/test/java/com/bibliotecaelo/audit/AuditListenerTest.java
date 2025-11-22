@@ -128,7 +128,7 @@ class AuditListenerTest {
         assertThat(usuarioAudit.getNome()).isEqualTo("Nome modificado");
         assertThat(usuarioAudit.getTelefone()).isEqualTo("1234567890");
 
-        assertThat(usuarioAudit.getAudit().getUsuarioAlteracao()).isEqualTo("junior");
+        assertThat(usuarioAudit.getAudit().getUsuarioAlteracao()).isEqualTo("Carmelito Junior Delcielo Benali");
         assertThat(usuarioAudit.getAudit().getUsuarioCriacao()).isEqualTo("system");
         assertThat(usuarioAudit.getAudit().getDataAlteracao().toLocalDate()).isEqualTo(LocalDate.now());
     }

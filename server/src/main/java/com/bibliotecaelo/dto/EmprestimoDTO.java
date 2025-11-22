@@ -16,20 +16,20 @@ public class EmprestimoDTO
 
     private UUID id;
 
-    @NotNull(message = "É Necessário Informar o usuário!")
+    @NotNull(message = "É necessário informar o usuário.")
     private UsuarioResponseDTO usuario;
 
-    @NotNull(message = "É Necessário Informar o Livro!")
+    @NotNull(message = "É necessário informar o livro.")
     private LivroDTO livro;
 
-    @PastOrPresent(message = "Data de Empréstimo não pode ser futura!")
-    @NotNull(message = "É Necessário Informar a Data de Empréstimo do Livro!")
+    @PastOrPresent(message = "Data de empréstimo não pode ser futura.")
+    @NotNull(message = "É necessário informar a data de empréstimo do livro.")
     private LocalDate dataEmprestimo;
 
-    @NotNull(message = "É Necessário Informar a Data de Devolução do Livro!")
+    @NotNull(message = "É necessário informar a data de devolução do livro.")
     private LocalDate dataDevolucao;
 
-    @NotNull(message = "É Necessário Informar a Status do Livro!")
+    @NotNull(message = "É necessário informar a status do livro.")
     private StatusEmprestimoEnum status;
 
 }

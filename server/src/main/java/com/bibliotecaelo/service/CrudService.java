@@ -1,5 +1,6 @@
 package com.bibliotecaelo.service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.bibliotecaelo.interfaces.Entidade;
@@ -19,17 +20,19 @@ public abstract class CrudService<E extends Entidade> {
 
     public abstract RsqlRepository<E, UUID> getRepository();
 
-    public void beforeDelete(UUID id) {
-    }
+    public void beforeDelete(UUID id) {}
 
-    public void beforeSave(E entity) {
-    }
+    public void beforeInsert(E entity) {}
 
-    public void beforeUpdate(E entity) {
-    }
+    public void beforeUpdate(E entity) {}
 
-    public E save(E entity) {
-        beforeSave(entity);
+    public E insert(E entity) {
+
+        if(!Objects.isNull(entity.getId())) {
+            throw new IllegalStateException("Entidade já criada, utilize o método update.");
+        }
+
+        beforeInsert(entity);
         E entitySaved = getRepository().saveAndFlush(entity);
         log.info("Salvando a entidade {} - {}", entity.getClass().getSimpleName(), entitySaved);
         return entitySaved;
