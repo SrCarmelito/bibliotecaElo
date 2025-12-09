@@ -1,9 +1,9 @@
+import { sortResolver } from "../functions/sortResolver";
 import { PagedResponse } from "../interfaces/PagedResponse";
 import { Livro } from "./../type/Livro.d";
 import axios, { AxiosPromise } from "axios";
-import { sortResolver } from "./sortResolver";
 
-const resource = `${process.env.REACT_APP_URL_SERVER}/api/livros`;
+const resource = "/livros";
 
 export const findById = (livroId?: string): AxiosPromise<Livro> => {
   return axios.get(`${resource}/${livroId}`);

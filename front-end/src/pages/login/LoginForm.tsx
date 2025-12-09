@@ -13,11 +13,13 @@ import {
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import { Email } from "../../type/Email";
+import { useLoading } from "../../consts/useLoading";
+import { handleApiError } from "../../functions/handleApiError";
 
 const LoginForm: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
-  const [spinning, setSpinning] = useState(false);
+  const [loading, setLoading] = useLoading();
   const [form] = Form.useForm();
   const openNotification = useNotification();
   const navigate = useNavigate();
@@ -28,54 +30,44 @@ const LoginForm: React.FC = () => {
   }
 
   const onSubmit = (loginDTO: LoginDTO) => {
-    setSpinning(true);
-    login(loginDTO)
-      .then((data) => {
-        signIn(data.data);
-        navigate("/inicio");
-      })
-      .then(() => setSpinning(false))
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", "", msg);
-        });
-        setSpinning(false);
-      });
+    setLoading(
+      login(loginDTO)
+        .then((data) => {
+          signIn(data.data);
+          navigate("/inicio");
+        })
+        .catch((errors) =>
+          handleApiError(openNotification, errors, "Falha ao logar no sistema.")
+        )
+    );
   };
 
   const changePassword = (e: Email) => {
-    setSpinning(true);
-    resetPassword(e)
-      .then((res) => {
-        modal.success({
-          title: "Alteração de Senha solicitada com sucesso",
-          content: "Verifique seu e-mail e siga as instruções",
-          icon: <CheckCircleFilled />,
-        });
-        setOpen(!open);
-      })
-      .then(() => setSpinning(false))
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", e.email, msg);
-        });
-        setSpinning(false);
-      });
+    setLoading(
+      resetPassword(e)
+        .then((res) => {
+          modal.success({
+            title: "Alteração de senha solicitada com sucesso.",
+            content: "Verifique seu e-mail e siga as instruções.",
+            icon: <CheckCircleFilled />,
+          });
+          setOpen(!open);
+        })
+        .catch((errors) =>
+          handleApiError(
+            openNotification,
+            errors,
+            "Falha ao iniciar a troca de senha."
+          )
+        )
+    );
     form.setFieldValue("email", "");
   };
 
   return (
     <>
       <Form<LoginDTO> onFinish={onSubmit} id="styledform">
-        <Spin spinning={spinning} fullscreen />
+        <Spin spinning={loading} fullscreen />
         <Title level={3}>Entrar</Title>
         <Form.Item
           name="login"
@@ -118,7 +110,7 @@ const LoginForm: React.FC = () => {
         title="Troca de senha"
         onCancel={() => setOpen(!open)}
       >
-        <Spin spinning={spinning} fullscreen />
+        <Spin spinning={loading} fullscreen />
         <p>
           Insira seu e-mail no campo abaixo e clique em Altear senha. Será
           encaminhado um e-mail com as instruções para confirmação da troca de

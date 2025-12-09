@@ -1,7 +1,8 @@
 export type SearchField = {
   value: string;
   label: string;
-  type: string;
+  type: "STRING" | "NUMERIC" | "DATE" | "ENUM";
+  enumValues?: any;
 };
 
 export type Props = {

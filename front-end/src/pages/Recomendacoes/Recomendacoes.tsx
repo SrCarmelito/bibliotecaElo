@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Livro } from "../../type/Livro";
 import { Card, Col, Row } from "antd";
-import { useLoading } from "../../components/searchcomponent/useLoading";
+import { useLoading } from "../../consts/useLoading";
 import { recomendacoes } from "../../service/RecomendacaoService";
 
 const Recomendacoes = () => {

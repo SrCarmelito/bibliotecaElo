@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Modal,
-  Form,
-  Table,
-  TableProps,
-  Spin,
-  DatePicker,
-  Select,
-} from "antd";
+import { Button, Modal, Form, Table, Spin, DatePicker, Select } from "antd";
 import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { SearchField } from "../../type/SearchTypes";
 import { Emprestimo } from "../../type/Emprestimo";
@@ -26,7 +17,9 @@ import { Livro } from "../../type/Livro";
 import { useAuth } from "../../contexts/authContext";
 import { useNotification } from "../../contexts/notificationContext";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
-import { useLoading } from "../../components/searchcomponent/useLoading";
+import { useLoading } from "../../consts/useLoading";
+import { handleApiError } from "../../functions/handleApiError";
+import { genericTableChange } from "../../functions/genericTableChange";
 
 const searchFields: SearchField[] = [
   {
@@ -46,8 +39,9 @@ const searchFields: SearchField[] = [
   },
   {
     label: "Situação",
-    type: "DATE",
-    value: "dataDevolucao",
+    type: "ENUM",
+    value: "status",
+    enumValues: StatusEmprestimoEnum,
   },
 ];
 
@@ -77,6 +71,11 @@ const EmprestimoList: React.FC = () => {
     },
     search: getSearchParam(),
   });
+  const { handleTableChange } = genericTableChange<Emprestimo>(
+    tableParams,
+    setTableParams,
+    setEmprestimos
+  );
 
   const columns: ColumnsType<Emprestimo> = [
     {
@@ -121,23 +120,6 @@ const EmprestimoList: React.FC = () => {
       ),
     },
   ];
-
-  const handleTableChange: TableProps<Emprestimo>["onChange"] = (
-    pagination,
-    filters,
-    sorter
-  ) => {
-    setTableParams({
-      pagination,
-      filters,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-    });
-
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setEmprestimos([]);
-    }
-  };
 
   const fetchData = (search?: string) => {
     setLoading(
@@ -208,21 +190,19 @@ const EmprestimoList: React.FC = () => {
         .then((res) => {
           const msg =
             res.config.method === "put"
-              ? "Empréstimo Atualizado com Sucesso!"
-              : "Empréstimo Cadastrado com Sucesso!";
+              ? "Empréstimo atualizado com sucesso."
+              : "Empréstimo cadastrado com sucesso.";
           openNotification("success", msg);
           handleCloseModal();
         })
         .then(() => fetchData())
-        .catch((errors) => {
-          const erros = errors.response?.data.errors;
-          if (!erros) {
-            throw erros;
-          }
-          erros.forEach((msg: string) => {
-            openNotification("error", "Falha ao Cadastrar o Empréstimo", msg);
-          });
-        })
+        .catch((errors) =>
+          handleApiError(
+            openNotification,
+            errors,
+            "Falha ao realizar o empréstimo."
+          )
+        )
     );
   };
 
@@ -247,8 +227,8 @@ const EmprestimoList: React.FC = () => {
         footer
         title={
           form.getFieldValue("id")
-            ? "Editando o Empréstimo"
-            : "Faça um novo Empréstimo"
+            ? "Editando o Empréstimo."
+            : "Faça um novo Empréstimo."
         }
         onCancel={() => handleCloseModal()}
       >
@@ -264,7 +244,7 @@ const EmprestimoList: React.FC = () => {
           <Form.Item
             label="Livro"
             name="livro"
-            rules={[{ required: true, message: "Informe o Livro!" }]}
+            rules={[{ required: true, message: "Selecione o livro." }]}
           >
             <Select
               showSearch
