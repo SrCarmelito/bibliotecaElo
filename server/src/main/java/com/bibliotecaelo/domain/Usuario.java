@@ -44,29 +44,31 @@ public class Usuario
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank(message = "É Necessário Informar o Nome")
+    @NotBlank(message = "É necessário informar o nome.")
     @Size(min = 6, max = 150, message = "Nome deve ter entre 6 a 150 caracteres.")
     private String nome;
 
-    @Email
-    @NotBlank(message = "É Necessário Informar o E-mail")
+    @Column(unique = true)
+    @Email(message = "Não é um e-mail válido.")
+    @NotBlank(message = "É necessário informar o e-mail.")
     private String email;
 
-    @NotNull(message = "Não é permitido Data de Nascimento Vazia!")
-    @PastOrPresent(message = "Não é permitido Data de Nascimento no futuro!")
+    @NotNull(message = "Não é permitido data de nascimento vazia.")
+    @PastOrPresent(message = "Não é permitido data de nascimento no futuro.")
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 
-    @NotBlank(message = "É Necessário Informar o Telefone!")
-    @Size(min = 10, max = 11, message = "Deve ser entre 10 e 11 caracteres com DDD")
+    @NotBlank(message = "É necessário informar o telefone.")
+    @Size(min = 10, max = 11, message = "Deve ser entre 10 e 11 caracteres com DDD.")
     private String telefone;
 
-    @NotBlank(message = "É Necessário Informar o login!")
-    @Size(min = 6, max = 150, message = "Login deve ter entre 6 a 150 caracteres.")
+    @Column(unique = true)
+    @NotBlank(message = "É necessário informar o login.")
+    @Size(min = 6, max = 15, message = "Login deve ter entre 6 a 15 caracteres.")
     private String login;
 
-    @NotBlank(message = "É Necessário Informar a senha!")
-    @Size(min = 6, max = 150, message = "Senha deve ter entre 6 a 150 caracteres.")
+    @NotBlank(message = "É necessário informar a senha.")
+    @Size(min = 6, max = 100, message = "Senha deve ter entre 6 a 15 caracteres.")
     private String senha;
 
     @Column(name = "reset_token", length = 1000)

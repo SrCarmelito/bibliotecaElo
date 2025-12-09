@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(scripts = {
         "/sql/usuario.sql"
 })
-class EnversListenerTest {
+class RevisionListenerImplTest {
 
     @Autowired
     WebApplicationContext webApplicationContext;

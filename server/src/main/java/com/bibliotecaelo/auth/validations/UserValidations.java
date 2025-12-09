@@ -16,31 +16,25 @@ public class UserValidations {
     private final UsuarioRepository usuarioRepository;
 
     public void validaUsuario(UsuarioDTO usuarioDTO) {
-        if (usuarioRepository.findByLogin(usuarioDTO.getLogin()) != null) {
-            throw new ValidationException("Usuário já existe, tente novamente!");
+        if (usuarioRepository.existsByLogin(usuarioDTO.getLogin())) {
+            throw new ValidationException("Usuário já existe, tente novamente.");
         }
 
-        if (usuarioRepository.findByEmail(usuarioDTO.getEmail()).isPresent()) {
-            throw new ValidationException("E-mail já cadastrado, tente novamente!");
-        }
-
-        Pattern patternEmail = Pattern.compile("^(.+)@(\\S+)$");
-        Matcher matcherEmail = patternEmail.matcher(usuarioDTO.getEmail());
-        if (!matcherEmail.find()) {
-            throw new ValidationException("Não é um E-mail Válido!");
+        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new ValidationException("E-mail já cadastrado, tente novamente.");
         }
     }
 
     public void validaSenha(String senha, String senhaConfirmacao) {
-        Pattern patternSenha = Pattern.compile("^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^\\w\\s]).{6,150}$");
+        Pattern patternSenha = Pattern.compile("^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^\\w\\s]).{6,15}$");
         Matcher matcherSenha = patternSenha.matcher(senha);
         if (!matcherSenha.find()) {
             throw new ValidationException
-                    ("Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 Caractere especial, 1 letra maiúscula, 1 minúscula e 1 número!");
+                    ("Senha deve conter entre 6 e 15 caracteres sendo ao menos 1 caractere especial, 1 letra maiúscula, 1 minúscula e 1 número.");
         }
 
         if (!senha.equals(senhaConfirmacao)) {
-            throw new ValidationException("Senha e Senha de Confirmação não Conferem, tente novamente!");
+            throw new ValidationException("Senha e senha de confirmação não conferem, tente novamente.");
         }
     }
 }

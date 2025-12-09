@@ -9,7 +9,6 @@ import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -36,7 +35,6 @@ class UsuarioRespositoryTest {
     }
 
     @Test
-    @WithMockUser
     void update() {
         Usuario usuarioToUpdate = repository.findById(UUID.fromString("ee4ae880-a4db-4563-b330-7e2a27d26115")).orElseThrow();
 
@@ -66,10 +64,11 @@ class UsuarioRespositoryTest {
 
     @Test
     void deleteById() {
+        assertThat(repository.existsById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"))).isTrue();
+
         repository.deleteById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"));
 
-        assertThat(repository.findAll()).extracting(Usuario::getId)
-                .doesNotContain(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"));
+        assertThat(repository.existsById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34"))).isFalse();
     }
 
     @Test
@@ -107,6 +106,12 @@ class UsuarioRespositoryTest {
     void existsByLogin() {
         assertThat(repository.existsByLogin("junior")).isTrue();
         assertThat(repository.existsByLogin("123")).isFalse();
+    }
+
+    @Test
+    void existsByEmail() {
+        assertThat(repository.existsByEmail("ozzy.osbourne@gmail.com")).isTrue();
+        assertThat(repository.existsByEmail("123")).isFalse();
     }
 
 }

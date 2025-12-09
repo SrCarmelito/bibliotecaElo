@@ -11,6 +11,7 @@ import com.bibliotecaelo.dto.LivroDTO;
 import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.service.RecomendacaoService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,12 @@ class RecomendacaoResourceTest extends ResourceTest {
     @MockBean
     RecomendacaoService recomendacaoService;
 
-    LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
+    @BeforeEach
+    void setUpTest() {
+        livroDTO = LivroFixtures.LivroDTOOCortico();
+    }
+
+    LivroDTO livroDTO;
 
     @Test
     void recomendacoesPorUsuario() throws Exception{

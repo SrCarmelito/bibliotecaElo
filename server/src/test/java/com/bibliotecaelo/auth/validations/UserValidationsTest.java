@@ -1,12 +1,10 @@
 package com.bibliotecaelo.auth.validations;
 
-import java.util.Optional;
-
-import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,42 +24,34 @@ class UserValidationsTest {
     @Mock
     UsuarioRepository usuarioRepository;
 
-    UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
+    @BeforeEach
+    void setUp() {
+        usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
+    }
+
+    UsuarioDTO usuarioDTO;
 
     @Test
     void validaUsuarioExistente() {
-        when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(new Usuario());
+        when(usuarioRepository.existsByLogin(usuarioDTO.getLogin())).thenReturn(true);
 
         String mensagemUsuarioJaExiste = assertThrows(ValidationException.class,
                 () -> userValidations.validaUsuario(usuarioDTO))
                 .getMessage();
 
-        assertThat(mensagemUsuarioJaExiste).isEqualTo("Usuário já existe, tente novamente!");
+        assertThat(mensagemUsuarioJaExiste).isEqualTo("Usuário já existe, tente novamente.");
     }
 
     @Test
     void validaEmailJaCadastrado() {
-        when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(null);
-        when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(Optional.of(new Usuario()));
+        when(usuarioRepository.existsByLogin(usuarioDTO.getLogin())).thenReturn(false);
+        when(usuarioRepository.existsByEmail(usuarioDTO.getEmail())).thenReturn(true);
 
         String mensagemEmailJaCadastrado = assertThrows(ValidationException.class,
                 () -> userValidations.validaUsuario(usuarioDTO))
                 .getMessage();
 
-        assertThat(mensagemEmailJaCadastrado).isEqualTo("E-mail já cadastrado, tente novamente!");
-    }
-
-    @Test
-    void validaEmailIncorreto() {
-        usuarioDTO.setEmail("aaa");
-        when(usuarioRepository.findByLogin(usuarioDTO.getLogin())).thenReturn(null);
-        when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(Optional.empty());
-
-        String mensagemEmailJaCadastrado = assertThrows(ValidationException.class,
-                () -> userValidations.validaUsuario(usuarioDTO))
-                .getMessage();
-
-        assertThat(mensagemEmailJaCadastrado).isEqualTo("Não é um E-mail Válido!");
+        assertThat(mensagemEmailJaCadastrado).isEqualTo("E-mail já cadastrado, tente novamente.");
     }
 
     @Test
@@ -72,7 +62,7 @@ class UserValidationsTest {
 
         assertThat(mensagemSenhaInvalida)
                 .isEqualTo(
-                        "Senha deve conter entre 6 e 150 caracteres sendo ao menos 1 Caractere especial, 1 letra maiúscula, 1 minúscula e 1 número!");
+                        "Senha deve conter entre 6 e 15 caracteres sendo ao menos 1 caractere especial, 1 letra maiúscula, 1 minúscula e 1 número.");
     }
 
     @Test
@@ -82,7 +72,7 @@ class UserValidationsTest {
                 () -> userValidations.validaSenha(usuarioDTO.getSenha(), usuarioDTO.getSenhaConfirmacao())).getMessage();
 
         assertThat(mensagemSenhaDiferenteConfirmacao)
-                .isEqualTo("Senha e Senha de Confirmação não Conferem, tente novamente!");
+                .isEqualTo("Senha e senha de confirmação não conferem, tente novamente.");
     }
 
 

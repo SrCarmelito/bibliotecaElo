@@ -12,6 +12,7 @@ import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,12 +46,18 @@ class UsuarioServiceTest {
     @Mock
     UserValidations userValidations;
 
-    UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
-    Usuario usuario = UsuarioFixtures.usuarioPele();
+    @BeforeEach
+    void setUp() {
+        usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
+        usuario = UsuarioFixtures.usuarioPele();
+    }
+
+    UsuarioDTO usuarioDTO;
+    Usuario usuario;
 
     @Test
-    void beforeSave() {
-        assertThrows(IllegalStateException.class, () -> usuarioService.beforeSave(usuario));
+    void beforeInsert() {
+        assertThrows(IllegalStateException.class, () -> usuarioService.beforeInsert(usuario));
     }
 
     @Test

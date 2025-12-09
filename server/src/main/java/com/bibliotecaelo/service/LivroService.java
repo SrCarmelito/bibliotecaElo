@@ -20,13 +20,13 @@ public class LivroService
     private final CategoriaService categoriaService;
 
     @Override
-    public void beforeSave(Livro livro) {
+    public void beforeInsert(Livro livro) {
         if (repository.existsByTitulo(livro.getTitulo())) {
-            throw new ValidationException("Já Existe uma Livro Cadastrado com este Título!");
+            throw new ValidationException("Já existe uma livro cadastrado com este título.");
         }
 
         if (repository.existsByIsbn(livro.getIsbn())) {
-            throw new ValidationException("Já Existe uma Livro Cadastrado com este ISBN!");
+            throw new ValidationException("Já existe uma livro cadastrado com este ISBN.");
         }
 
         livro.setCategoria(categoriaService.findById(livro.getCategoria().getId()));

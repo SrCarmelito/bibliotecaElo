@@ -1,7 +1,7 @@
 package com.bibliotecaelo.auth.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -19,13 +19,11 @@ public class TokenService {
         return JWT.create()
                 .withSubject(usuario.getUsername())
                 .withClaim("id", String.valueOf(usuario.getId()))
-                .withExpiresAt(LocalDateTime.now()
-                        .plusMinutes(minutes)
-                        .toInstant(ZoneOffset.of("-03:00"))
-                ).sign(Algorithm.HMAC256(secret));
+                .withExpiresAt(Instant.now().plus(minutes, ChronoUnit.MINUTES))
+                .sign(Algorithm.HMAC256(secret));
     }
 
-    public Object getSubject(String token) {
+    public String getSubject(String token) {
         return JWT.require(Algorithm.HMAC256(secret))
                 .build().verify(token).getSubject();
     }

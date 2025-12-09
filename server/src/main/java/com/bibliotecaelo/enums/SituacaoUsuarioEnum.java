@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum SituacaoUsuarioEnum {
 
-    ATIVO("ATIVO"),
+    ATIVO("Ativo"),
     INATIVO("Inativo");
 
-    private String value;
+    private final String value;
 
     SituacaoUsuarioEnum(String value) {
         this.value = value;

@@ -11,7 +11,7 @@ public class CategoriaDTO implements EntidadeDTO {
 
     private UUID id;
 
-    @NotBlank(message = "É necessário informar a descricao da Categoria")
+    @NotBlank(message = "É necessário informar a descrição da categoria.")
     private String descricao;
 
 }

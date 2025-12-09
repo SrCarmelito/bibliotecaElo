@@ -1,5 +1,6 @@
 package com.bibliotecaelo.auth.resource;
 
+import com.bibliotecaelo.auth.dto.EmailDTO;
 import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.auth.service.LoginService;
@@ -33,11 +34,12 @@ public class LoginResource {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(HttpServletRequest request,
-            @RequestBody String email,
+    public ResponseEntity<Void> resetPassword(
+            HttpServletRequest request,
+            @RequestBody EmailDTO emailDTO,
             HttpServletResponse response) throws Exception {
-        loginService.resetPassword(request, email);
-        return ResponseEntity.ok(email);
+        loginService.resetPassword(request, emailDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/confirm-reset-password")
@@ -46,12 +48,12 @@ public class LoginResource {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("verify-token")
+    @GetMapping("/verify-token")
     public boolean verifyToken() {
         try {
             return true;
         } catch (Exception e) {
-            throw new ValidationException("Token Inválido ou expirado, tente novamente!");
+            throw new ValidationException("Token inválido ou expirado, tente novamente.");
         }
     }
 

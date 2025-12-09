@@ -20,29 +20,29 @@ public class UsuarioDTO implements EntidadeDTO {
 
     private UUID id;
 
-    @NotBlank(message = "É Necessário Informar o Nome")
+    @NotBlank(message = "É necessário informar o nome.")
     @Size(min = 6, max = 150, message = "Nome deve ter entre 6 a 150 caracteres.")
     private String nome;
 
     @Email
-    @NotBlank(message = "É Necessário Informar o E-mail")
+    @NotBlank(message = "É necessário informar o e-mail.")
     private String email;
 
-    @NotNull(message = "Não é permitido Data de Cadastro Vazia!")
-    @PastOrPresent(message = "Não é permitido Data de Cadastro no futuro!")
+    @NotNull(message = "Não é permitido data de cadastro vazia.")
+    @PastOrPresent(message = "Não é permitido data de cadastro no futuro.")
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 
-    @NotBlank(message = "É Necessário Informar o Telefone!")
-    @Size(min = 10, max = 11, message = "Deve ser entre 10 e 11 caracteres com DDD")
+    @NotBlank(message = "É necessário informar o telefone.")
+    @Size(min = 10, max = 11, message = "Deve ser entre 10 e 11 caracteres com DDD.")
     private String telefone;
 
-    @NotBlank(message = "É Necessário Informar o login!")
-    @Size(min = 6, max = 150, message = "Login deve ter entre 6 a 150 caracteres.")
+    @NotBlank(message = "É necessário informar o login.")
+    @Size(min = 6, max = 15, message = "Login deve ter entre 6 a 15 caracteres.")
     private String login;
 
-    @NotBlank(message = "É Necessário Informar a senha!")
-    @Size(min = 6, max = 150, message = "Senha deve ter entre 6 a 150 caracteres.")
+    @NotBlank(message = "É necessário informar a senha.")
+    @Size(min = 6, max = 15, message = "Senha deve ter entre 6 a 15 caracteres.")
     private String senha;
 
     private String senhaConfirmacao;

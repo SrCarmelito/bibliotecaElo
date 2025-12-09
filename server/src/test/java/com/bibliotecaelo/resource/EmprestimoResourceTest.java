@@ -8,6 +8,7 @@ import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import com.bibliotecaelo.fixtures.EmprestimoFixtures;
 import com.bibliotecaelo.service.EmprestimoService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -34,13 +35,18 @@ class EmprestimoResourceTest
     @MockBean
     EmprestimoService service;
 
-    Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
+    @BeforeEach
+    void setUpTest() {
+        emprestimo = EmprestimoFixtures.EmprestimoValido();
+        emprestimoDTO = EmprestimoFixtures.EmprestimoDTOTeste();
+    }
 
-    EmprestimoDTO emprestimoDTO = EmprestimoFixtures.EmprestimoDTOTeste();
+    Emprestimo emprestimo;
+    EmprestimoDTO emprestimoDTO;
 
     @Test
     void create() throws Exception {
-        when(service.save(any(Emprestimo.class))).thenReturn(emprestimo);
+        when(service.insert((any(Emprestimo.class)))).thenReturn(emprestimo);
 
         mockMvc.perform(post("/api/emprestimos")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +64,7 @@ class EmprestimoResourceTest
                 .andExpect(jsonPath("$.livro.categoria.id", equalTo("be1ffc1e-aa98-4dce-9fa6-20233409b82d")))
                 .andExpect(jsonPath("$.livro.categoria.descricao", equalTo("Policial")));
 
-        verify(service).save(any(Emprestimo.class));
+        verify(service).insert((any(Emprestimo.class)));
         verifyNoMoreInteractions(service);
     }
 

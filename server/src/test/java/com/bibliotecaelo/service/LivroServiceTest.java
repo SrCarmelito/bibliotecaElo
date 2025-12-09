@@ -13,6 +13,7 @@ import com.bibliotecaelo.fixtures.LivroFixtures;
 import com.bibliotecaelo.repository.LivroRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,15 +42,22 @@ class LivroServiceTest {
     @Mock
     LivroRepository repository;
 
-    Livro livro = LivroFixtures.LivroOProcesso();
-    LivroDTO livroDTO = LivroFixtures.LivroDTOOCortico();
-    Categoria categoria = CategoriaFixtures.CategoriaPolicial();
+    @BeforeEach
+    void setUp() {
+        livro = LivroFixtures.LivroOProcesso();
+        livroDTO = LivroFixtures.LivroDTOOCortico();
+        categoria = CategoriaFixtures.CategoriaPolicial();
+    }
+
+    Livro livro;
+    LivroDTO livroDTO;
+    Categoria categoria;
 
     @Test
-    void beforeSave() {
+    void beforeInsert() {
         when(categoriaService.findById(livro.getCategoria().getId())).thenReturn(categoria);
 
-        service.beforeSave(livro);
+        service.beforeInsert(livro);
 
         verify(repository).existsByTitulo(livro.getTitulo());
         verify(repository).existsByIsbn(livro.getIsbn());
@@ -57,11 +65,14 @@ class LivroServiceTest {
     }
 
     @Test
-    void save() {
-        when(categoriaService.findById(livro.getCategoria().getId())).thenReturn(categoria);
-        when(repository.saveAndFlush(livro)).thenReturn(livro);
+    void insert() {
+        Livro livroToSave = LivroFixtures.LivroOProcesso();
+        livroToSave.setId(null);
 
-        Livro livroSaved = service.save(livro);
+        when(categoriaService.findById(livro.getCategoria().getId())).thenReturn(categoria);
+        when(repository.saveAndFlush(livroToSave)).thenReturn(livro);
+
+        Livro livroSaved = service.insert(livroToSave);
 
         assertThat(livroSaved.getId()).isNotNull();
         assertThat(livroSaved.getTitulo()).isEqualTo("O Processo");
@@ -70,24 +81,28 @@ class LivroServiceTest {
         assertThat(livroSaved.getDataPublicacao()).isEqualTo(LocalDate.of(2010, 5, 17));
         assertThat(livroSaved.getCategoria().getDescricao()).isEqualTo("Policial");
 
-        verify(repository).existsByTitulo(livro.getTitulo());
-        verify(repository).existsByIsbn(livro.getIsbn());
-        verify(repository).saveAndFlush(livro);
+        verify(repository).existsByTitulo(livroToSave.getTitulo());
+        verify(repository).existsByIsbn(livroToSave.getIsbn());
+        verify(repository).saveAndFlush(livroToSave);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
     void saveThrowsExistsByTituloTrue() {
+        livro.setId(null);
+
         when(repository.existsByTitulo(livro.getTitulo())).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> service.save(livro));
+        assertThrows(ValidationException.class, () -> service.insert(livro));
     }
 
     @Test
     void saveThrowsExistsByIsbnTrue() {
+        livro.setId(null);
+
         when(repository.existsByIsbn(livro.getIsbn())).thenReturn(true);
 
-        assertThrows(ValidationException.class, () -> service.save(livro));
+        assertThrows(ValidationException.class, () -> service.insert(livro));
     }
 
     @Test

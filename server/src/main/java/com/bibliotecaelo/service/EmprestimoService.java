@@ -28,20 +28,20 @@ public class EmprestimoService extends CrudService<Emprestimo> {
     private final LivroRepository livroRepository;
 
     @Override
-    public void beforeSave(Emprestimo emprestimo) {
+    public void beforeInsert(Emprestimo emprestimo) {
         validaDataEmprestimoPosteriorDevolucao(emprestimo.getDataEmprestimo(), emprestimo.getDataDevolucao());
 
         if (repository.existsByLivroIdAndStatus(
                 emprestimo.getLivro().getId(),
                 StatusEmprestimoEnum.AGUARDANDO_DEVOLUCAO)) {
-            throw new ValidationException("Livro Informado possui Empréstimo em andamento!");
+            throw new ValidationException("Livro informado possui empréstimo em andamento.");
         }
 
         emprestimo.setUsuario(usuarioRepository.findById(emprestimo.getUsuario().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário Não Encontrado!")));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado.")));
 
         emprestimo.setLivro(livroRepository.findById(emprestimo.getLivro().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Livro Não Encontrado!")));
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado.")));
     }
 
     @Override public void beforeUpdate(Emprestimo emprestimo) {
@@ -55,7 +55,7 @@ public class EmprestimoService extends CrudService<Emprestimo> {
 
     protected void validaDataEmprestimoPosteriorDevolucao(LocalDate dataEmprestimo, LocalDate dataDevolucao) {
         if (dataEmprestimo.isAfter(dataDevolucao)) {
-            throw new ValidationException("Data da Devolução menor que a data do Empréstimo, verifique!");
+            throw new ValidationException("Data da devolução menor que a data do empréstimo, verifique.");
         }
     }
 

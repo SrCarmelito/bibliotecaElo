@@ -25,13 +25,13 @@ public class UsuarioService extends CrudService<Usuario> {
     private final UserValidations userValidations;
 
     @Override
-    public void beforeSave(Usuario usuario) {
-        throw new IllegalStateException("Utilize o end-point /novo-usuario para criar um novo usuário!");
+    public void beforeInsert(Usuario usuario) {
+        throw new IllegalStateException("Utilize o end-point /novo-usuario para criar um novo usuário.");
     }
 
     @Override
     public void beforeDelete(UUID id) {
-        throw new IllegalStateException("Não é permitido apagar o cadastro de um usuário!");
+        throw new IllegalStateException("Não é permitido apagar o cadastro de um usuário.");
     }
 
     @Override

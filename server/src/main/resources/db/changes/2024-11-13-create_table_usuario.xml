@@ -9,37 +9,36 @@
         <validCheckSum>ANY</validCheckSum>
         <preConditions onFail="MARK_RAN" onFailMessage="A tabela usuario já existe">
             <not>
-                <tableExists tableName="usuario" schemaName="biblioteca"/>
+                <tableExists tableName="usuario" />
             </not>
         </preConditions>
-        <createTable schemaName="biblioteca" tableName="usuario">
+        <createTable tableName="usuario">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="usuario_pk" nullable="false"/>
             </column>
             <column name="nome" type="varchar(150)"><constraints nullable="false"/></column>
-            <column name="email" type="varchar(150)"><constraints nullable="false"/></column>
+            <column name="email" type="varchar(150)" ><constraints nullable="false" unique="true"/></column>
             <column name="data_nascimento" type="datetime"><constraints nullable="false"/></column>
             <column name="telefone" type="varchar(11)"><constraints nullable="false"/></column>
-            <column name="login" type="varchar(150)"><constraints nullable="false"/></column>
-            <column name="senha" type="varchar(150)"><constraints nullable="false"/></column>
+            <column name="login" type="varchar(15)"><constraints nullable="false" unique="true"/></column>
+            <column name="senha" type="varchar(100)"><constraints nullable="false"/></column>
             <column name="reset_token" type="varchar(1000)"/>
             <column name="situacao" type="varchar(100)"><constraints nullable="false"/></column>
-            <column name="datacriacao" type="datetime"><constraints nullable="false"/></column>
-            <column name="dataalteracao" type="datetime"><constraints nullable="false"/></column>
-            <column name="usuariocriacao" type="varchar(60)"><constraints nullable="false"/></column>
-            <column name="usuarioalteracao" type="varchar(60)"><constraints nullable="false"/></column>
         </createTable>
-        <addUniqueConstraint schemaName="biblioteca" tableName="usuario" columnNames="id" constraintName="u_usuario_id"/>
+        <addUniqueConstraint tableName="usuario" columnNames="id" constraintName="u_usuario_id"/>
+        <customChange class="com.bibliotecaelo.utils.DomainAuditColumns">
+            <param name="tableName" value="usuario"/>
+        </customChange>
     </changeSet>
 
     <changeSet id="create_table_usuario_aud" author="carmelito.benali">
         <validCheckSum>ANY</validCheckSum>
         <preConditions onFail="MARK_RAN" onFailMessage="A tabela usuario_aud já existe">
             <not>
-                <tableExists tableName="usuario_aud" schemaName="biblioteca"/>
+                <tableExists tableName="usuario_aud" />
             </not>
         </preConditions>
-        <createTable tableName="usuario_aud" schemaName="biblioteca">
+        <createTable tableName="usuario_aud" >
             <column name="rev" type="BIGINT" ><constraints nullable="false"/></column>
             <column name="revtype" type="numeric(10)" ><constraints nullable="false"/></column>
             <column name="id" type="uuid" ><constraints nullable="false"/></column>
@@ -47,13 +46,13 @@
             <column name="email" type="varchar(150)"/>
             <column name="data_nascimento" type="datetime"/>
             <column name="telefone" type="varchar(11)"/>
-            <column name="login" type="varchar(150)"/>
-            <column name="senha" type="varchar(150)"/>
+            <column name="login" type="varchar(15)"/>
+            <column name="senha" type="varchar(100)"/>
             <column name="reset_token" type="varchar(1000)"/>
             <column name="situacao" type="varchar(100)"/>
         </createTable>
-        <addPrimaryKey schemaName="biblioteca" tableName="usuario_aud" columnNames="id, rev" constraintName="pk_usuario_aud"/>
-        <addUniqueConstraint schemaName="biblioteca" tableName="usuario_aud" columnNames="id, rev" constraintName="u_usuario_aud_id"/>
+        <addPrimaryKey tableName="usuario_aud" columnNames="id, rev" constraintName="pk_usuario_aud"/>
+        <addUniqueConstraint tableName="usuario_aud" columnNames="id, rev" constraintName="u_usuario_aud_id"/>
     </changeSet>
 
 </databaseChangeLog>

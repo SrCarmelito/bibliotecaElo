@@ -9,7 +9,6 @@ import com.bibliotecaelo.fixtures.EmprestimoFixtures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -33,7 +32,7 @@ class EmprestimoRepositoryTest {
     UsuarioRepository usuarioRepository;
 
     @Test
-    void save() {
+    void insert() {
         Emprestimo emprestimo = EmprestimoFixtures.EmprestimoValido();
         emprestimo.setUsuario(usuarioRepository.findById(UUID.fromString("5bc26f63-fc13-4e4f-8fc3-524b223a7d34")).orElseThrow());
         emprestimo.setLivro(livroRepository.findById(UUID.fromString("8bf07126-eaa2-4207-b3de-cbc7a43e038f")).orElseThrow());
@@ -56,7 +55,6 @@ class EmprestimoRepositoryTest {
     }
 
     @Test
-    @WithMockUser
     void update() {
         Emprestimo emprestimoToUpdate = repository.findById(UUID.fromString("c15102a7-5b91-4d6b-8a12-8830bd21168b")).orElseThrow();
 
@@ -77,10 +75,11 @@ class EmprestimoRepositoryTest {
 
     @Test
     void deleteById() {
+        assertThat(repository.existsById(UUID.fromString("c15102a7-5b91-4d6b-8a12-8830bd21168b"))).isTrue();
+
         repository.deleteById(UUID.fromString("c15102a7-5b91-4d6b-8a12-8830bd21168b"));
 
-        assertThat(repository.findAll()).extracting(Emprestimo::getId)
-                .doesNotContain(UUID.fromString("c15102a7-5b91-4d6b-8a12-8830bd21168b"));
+        assertThat(repository.existsById(UUID.fromString("c15102a7-5b91-4d6b-8a12-8830bd21168b"))).isFalse();
     }
 
     @Test

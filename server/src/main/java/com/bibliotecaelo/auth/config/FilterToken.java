@@ -1,8 +1,10 @@
 package com.bibliotecaelo.auth.config;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.bibliotecaelo.auth.service.TokenService;
+import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,15 +33,14 @@ public class FilterToken extends OncePerRequestFilter {
 
         String token;
 
-        var authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null) {
+        if (Objects.nonNull(authorizationHeader)) {
             token = authorizationHeader.replace("Bearer ", "");
-            var subject = this.tokenService.getSubject(token);
 
-            var usuario = this.usuarioRepository.findByLogin((String) subject);
+            Usuario usuario = usuarioRepository.findByLogin(tokenService.getSubject(token));
 
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

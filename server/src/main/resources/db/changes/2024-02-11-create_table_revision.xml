@@ -6,11 +6,11 @@
     <changeSet id="create_table_revision" author="carmelito.benali">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="revision" schemaName="biblioteca"/>
+                <tableExists tableName="revision" />
             </not>
         </preConditions>
 
-        <createTable schemaName="biblioteca" tableName="revision">
+        <createTable tableName="revision">
             <column name="revisionnumber" type="BIGINT"><constraints nullable="false"/></column>
             <column name="revisiondate" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
             <column name="remoteipaddress" type="VARCHAR(400)"/>
@@ -18,13 +18,13 @@
             <column name="username" type="VARCHAR(60)"/>
             <column name="userid" type="uuid"/>
         </createTable>
-        <addPrimaryKey schemaName="biblioteca" tableName="revision" columnNames="revisionnumber"/>
+        <addPrimaryKey tableName="revision" columnNames="revisionnumber"/>
     </changeSet>
 
     <changeSet id="create_sequence_seq_revision" author="carmelito.benali">
         <preConditions onFail="MARK_RAN" onFailMessage="Sequence SEQ_REVISION já existe">
             <not>
-                <sequenceExists sequenceName="seq_revision" schemaName="biblioteca"/>
+                <sequenceExists sequenceName="seq_revision" />
             </not>
         </preConditions>
 

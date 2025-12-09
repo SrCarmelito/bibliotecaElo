@@ -29,7 +29,7 @@ public abstract class CrudResource<E extends Entidade, D extends EntidadeDTO> {
     @PostMapping
     public ResponseEntity<D> create(@RequestBody @Valid D dto) {
         return ResponseEntity.ok(dtoConverter.to(
-                crudService.save(
+                crudService.insert(
                         dtoConverter.from(dto))));
     }
 

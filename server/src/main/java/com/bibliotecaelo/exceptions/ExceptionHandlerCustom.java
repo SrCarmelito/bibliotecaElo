@@ -1,6 +1,6 @@
 package com.bibliotecaelo.exceptions;
 
-import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
@@ -25,156 +26,184 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+@Slf4j
 @RestControllerAdvice
 public class ExceptionHandlerCustom {
 
+    private void logConsoleMessage(Exception exception) {
+        log.warn("{} message: ", exception.getClass().getSimpleName(), exception);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardError> general(Exception e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add("Ops, ocorreu um erro inesperado!");
-        String message = "Ops, ocorreu um erro inesperado!";
+    private ResponseEntity<StandardError> unknown(Exception exception, HttpServletRequest request) {
+
+        String message = "Ops, ocorreu um erro inesperado.";
+        logConsoleMessage(exception);
         HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                    status.value(),
+                    message,
+                    request.getRequestURI(),
+                    Collections.singleton(message)
+        ));
+    }
+
+    @ExceptionHandler({
+            HttpRequestMethodNotSupportedException.class,
+            IllegalArgumentException.class,
+            InvalidDataAccessApiUsageException.class,
+            MethodArgumentTypeMismatchException.class,
+            ValidationException.class,
+    })
+    private ResponseEntity<StandardError> general(Exception exception, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                exception.getLocalizedMessage(),
+                request.getRequestURI(),
+                Collections.singleton(exception.getLocalizedMessage())
+        ));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    private ResponseEntity<StandardError> entityNotFoundException(EntityNotFoundException exception, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                exception.getLocalizedMessage(),
+                request.getRequestURI(),
+                Collections.singleton(exception.getLocalizedMessage())
+        ));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<StandardError> dataIntegrity(DataIntegrityViolationException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(Objects.requireNonNull(e.getRootCause()).getMessage());
-        String message = "Erro de integridade de Dados!";
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+    private ResponseEntity<StandardError> dataIntegrityViolation(DataIntegrityViolationException exception, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                "Erro de integridade de dados.",
+                request.getRequestURI(),
+                Collections.singleton(Objects.requireNonNull(exception.getRootCause()).getMessage())
+        ));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> argumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
-        String message = "Requisição contém dados inválidos, verifique os erros e tente novamente!";
+    private ResponseEntity<StandardError> methodArgumentNotValid(MethodArgumentNotValidException exception, HttpServletRequest request) {
+
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        logConsoleMessage(exception);
+
         Set<String> errors = new HashSet<>();
-        e.getFieldErrors()
+        exception.getFieldErrors()
                 .stream()
                 .map(f -> errors.add(String.format("Campo %s %s ", f.getField(), f.getDefaultMessage())))
                 .toList();
 
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StandardError> entityNotFound(EntityNotFoundException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                "Requisição contém dados inválidos, verifique os erros e tente novamente.",
+                request.getRequestURI(),
+                errors)
+        );
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<StandardError> constraintValidation(ConstraintViolationException e, HttpServletRequest request) {
-        String message = "Requisição contém dados inválidos, verifique os erros e tente novamente!";
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+    private ResponseEntity<StandardError> constraintViolation(ConstraintViolationException exception, HttpServletRequest request) {
 
-        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        logConsoleMessage(exception);
+
+        Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
         Set<String> errors = new HashSet<>(constraintViolations.size());
         errors.addAll(constraintViolations.stream()
                 .map(violation -> String.format("%s %s %s", violation.getPropertyPath(), violation.getInvalidValue(), violation.getMessage()))
                 .toList());
-
-        StandardError err = new StandardError(Instant.now(), status.value() , message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<StandardError> argumentNotValid(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+        
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                "Requisição contém dados inválidos, verifique os erros e tente novamente.",
+                request.getRequestURI(),
+                errors)
+        );
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<StandardError> httpClientError(HttpClientErrorException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        String message = "Não encontramos o que você precisava, tente novamente";
-        errors.add(e.getLocalizedMessage());
+    private ResponseEntity<StandardError> httpClientError(HttpClientErrorException exception, HttpServletRequest request) {
+           
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                "Não encontramos o que você precisava, tente novamente.", 
+                request.getRequestURI(),
+                Collections.singleton(exception.getLocalizedMessage()))
+        );
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<StandardError> noResourceFound(NoResourceFoundException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getResourcePath() + " Não corresponde a nenhum End Point!!!");
-        String message = "Método inválido, verifique e tente novamente";
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
+    private ResponseEntity<StandardError> noResourceFound(NoResourceFoundException exception, HttpServletRequest request) {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                "Método inválido, verifique e tente novamente.",
+                request.getRequestURI(),
+                Collections.singleton(exception.getResourcePath() + " Não corresponde a nenhum end point."))
+        );
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<StandardError> messageNotReadable(HttpMessageNotReadableException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        String message = "Erro Estrutural da requisição, verifique o Json de Payload e Tente novamente!";
-        errors.add(e.getMessage());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), message, request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<StandardError> validationException(ValidationException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
+    private ResponseEntity<StandardError> httpMessageNotReadable(HttpMessageNotReadableException exception, HttpServletRequest request) {
 
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ResponseEntity<StandardError> invalidDataAccessApiUsage(InvalidDataAccessApiUsageException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
-    }
+       HttpStatus status = HttpStatus.BAD_REQUEST;
+       logConsoleMessage(exception);
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<StandardError> requestNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getLocalizedMessage());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+       return ResponseEntity.status(status).body(new StandardError(
+               status.value(),
+               "Erro estrutural da requisição, verifique o Json de payload e tente novamente.",
+               request.getRequestURI(),
+               Collections.singleton(exception.getMessage())
+       ));
     }
 
     @ExceptionHandler(UnknownPropertyException.class)
-    public ResponseEntity<StandardError> rsqlUnknownProperty(UnknownPropertyException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add(e.getName());
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+    private ResponseEntity<StandardError> rsqlUnknownProperty(UnknownPropertyException exception, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                exception.getMessage(),
+                request.getRequestURI(),
+                Collections.singleton(exception.getName()))
+        );
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<StandardError> badCredentialsException(BadCredentialsException e, HttpServletRequest request) {
-        Set<String> errors = new HashSet<>();
-        errors.add("Senha Incorreta!");
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI(), errors);
-        return ResponseEntity.status(status).body(err);
+    private ResponseEntity<StandardError> badCredentials(BadCredentialsException exception, HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        logConsoleMessage(exception);
+
+        return ResponseEntity.status(status).body(new StandardError(
+                status.value(),
+                exception.getMessage(),
+                request.getRequestURI(),
+                Collections.singleton("Senha incorreta."))
+        );
     }
 }

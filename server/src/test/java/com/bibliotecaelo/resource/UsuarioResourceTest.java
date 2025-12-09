@@ -9,6 +9,7 @@ import com.bibliotecaelo.dto.usuario.UsuarioDTO;
 import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.service.UsuarioService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -36,9 +37,16 @@ class UsuarioResourceTest extends ResourceTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    Usuario usuario = UsuarioFixtures.usuarioPele();
-    UsuarioDTO usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
-    UsuarioResponseDTO usuarioResponseDTO = UsuarioFixtures.usuarioResponseDTOAlexMartin();
+    @BeforeEach
+    void setUpTest() {
+        usuario = UsuarioFixtures.usuarioPele();
+        usuarioDTO = UsuarioFixtures.usuarioCarmelitoDTO();
+        usuarioResponseDTO = UsuarioFixtures.usuarioResponseDTOAlexMartin();
+    }
+
+    Usuario usuario;
+    UsuarioDTO usuarioDTO;
+    UsuarioResponseDTO usuarioResponseDTO;
 
     @Test
     void novoUsuario() throws Exception {
