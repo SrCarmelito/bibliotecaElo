@@ -1,9 +1,9 @@
 import axios, { AxiosPromise } from "axios";
 import { PagedResponse } from "../interfaces/PagedResponse";
 import { Emprestimo } from "../type/Emprestimo";
-import { sortResolver } from "./sortResolver";
+import { sortResolver } from "../functions/sortResolver";
 
-const resource = `${process.env.REACT_APP_URL_SERVER}/api/emprestimos`;
+const resource = "/emprestimos";
 
 export const findAll = (
   pagination?: any,

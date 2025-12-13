@@ -1,34 +1,41 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { lazy } from "react";
 
-import CreateUser from "../pages/CreateUser/CreateUser";
+const CreateUser = lazy(() => import("../pages/CreateUser/CreateUser"));
+const ErrorPage = lazy(() => import("../pages/ErrorPage/ErrorPage"));
 
-import PrivateRoutes from "./PrivateRoutes";
-import LivroForm from "../pages/Livros/LivroForm";
-import LivroList from "../pages/Livros/LivroList";
-import LoginForm from "../pages/login/LoginForm";
-import CategoriaList from "../pages/Categorias/CategoriaList";
-import ResetPasswordForm from "../pages/reset-password/ResetPasswordForm";
-import EmprestimoList from "../pages/Emprestimos/EmprestimoList";
-import Recomendacoes from "../pages/Recomendacoes/Recomendacoes";
+const LivroList = lazy(() => import("../pages/Livros/LivroList"));
+const LoginForm = lazy(() => import("../pages/login/LoginForm"));
+const CategoriaList = lazy(() => import("../pages/Categorias/CategoriaList"));
+const ResetPasswordForm = lazy(() =>
+  import("../pages/reset-password/ResetPasswordForm")
+);
+const EmprestimoList = lazy(() =>
+  import("../pages/Emprestimos/EmprestimoList")
+);
+const Recomendacoes = lazy(() =>
+  import("../pages/Recomendacoes/Recomendacoes")
+);
+const PrivateRoutes = lazy(() => import("./PrivateRoutes"));
+const LivroForm = lazy(() => import("../pages/Livros/LivroForm"));
 
 const RoutesApp = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <>
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/signup" element={<CreateUser />} />
-          <Route path="/confirm-new-password" element={<ResetPasswordForm />} />
-          <Route path="*" element={<LoginForm />} />
-          <Route element={<PrivateRoutes />}>
-            <Route path="/livro/:id" element={<LivroForm />} />
-            <Route path="/livros" element={<LivroList />} />
-            <Route path="/categorias" element={<CategoriaList />} />
-            <Route path="/minhaconta" element={<CreateUser />} />
-            <Route path="/emprestimos" element={<EmprestimoList />} />
-            <Route path="/inicio" element={<Recomendacoes />} />
-          </Route>
-        </>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/signup" element={<CreateUser />} />
+        <Route path="/confirm-new-password" element={<ResetPasswordForm />} />
+        <Route path="/error" element={<ErrorPage />} />
+        <Route path="*" element={<LoginForm />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/livro/:id" element={<LivroForm />} />
+          <Route path="/livros" element={<LivroList />} />
+          <Route path="/categorias" element={<CategoriaList />} />
+          <Route path="/minhaconta" element={<CreateUser />} />
+          <Route path="/emprestimos" element={<EmprestimoList />} />
+          <Route path="/inicio" element={<Recomendacoes />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Table, TableProps } from "antd";
+import { Button, Modal, Table } from "antd";
 import { deleteById, findAll } from "../../service/LivroService";
 import { Livro } from "../../type/Livro";
 import {
@@ -16,7 +16,9 @@ import { ColumnsType } from "antd/es/table";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
-import { useLoading } from "../../components/searchcomponent/useLoading";
+import { useLoading } from "../../consts/useLoading";
+import { handleApiError } from "../../functions/handleApiError";
+import { genericTableChange } from "../../functions/genericTableChange";
 
 const searchFields: SearchField[] = [
   {
@@ -60,6 +62,11 @@ const LivroList: React.FC = () => {
     },
     search: getSearchParam(),
   });
+  const { handleTableChange } = genericTableChange<Livro>(
+    tableParams,
+    setTableParams,
+    setLivros
+  );
 
   const fetchData = () => {
     setLoading(
@@ -90,47 +97,26 @@ const LivroList: React.FC = () => {
     JSON.stringify(tableParams.filters),
   ]);
 
-  const handleTableChange: TableProps<Livro>["onChange"] = (
-    pagination,
-    filters,
-    sorter
-  ) => {
-    setTableParams({
-      pagination,
-      filters,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-    });
-
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setLivros([]);
-    }
-  };
-
   const onRemove = (livro: Livro) => {
     modal.confirm({
-      title: "Confirma Exclusão do Livro?",
+      title: "Confirma a exclusão do livro?",
       icon: <ExclamationCircleFilled />,
       content: `${livro.titulo} - ${
         livro.categoria?.descricao
       } - ${livro.dataPublicacao.format("DD/MM/YYYY")}`,
       onOk() {
         deleteById(livro.id)
-          .then(() => openNotification("success", "Livro Excluído com Sucesso"))
+          .then(() =>
+            openNotification("success", "Livro excluído com sucesso.")
+          )
           .then(() => fetchData())
-          .catch((errors) => {
-            const erros = errors.response.data.errors;
-            if (!erros) {
-              throw erros;
-            }
-            erros.forEach((msg: string) => {
-              if (msg.match("constraint violation")) {
-                msg =
-                  "Não é possível excluir o Livro pois existem registros que dependem dele.";
-              }
-              openNotification("error", "Falha ao Excluir o Livro", msg);
-            });
-          });
+          .catch((errors) =>
+            handleApiError(
+              openNotification,
+              errors,
+              "Não é possível excluir o livro."
+            )
+          );
       },
     });
   };

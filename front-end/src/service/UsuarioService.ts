@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Usuario } from "../type/Usuario";
 
-const resource = `${process.env.REACT_APP_URL_SERVER}/api/usuarios`;
+const resource = "/usuarios";
 
 export const saveOrUpdate = (usuario: Usuario) => {
   return usuario.id

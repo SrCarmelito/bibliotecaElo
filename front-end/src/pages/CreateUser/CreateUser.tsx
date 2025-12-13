@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Title from "antd/lib/typography/Title";
 import { me } from "../../service/AuthService";
 import { useAuth } from "../../contexts/authContext";
+import { handleApiError } from "../../functions/handleApiError";
 
 const CreateUser: React.FC = () => {
   const openNotification = useNotification();
@@ -45,21 +46,15 @@ const CreateUser: React.FC = () => {
           },
         });
       })
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification(
-            "error",
-            token
-              ? "Falha ao atualizar o usuário."
-              : "Falha ao cadastrar o usuário.",
-            msg
-          );
-        });
-      });
+      .catch((errors) =>
+        handleApiError(
+          openNotification,
+          errors,
+          token
+            ? "Falha ao atualizar o usuário."
+            : "Falha ao cadastrar o usuário."
+        )
+      );
   };
 
   return (
@@ -75,7 +70,7 @@ const CreateUser: React.FC = () => {
       </Form.Item>
       <Form.Item
         name="email"
-        rules={[{ required: true, message: "Informe o e-mail." }]}
+        rules={[{ required: true, message: "Informe seu e-mail." }]}
       >
         <Input type="email" placeholder="E-mail" />
       </Form.Item>

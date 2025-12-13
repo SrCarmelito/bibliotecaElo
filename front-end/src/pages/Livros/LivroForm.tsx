@@ -9,6 +9,7 @@ import { useNotification } from "../../contexts/notificationContext";
 import { useNavigate, useParams } from "react-router";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
+import { handleApiError } from "../../functions/handleApiError";
 
 type Params = {
   id: string;
@@ -35,7 +36,7 @@ const formItemLabelLayout = {
 };
 
 const LivroForm: React.FC = () => {
-  const [options, setOptions] = useState<Categoria[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const openNotification = useNotification();
   const navigate = useNavigate();
   const { id } = useParams<Params>();
@@ -45,7 +46,7 @@ const LivroForm: React.FC = () => {
   const findCategorias = (search?: string) => {
     search ? (search = `descricao=ilike=${search}`) : (search = "");
     findAll(0, "", "", search).then((response) => {
-      setOptions(response.data.content);
+      setCategorias(response.data.content);
     });
   };
 
@@ -63,7 +64,7 @@ const LivroForm: React.FC = () => {
   };
 
   useEffect(fetchData, [id, form, isEditing]);
-  useEffect(findCategorias, [setOptions]);
+  useEffect(findCategorias, [setCategorias]);
 
   const onSubmit = (livro: Livro) => {
     const categoria: any = { id: livro?.categoria };
@@ -73,25 +74,23 @@ const LivroForm: React.FC = () => {
       .then((res) => {
         const msg =
           res.config.method === "put"
-            ? "Livro Atualizado com Sucesso!"
-            : "Livro Cadastrado com Sucesso!";
+            ? "Livro atualizado com sucesso."
+            : "Livro cadastrado com sucesso.";
         openNotification("success", msg);
         navigate(`/livros`);
       })
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", "Falha ao Cadastrar o Livro", msg);
-        });
-      });
+      .catch((errors) =>
+        handleApiError(
+          openNotification,
+          errors,
+          "Falha ao atualizar ou cadastrar o livro."
+        )
+      );
   };
 
   const onCancel = () => {
     modal.confirm({
-      title: "Deseja Retornar à página anterior?",
+      title: "Deseja retornar à página anterior?",
       content: "Os dados informados serão perdidos!",
       icon: <ExclamationCircleFilled />,
       onOk() {
@@ -111,7 +110,7 @@ const LivroForm: React.FC = () => {
         {...formItemLabelLayout}
       >
         <Title level={3}>
-          {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}
+          {id === "new" ? "Cadastre um novo livro." : "Editando o livro."}
         </Title>
         <Form.Item name="id" noStyle />
         <Form.Item
@@ -131,7 +130,7 @@ const LivroForm: React.FC = () => {
 
         <Form.Item
           name="dataPublicacao"
-          rules={[{ required: true, message: "Informe a Data de Publicação!" }]}
+          rules={[{ required: true, message: "Informe a data de publicação!" }]}
           label="Publicação"
         >
           <DatePicker style={{ display: "block" }} />
@@ -143,12 +142,12 @@ const LivroForm: React.FC = () => {
           rules={[
             {
               required: true,
-              message: "Isbn deve conter no mínimo 1 e máximo 13 caracteres!",
+              message: "ISBN deve conter no mínimo 1 e máximo 13 caracteres!",
               max: 13,
             },
           ]}
         >
-          <Input type="number" placeholder="Digite o isbn" />
+          <Input type="number" placeholder="Digite o ISBN" />
         </Form.Item>
 
         <Form.Item
@@ -164,7 +163,7 @@ const LivroForm: React.FC = () => {
                 .includes(input.toLowerCase())
             }
             onSearch={findCategorias}
-            options={options}
+            options={categorias}
             fieldNames={{ label: "descricao", value: "id" }}
             placeholder="Selecione a categoria"
           />

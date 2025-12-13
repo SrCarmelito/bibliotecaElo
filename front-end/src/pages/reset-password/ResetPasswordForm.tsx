@@ -4,6 +4,7 @@ import { confirmResetPassword } from "../../service/AuthService";
 import { CheckCircleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../contexts/notificationContext";
+import { handleApiError } from "../../functions/handleApiError";
 
 const initialValues = {
   senha: "",
@@ -20,7 +21,7 @@ const ResetPasswordForm = () => {
     confirmResetPassword(resetPassword)
       .then(() => {
         modal.success({
-          title: "Senha Alterada com sucesso",
+          title: "Senha alterada com sucesso",
           content: "",
           icon: <CheckCircleFilled />,
           onOk() {
@@ -28,15 +29,9 @@ const ResetPasswordForm = () => {
           },
         });
       })
-      .catch((errors) => {
-        const erros = errors.response?.data.errors;
-        if (!erros) {
-          throw erros;
-        }
-        erros.forEach((msg: string) => {
-          openNotification("error", "Falha ao trocar a senha.", msg);
-        });
-      });
+      .catch((errors) =>
+        handleApiError(openNotification, errors, "Falha ao trocar a senha.")
+      );
   };
 
   return (

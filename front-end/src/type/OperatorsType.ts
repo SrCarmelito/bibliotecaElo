@@ -11,3 +11,8 @@ export const numericOrDateOperators = [
   { label: "Maior ou igual", value: ">=" },
   { label: "Menor ou igual", value: "<=" },
 ];
+
+export const enumOperators = [
+  { label: "Igual", value: "==" },
+  { label: "Diferente de", value: "=notlike=" },
+];

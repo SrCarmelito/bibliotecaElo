@@ -19,7 +19,9 @@ import SearchComponent from "../../components/searchcomponent/SearchComponent";
 import { TableParams } from "../../interfaces/ItableParams";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
 import { getSearchParam } from "../../components/searchcomponent/searchFunction";
-import { useLoading } from "../../components/searchcomponent/useLoading";
+import { useLoading } from "../../consts/useLoading";
+import { handleApiError } from "../../functions/handleApiError";
+import { genericTableChange } from "../../functions/genericTableChange";
 
 const searchFields: SearchField[] = [
   {
@@ -50,10 +52,15 @@ const CategoriaList: React.FC = () => {
     },
     search: getSearchParam(),
   });
+  const { handleTableChange } = genericTableChange<Categoria>(
+    tableParams,
+    setTableParams,
+    setCategorias
+  );
 
   const columns: ColumnsType<Categoria> = [
     {
-      title: "Descricao",
+      title: "Descrição",
       dataIndex: "descricao",
       key: "descricao",
       sorter: true,
@@ -81,8 +88,8 @@ const CategoriaList: React.FC = () => {
 
   const handleOpenModal = (categoria?: Categoria) => {
     categoria
-      ? setTitleModal(`Editando a Categoria: ${categoria.descricao}`)
-      : setTitleModal("Crie uma nova Categoria");
+      ? setTitleModal(`Editando a categoria: ${categoria.descricao}`)
+      : setTitleModal("Crie uma nova categoria.");
     form.setFieldsValue(categoria);
     setOpen(!open);
   };
@@ -95,28 +102,24 @@ const CategoriaList: React.FC = () => {
 
   const onRemove = (categoria: Categoria) => {
     modal.confirm({
-      title: "Confirma Exclusão da Categoria?",
+      title: "Confirma a exclusão da categoria?",
       icon: <ExclamationCircleFilled />,
       content: `${categoria.descricao}`,
       onOk() {
-        deleteById(categoria.id)
-          .then(() =>
-            openNotification("success", "Categoria Excluída com Sucesso")
-          )
-          .then(() => fetchData())
-          .catch((errors) => {
-            const erros = errors.response.data.errors;
-            if (!erros) {
-              throw erros;
-            }
-            erros.forEach((msg: string) => {
-              if (msg.match("constraint violation")) {
-                msg =
-                  "Não é possível excluir a Categoria pois existem registros que dependem dela.";
-              }
-              openNotification("error", "Falha ao Excluir a Categoria", msg);
-            });
-          });
+        setLoading(
+          deleteById(categoria.id)
+            .then(() =>
+              openNotification("success", "Categoria excluída com sucesso.")
+            )
+            .then(() => fetchData())
+            .catch((errors) =>
+              handleApiError(
+                openNotification,
+                errors,
+                "Não é possível excluir a categoria."
+              )
+            )
+        );
       },
     });
   };
@@ -150,44 +153,25 @@ const CategoriaList: React.FC = () => {
     JSON.stringify(tableParams.filters),
   ]);
 
-  const handleTableChange: TableProps<Categoria>["onChange"] = (
-    pagination,
-    filters,
-    sorter
-  ) => {
-    setTableParams({
-      pagination,
-      filters,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-    });
-
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setCategorias([]);
-    }
-  };
-
   const onSubmit = (categoria: Categoria) => {
     setLoading(
       saveOrUpdate(categoria)
         .then((res) => {
           const msg =
             res.config.method === "put"
-              ? "Categoria Atualizada com Sucesso!"
-              : "Categoria Cadastrada com Sucesso!";
+              ? "Categoria atualizada com sucesso."
+              : "Categoria cadastrada com sucesso.";
           openNotification("success", msg);
           handleCloseModal();
         })
         .then(() => fetchData())
-        .catch((errors) => {
-          const erros = errors.response?.data.errors;
-          if (!erros) {
-            throw erros;
-          }
-          erros.forEach((msg: string) => {
-            openNotification("error", "Falha ao Cadastrar a Categoria", msg);
-          });
-        })
+        .catch((errors) =>
+          handleApiError(
+            openNotification,
+            errors,
+            "Falha ao cadastrar a categoria."
+          )
+        )
     );
   };
 
@@ -230,9 +214,9 @@ const CategoriaList: React.FC = () => {
           <Form.Item name="id" noStyle />
           <Form.Item
             name="descricao"
-            rules={[{ required: true, message: "Informe a Descrição!" }]}
+            rules={[{ required: true, message: "Informe a descrição." }]}
           >
-            <Input placeholder="Informe a Descrição" />
+            <Input placeholder="Informe a Descrição." />
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" block type="primary">
