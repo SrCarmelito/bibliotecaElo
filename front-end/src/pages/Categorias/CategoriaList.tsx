@@ -55,7 +55,7 @@ const CategoriaList: React.FC = () => {
   const { handleTableChange } = genericTableChange<Categoria>(
     tableParams,
     setTableParams,
-    setCategorias
+    setCategorias,
   );
 
   const columns: ColumnsType<Categoria> = [
@@ -109,16 +109,16 @@ const CategoriaList: React.FC = () => {
         setLoading(
           deleteById(categoria.id)
             .then(() =>
-              openNotification("success", "Categoria excluída com sucesso.")
+              openNotification("success", "Categoria excluída com sucesso."),
             )
             .then(() => fetchData())
             .catch((errors) =>
               handleApiError(
                 openNotification,
                 errors,
-                "Não é possível excluir a categoria."
-              )
-            )
+                "Não é possível excluir a categoria.",
+              ),
+            ),
         );
       },
     });
@@ -130,7 +130,7 @@ const CategoriaList: React.FC = () => {
         getRandomUserParams(tableParams).pagination,
         getRandomUserParams(tableParams).sortField,
         getRandomUserParams(tableParams).sortOrder,
-        getSearchParam()
+        getSearchParam(),
       ).then((response) => {
         setCategorias(response.data.content);
         setTableParams({
@@ -141,7 +141,7 @@ const CategoriaList: React.FC = () => {
           },
           search: getSearchParam(),
         });
-      })
+      }),
     );
   };
 
@@ -169,9 +169,9 @@ const CategoriaList: React.FC = () => {
           handleApiError(
             openNotification,
             errors,
-            "Falha ao cadastrar a categoria."
-          )
-        )
+            "Falha ao cadastrar a categoria.",
+          ),
+        ),
     );
   };
 
