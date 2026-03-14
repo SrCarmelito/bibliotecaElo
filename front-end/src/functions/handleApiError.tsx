@@ -1,7 +1,7 @@
 export function handleApiError(
   openNotification: any,
   errors: any,
-  title: string
+  title: string,
 ) {
   const erros = errors?.response?.data?.errors;
 
@@ -10,7 +10,10 @@ export function handleApiError(
   }
 
   erros.forEach((msg: string) => {
-    if (msg.match("violates foreign key constraint")) {
+    if (
+      msg.match("violates foreign key constraint") ||
+      msg.match("Referential integrity constraint violation")
+    ) {
       msg =
         "Não é possível excluir pois existem outros registros que dependem dele.";
     }
