@@ -50,7 +50,7 @@ public class Livro implements Auditable, Entidade, EntidadeWithBucketFile {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "bucketfile_id")
     private BucketFile bucketFile;
 
