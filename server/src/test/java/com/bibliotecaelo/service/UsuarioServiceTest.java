@@ -1,14 +1,9 @@
 package com.bibliotecaelo.service;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
@@ -23,13 +18,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {

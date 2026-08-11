@@ -1,19 +1,19 @@
 package com.bibliotecaelo.service;
 
-import java.util.UUID;
-
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.converter.UsuarioDTOConverter;
 import com.bibliotecaelo.converter.UsuarioResponseDTOConverter;
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

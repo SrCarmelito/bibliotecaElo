@@ -7,10 +7,7 @@ import { ColumnsType } from "antd/es/table";
 import { TableParams } from "../../interfaces/ItableParams";
 import { EditTwoTone, PlusOutlined } from "@ant-design/icons";
 import { findAll, saveOrUpdate } from "../../service/EmprestimoService";
-import {
-  findAll as findAllLivros,
-  findById as findLivroById,
-} from "../../service/LivroService";
+import { livroService } from "../../service/LivroService";
 import { getRandomUserParams } from "../../consts/getRandomUserParams";
 import { StatusEmprestimoEnum } from "../../enums/StatusEmprestimoEnum";
 import { Livro } from "../../type/Livro";
@@ -144,7 +141,7 @@ const EmprestimoList: React.FC = () => {
 
   const findLivros = (search?: string) => {
     search ? (search = `titulo=ilike=${search}`) : (search = "");
-    findAllLivros(0, "titulo", "asc", search).then((response) => {
+    livroService.findAll(0, "titulo", "asc", search).then((response) => {
       setLivros(response.data.content);
     });
   };
@@ -162,7 +159,7 @@ const EmprestimoList: React.FC = () => {
   const handleOpenModal = (emprestimo?: Emprestimo) => {
     if (emprestimo) {
       form.setFieldsValue(emprestimo);
-      findLivroById(emprestimo?.livro?.id).then((response) => {
+      livroService.findById(emprestimo?.livro?.id).then((response) => {
         setLivros([...livros, ...[response?.data]]);
       });
       form.setFieldsValue({

@@ -1,14 +1,14 @@
 package com.bibliotecaelo.audit;
 
-import java.time.LocalDateTime;
-
-import com.bibliotecaelo.audit.domain.Revision;
+import com.bibliotecaelo.domain.Revision;
 import com.bibliotecaelo.domain.Usuario;
 import com.bibliotecaelo.utils.AuditUserUtil;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 

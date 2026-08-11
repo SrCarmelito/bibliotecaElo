@@ -7,7 +7,8 @@ body {
   color: #fafafa;
 }
 
-h3 {
+h3,
+h5 {
   text-align: center;
 }
 
@@ -29,7 +30,7 @@ form {
   padding: 2em;
 }
 
-.ant-table .ant-table-thead > tr > th {
+.ant-table .ant-table-thead>tr>th {
   text-align: center;
 }
 
@@ -42,4 +43,40 @@ form {
 
 #errorPage p {
   color: rgb(22, 119, 255);
+}
+
+.ant-form-item-label {
+  width: 160px;
+}
+
+.container {
+  width: 420px;
+}
+
+.container.has-image {
+  width: 800px;
+}
+
+.ant-upload-drag-icon,
+.ant-upload-text {
+  text-align: center;
+}
+
+.ant-upload-wrapper {
+  text-align: center;
+  width: 500px;
+  height: 300px;
+}
+
+.ant-typography {
+  margin-top: 0;
+  padding-bottom: 2px;
+}
+
+.no-image {
+  max-width: 30em;
+}
+
+.has-image {
+  max-width: 60em;
 }

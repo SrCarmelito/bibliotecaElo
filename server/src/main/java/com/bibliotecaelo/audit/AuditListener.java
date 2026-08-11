@@ -1,12 +1,13 @@
 package com.bibliotecaelo.audit;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 import com.bibliotecaelo.audit.domain.AuditInfo;
+import com.bibliotecaelo.interfaces.Auditable;
 import com.bibliotecaelo.utils.AuditUserUtil;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 

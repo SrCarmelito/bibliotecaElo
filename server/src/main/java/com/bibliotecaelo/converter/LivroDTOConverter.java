@@ -26,6 +26,10 @@ public class LivroDTOConverter implements DTOConverter<Livro, LivroDTO> {
             entity.setCategoria(new CategoriaDTOConverter().from(dto.getCategoria()));
         }
 
+        if(nonNull(dto.getBucketFile())) {
+            entity.setBucketFile(new BucketFileDTOConverter().from(dto.getBucketFile()));
+        }
+
         return entity;
     }
 
@@ -45,6 +49,7 @@ public class LivroDTOConverter implements DTOConverter<Livro, LivroDTO> {
         dto.setDataPublicacao(entity.getDataPublicacao());
 
         dto.setCategoria(new CategoriaDTOConverter().to(entity.getCategoria()));
+        dto.setBucketFile(new BucketFileDTOConverter().to(entity.getBucketFile()));
 
         return dto;
     }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create_table_bucketfile" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela bucketfile já existe">
+            <not>
+                <tableExists tableName="bucketfile" />
+            </not>
+        </preConditions>
+        <createTable tableName="bucketfile">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="bucketfile_pk" nullable="false"/>
+            </column>
+            <column name="nome" type="varchar(1000)" />
+            <column name="file_id" type="uuid" />
+            <column name="size" type="bigint" />
+            <column name="content_type" type="varchar(100)" />
+        </createTable>
+        <customChange class="com.bibliotecaelo.utils.DomainAuditColumns">
+            <param name="tableName" value="bucketfile"/>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="create_table_bucketfile_aud" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A tabela bucketfile_aud já existe">
+            <not>
+                <tableExists tableName="bucketfile_aud" />
+            </not>
+        </preConditions>
+        <createTable tableName="bucketfile_aud" >
+            <column name="rev" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="revtype" type="numeric(10)"><constraints nullable="false"/></column>
+            <column name="id" type="uuid"/>
+            <column name="nome" type="varchar(1000)" />
+            <column name="file_id" type="uuid" />
+            <column name="size" type="bigint" />
+            <column name="content_type" type="varchar(100)" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,7 +1,7 @@
-import { Button, DatePicker, Form, Modal, Input, Select } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select } from "antd";
 
 import { findAll } from "../../service/CategoriaService";
-import { saveOrUpdate, findById } from "../../service/LivroService";
+import { livroService } from "../../service/LivroService";
 import { Categoria } from "../../type/Categoria";
 import React, { useEffect, useMemo, useState } from "react";
 import { Livro } from "../../type/Livro";
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router";
 import { ExclamationCircleFilled, RollbackOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import { handleApiError } from "../../functions/handleApiError";
+import { BucketFileRender } from "../../components/BucketFileRender";
 
 type Params = {
   id: string;
@@ -22,17 +23,7 @@ const initialLivro: Livro = {
   isbn: "",
   dataPublicacao: "",
   categoria: undefined,
-};
-
-const formItemLabelLayout = {
-  labelCol: {
-    xs: { span: 3 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 2 },
-    sm: { span: 18 },
-  },
+  bucketFile: undefined
 };
 
 const LivroForm: React.FC = () => {
@@ -42,6 +33,7 @@ const LivroForm: React.FC = () => {
   const { id } = useParams<Params>();
   const [form] = Form.useForm();
   const [modal, contextHolder] = Modal.useModal();
+  const [livro, setLivro] = useState<Livro>(initialLivro);
 
   const findCategorias = (search?: string) => {
     search ? (search = `descricao=ilike=${search}`) : (search = "");
@@ -56,7 +48,14 @@ const LivroForm: React.FC = () => {
 
   const fetchData = () => {
     if (isEditing && id) {
-      findById(id).then(({ data }) => {
+      livroService.findById(id).then(({ data }) => {
+        setLivro(data);
+      });
+    }
+
+    if (isEditing && id) {
+      livroService.findById(id).then(({ data }) => {
+        setLivro(data);
         form.setFieldsValue(data || initialLivro);
         form.setFieldValue("categoria", data.categoria?.id);
       });
@@ -70,7 +69,7 @@ const LivroForm: React.FC = () => {
     const categoria: any = { id: livro?.categoria };
     livro.categoria = categoria;
 
-    saveOrUpdate(livro)
+    livroService.saveOrUpdate(livro)
       .then((res) => {
         const msg =
           res.config.method === "put"
@@ -100,90 +99,115 @@ const LivroForm: React.FC = () => {
   };
 
   return (
-    <>
+    <div>
       <Form<Livro>
         initialValues={form}
         form={form}
         onFinish={onSubmit}
         id="styledform"
-        style={{ maxWidth: "30em" }}
-        {...formItemLabelLayout}
+
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        className={`container `.concat(id === "new"
+          ? "no-image"
+          : "has-image")}
       >
         <Title level={3}>
-          {id === "new" ? "Cadastre um novo livro." : "Editando o livro."}
+          {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}
         </Title>
-        <Form.Item name="id" noStyle />
-        <Form.Item
-          label="Título"
-          name="titulo"
-          rules={[{ required: true, message: "Informe o Título!" }]}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "10%"
+          }}
         >
-          <Input placeholder="Digite o título" />
-        </Form.Item>
-        <Form.Item
-          label="Autor"
-          name="autor"
-          rules={[{ required: true, message: "Informe o Autor!" }]}
-        >
-          <Input placeholder="Digite o autor" />
-        </Form.Item>
+          <div>
+            <Form.Item name="id" noStyle />
+            <Form.Item
+              label="Título"
+              name="titulo"
+              rules={[{ required: true, message: "Informe o Título!" }]}
+            >
+              <Input placeholder="Digite o título" />
+            </Form.Item>
+            <Form.Item
+              label="Autor"
+              name="autor"
+              rules={[{ required: true, message: "Informe o Autor!" }]}
+            >
+              <Input placeholder="Digite o autor" />
+            </Form.Item>
 
-        <Form.Item
-          name="dataPublicacao"
-          rules={[{ required: true, message: "Informe a data de publicação!" }]}
-          label="Publicação"
-        >
-          <DatePicker style={{ display: "block" }} />
-        </Form.Item>
+            <Form.Item
+              name="dataPublicacao"
+              rules={[{ required: true, message: "Informe a data de publicação!" }]}
+              label="Publicação"
+            >
+              <DatePicker style={{ display: "block" }} />
+            </Form.Item>
 
-        <Form.Item
-          label="Isbn"
-          name="isbn"
-          rules={[
-            {
-              required: true,
-              message: "ISBN deve conter no mínimo 1 e máximo 13 caracteres!",
-              max: 13,
-            },
-          ]}
-        >
-          <Input type="number" placeholder="Digite o ISBN" />
-        </Form.Item>
+            <Form.Item
+              label="Isbn"
+              name="isbn"
+              rules={[
+                {
+                  required: true,
+                  message: "ISBN deve conter no mínimo 1 e máximo 13 caracteres!",
+                  max: 13,
+                },
+              ]}
+            >
+              <Input type="number" placeholder="Digite o ISBN" />
+            </Form.Item>
+            <Form.Item
+              label="Categoria"
+              name="categoria"
+              rules={[{ required: true, message: "Informe a Categoria!" }]}
+            >
+              <Select
+                showSearch
+                filterOption={(input, option) =>
+                  (option?.descricao ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                onSearch={findCategorias}
+                options={categorias}
+                fieldNames={{ label: "descricao", value: "id" }}
+                placeholder="Selecione a categoria"
+              />
+            </Form.Item>
+            <Form.Item label={null} noStyle>
+              <Button block type="primary" htmlType="submit">
+                Confirmar
+              </Button>
+            </Form.Item>
+          </div>
 
-        <Form.Item
-          label="Categoria"
-          name="categoria"
-          rules={[{ required: true, message: "Informe a Categoria!" }]}
-        >
-          <Select
-            showSearch
-            filterOption={(input, option) =>
-              (option?.descricao ?? "")
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            onSearch={findCategorias}
-            options={categorias}
-            fieldNames={{ label: "descricao", value: "id" }}
-            placeholder="Selecione a categoria"
-          />
-        </Form.Item>
-        <Form.Item label={null} noStyle>
-          <Button block type="primary" htmlType="submit">
-            Confirmar
-          </Button>
-        </Form.Item>
-      </Form>
+          {livro.bucketFile && <BucketFileRender
+            entity={livro}
+            width={300}
+            title="Imagem do livro"
+            fetchData={fetchData}
+            canEdit
+            canRemove
+            preview={false}
+            bucketService={livroService}
+          />}
+        </div>
+      </Form >
+
       {contextHolder}
-      <Button
+      < Button
         onClick={onCancel}
         type="primary"
         size="large"
         shape="circle"
-        icon={<RollbackOutlined />}
+        icon={< RollbackOutlined />}
         style={{ position: "fixed", zIndex: 1, bottom: 40, right: 40 }}
       />
-    </>
+    </div>
   );
 };
 

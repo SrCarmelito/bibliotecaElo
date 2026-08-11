@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES5",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "allowJs": true,
     "jsx": "react-jsx",
     "strict": true,
@@ -9,5 +12,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
