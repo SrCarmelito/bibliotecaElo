@@ -1,11 +1,11 @@
 package com.bibliotecaelo.converter;
 
-import java.util.UUID;
-
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

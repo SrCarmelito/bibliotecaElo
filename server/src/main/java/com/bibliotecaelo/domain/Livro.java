@@ -1,22 +1,11 @@
 package com.bibliotecaelo.domain;
 
-import java.time.LocalDate;
-import java.util.UUID;
-
 import com.bibliotecaelo.audit.AuditListener;
-import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.audit.domain.AuditInfo;
+import com.bibliotecaelo.interfaces.Auditable;
 import com.bibliotecaelo.interfaces.Entidade;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.bibliotecaelo.interfaces.EntidadeWithBucketFile;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,12 +13,15 @@ import lombok.Data;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 @Entity
 @Table(name = "livro", schema = "biblioteca")
 @Data
 @Audited
 @EntityListeners(AuditListener.class)
-public class Livro implements Auditable, Entidade {
+public class Livro implements Auditable, Entidade, EntidadeWithBucketFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -57,6 +49,10 @@ public class Livro implements Auditable, Entidade {
     @NotNull(message = "É necessário informar a categoria do livro.")
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "bucketfile_id")
+    private BucketFile bucketFile;
 
     @Embedded
     @NotAudited

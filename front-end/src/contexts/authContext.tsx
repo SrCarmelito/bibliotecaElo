@@ -35,8 +35,8 @@ const initialUsuario: Usuario = {
 export const AuthContext = createContext<AuthContextType>({
   token: undefined,
   usuario: initialUsuario,
-  signIn: () => {},
-  signOut: () => {},
+  signIn: () => { },
+  signOut: () => { },
 });
 
 type Action = {

@@ -1,22 +1,10 @@
 package com.bibliotecaelo.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.UUID;
-
 import com.bibliotecaelo.audit.AuditListener;
-import com.bibliotecaelo.audit.Auditable;
 import com.bibliotecaelo.audit.domain.AuditInfo;
+import com.bibliotecaelo.interfaces.Auditable;
 import com.bibliotecaelo.interfaces.Entidade;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -25,6 +13,10 @@ import lombok.Data;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.validator.constraints.br.CPF;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "pessoa", schema = "biblioteca")

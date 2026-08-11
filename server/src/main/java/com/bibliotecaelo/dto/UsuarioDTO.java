@@ -1,19 +1,15 @@
-package com.bibliotecaelo.dto.usuario;
-
-import java.time.LocalDate;
-import java.util.UUID;
+package com.bibliotecaelo.dto;
 
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.interfaces.EntidadeDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class UsuarioDTO implements EntidadeDTO {

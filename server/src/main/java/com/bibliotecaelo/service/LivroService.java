@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class LivroService
-        extends CrudService<Livro> {
+        extends CrudBucketService<Livro> {
 
     @Getter
     private final LivroRepository repository;

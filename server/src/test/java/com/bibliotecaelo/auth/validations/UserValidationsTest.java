@@ -1,6 +1,6 @@
 package com.bibliotecaelo.auth.validations;
 
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
 import com.bibliotecaelo.fixtures.UsuarioFixtures;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.validation.ValidationException;

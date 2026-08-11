@@ -1,14 +1,11 @@
 package com.bibliotecaelo.auth.service;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import com.bibliotecaelo.auth.dto.EmailDTO;
 import com.bibliotecaelo.auth.dto.LoginDTO;
 import com.bibliotecaelo.auth.dto.NewPasswordDTO;
 import com.bibliotecaelo.auth.validations.UserValidations;
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
 import com.bibliotecaelo.enums.SituacaoUsuarioEnum;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor

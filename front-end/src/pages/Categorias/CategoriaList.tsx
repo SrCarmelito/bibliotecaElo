@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Spin, Table, TableProps } from "antd";
+import { Button, Form, Input, Modal, Spin, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { Categoria } from "../../type/Categoria";
 import { ColumnsType } from "antd/es/table";

@@ -1,13 +1,13 @@
 package com.bibliotecaelo.auth.validations;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
 import com.bibliotecaelo.repository.UsuarioRepository;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor

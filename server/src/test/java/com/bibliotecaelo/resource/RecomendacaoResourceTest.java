@@ -1,8 +1,5 @@
 package com.bibliotecaelo.resource;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.bibliotecaelo.ResourceTest;
 import com.bibliotecaelo.converter.LivroDTOConverter;
 import com.bibliotecaelo.domain.Livro;
@@ -21,10 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
+import java.util.UUID;
+
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

@@ -1,7 +1,7 @@
 package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;

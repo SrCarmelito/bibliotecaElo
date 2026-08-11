@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="alter_table_livro_add_column_bucketfile_id" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A coluna bucketfile_id já existe">
+            <not>
+                <columnExists tableName="livro" columnName="bucketfile_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="livro">
+            <column name="bucketfile_id" type="uuid">
+                <constraints foreignKeyName="bucketfile_livro_fk"
+                             referencedTableName="bucketfile"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="alter_table_livro_aud_add_column_bucketfile_id" author="carmelito.benali">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN" onFailMessage="A coluna bucketfile_id já existe">
+            <not>
+                <columnExists tableName="livro_aud" columnName="bucketfile_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="livro_aud">
+            <column name="bucketfile_id" type="uuid"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
