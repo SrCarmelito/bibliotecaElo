@@ -1,7 +1,7 @@
 package com.bibliotecaelo.converter;
 
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -28,13 +28,11 @@ public class UsuarioResponseDTOConverter
 
     @Override
     public UsuarioResponseDTO to(Usuario entity) {
-
         if (isNull(entity)) {
-            return new UsuarioResponseDTO();
+            return null;
         }
 
         UsuarioResponseDTO dto = new UsuarioResponseDTO();
-
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
         dto.setEmail(entity.getEmail());

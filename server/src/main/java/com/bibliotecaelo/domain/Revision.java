@@ -1,20 +1,15 @@
-package com.bibliotecaelo.audit.domain;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+package com.bibliotecaelo.domain;
 
 import com.bibliotecaelo.audit.RevisionListenerImpl;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Table(schema = "biblioteca",name = "revision")
 @Data

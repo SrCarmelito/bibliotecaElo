@@ -58,7 +58,10 @@ const CreateUser: React.FC = () => {
   };
 
   return (
-    <Form<Usuario> form={form} onFinish={onSubmit} id="styledform">
+    <Form<Usuario>
+      form={form}
+      onFinish={onSubmit}
+    >
       <Title level={3}>{token ? "Sua conta" : "Crie sua conta"}</Title>
       <Form.Item name="id" noStyle />
       <Form.Item name="situacao" noStyle />
@@ -113,7 +116,7 @@ const CreateUser: React.FC = () => {
           {token ? "Atualizar" : "Cadastrar"}
         </Button>
       </Form.Item>
-      <a href="/">« Voltar</a>
+      <a href={token ? "/inicio" : "/"}>« Voltar</a>
     </Form>
   );
 };

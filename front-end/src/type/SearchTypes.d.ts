@@ -2,7 +2,7 @@ export type SearchField = {
   value: string;
   label: string;
   type: "STRING" | "NUMERIC" | "DATE" | "ENUM";
-  enumValues?: any;
+  enumValues?: enum;
 };
 
 export type Props = {

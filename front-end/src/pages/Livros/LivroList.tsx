@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Table } from "antd";
-import { deleteById, findAll } from "../../service/LivroService";
+import { livroService } from "../../service/LivroService";
 import { Livro } from "../../type/Livro";
 import {
   DeleteTwoTone,
@@ -70,7 +70,7 @@ const LivroList: React.FC = () => {
 
   const fetchData = () => {
     setLoading(
-      findAll(
+      livroService.findAll(
         getRandomUserParams(tableParams).pagination,
         getRandomUserParams(tableParams).sortField,
         getRandomUserParams(tableParams).sortOrder,
@@ -101,11 +101,10 @@ const LivroList: React.FC = () => {
     modal.confirm({
       title: "Confirma a exclusão do livro?",
       icon: <ExclamationCircleFilled />,
-      content: `${livro.titulo} - ${
-        livro.categoria?.descricao
-      } - ${livro.dataPublicacao.format("DD/MM/YYYY")}`,
+      content: `${livro.titulo} - ${livro.categoria?.descricao
+        } - ${livro.dataPublicacao.format("DD/MM/YYYY")}`,
       onOk() {
-        deleteById(livro.id)
+        livroService.deleteById(livro.id)
           .then(() =>
             openNotification("success", "Livro excluído com sucesso.")
           )

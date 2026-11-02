@@ -1,4 +1,4 @@
-package com.bibliotecaelo.audit;
+package com.bibliotecaelo.interfaces;
 
 import com.bibliotecaelo.audit.domain.AuditInfo;
 

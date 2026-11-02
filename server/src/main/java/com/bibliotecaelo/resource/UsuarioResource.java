@@ -1,8 +1,8 @@
 package com.bibliotecaelo.resource;
 
 import com.bibliotecaelo.domain.Usuario;
-import com.bibliotecaelo.dto.usuario.UsuarioDTO;
-import com.bibliotecaelo.dto.usuario.UsuarioResponseDTO;
+import com.bibliotecaelo.dto.UsuarioDTO;
+import com.bibliotecaelo.dto.UsuarioResponseDTO;
 import com.bibliotecaelo.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,10 @@
 package com.bibliotecaelo.converter;
 
-import java.util.Objects;
-
 import com.bibliotecaelo.domain.Emprestimo;
 import com.bibliotecaelo.dto.EmprestimoDTO;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -15,7 +15,7 @@ public class EmprestimoDTOConverter
     @Override
     public Emprestimo from(EmprestimoDTO dto, Emprestimo entity) {
         if (isNull(entity)) {
-            entity = new Emprestimo();
+           entity = new Emprestimo();
         }
 
         if (Objects.nonNull(dto.getId())) {
@@ -38,11 +38,10 @@ public class EmprestimoDTOConverter
     @Override
     public EmprestimoDTO to(Emprestimo entity) {
         if (isNull(entity)) {
-            return new EmprestimoDTO();
+            return null;
         }
 
         EmprestimoDTO dto = new EmprestimoDTO();
-
         dto.setId(entity.getId());
         dto.setUsuario(new UsuarioResponseDTOConverter().to(entity.getUsuario()));
         dto.setLivro(new LivroDTOConverter().to(entity.getLivro()));

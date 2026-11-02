@@ -1,23 +1,37 @@
 package com.bibliotecaelo.service;
 
+import com.bibliotecaelo.configuration.MinioPropsConfiguration;
 import com.bibliotecaelo.domain.Livro;
+import com.bibliotecaelo.repository.BucketFileRepository;
 import com.bibliotecaelo.repository.LivroRepository;
+import io.minio.MinioClient;
 import jakarta.validation.ValidationException;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class LivroService
-        extends CrudService<Livro> {
+        extends CrudBucketService<Livro> {
 
     @Getter
     private final LivroRepository repository;
 
     private final CategoriaService categoriaService;
+
+    public LivroService(
+        LivroRepository repository,
+        CategoriaService categoriaService,
+        MinioPropsConfiguration props,
+        MinioClient client,
+        BucketFileRepository bucketFileRepository) {
+
+        super(props, client, bucketFileRepository);
+
+        this.repository = repository;
+        this.categoriaService = categoriaService;
+    }
 
     @Override
     public void beforeInsert(Livro livro) {

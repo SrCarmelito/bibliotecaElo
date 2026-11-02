@@ -1,13 +1,13 @@
 package com.bibliotecaelo.dto;
 
-import java.time.LocalDate;
-import java.util.UUID;
-
 import com.bibliotecaelo.interfaces.EntidadeDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class LivroDTO implements EntidadeDTO {
@@ -28,6 +28,8 @@ public class LivroDTO implements EntidadeDTO {
 
     @NotNull(message = "É necessário informar a data de publicação do livro.")
     private LocalDate dataPublicacao;
+
+    private BucketFileDTO bucketFile;
 
     @NotNull(message = "É necessário informar a categoria do livro.")
     private CategoriaDTO categoria;

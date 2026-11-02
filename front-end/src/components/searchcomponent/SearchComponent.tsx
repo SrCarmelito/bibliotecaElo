@@ -64,11 +64,17 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
       arraySearch.map((search) => {
         const [field, operator, value] = search.split("__");
         const label = optionsFilters.filter((option) => option.value === field);
+        const fieldType = label[0].type;
+        const enumValues = optionsFilters.find(item => item.value === field)?.enumValues;
+        let operatorDescription;
 
-        const operatorDescription =
-          label[0].type === "STRING"
-            ? stringOperators
-            : numericOrDateOperators?.filter((o) => o.value === operator);
+        if (fieldType === "STRING") {
+          operatorDescription = stringOperators
+        } else if (fieldType === "ENUM") {
+          operatorDescription = enumOperators
+        } else {
+          operatorDescription = numericOrDateOperators
+        }
 
         buttonFilters.push({
           id: search,
@@ -77,7 +83,9 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
             " " +
             operatorDescription[0].label +
             " " +
-            value.replace(/"/g, ""),
+            (fieldType === "ENUM"
+              ? enumValues[value as keyof typeof enumValues]
+              : value.replace(/"/g, "")),
         });
       });
 
@@ -146,7 +154,7 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
     )?.label;
 
     if (fieldLabel && operatorLabel) {
-      const label = `${fieldLabel} ${operatorLabel} ${searchConverter}`;
+      const label = `${fieldLabel} ${operatorLabel} ${componentSelector.type === "ENUM" ? enumValues[searchConverter as keyof typeof enumValues] : searchConverter}`;
       buildFilterFromButtonPesquisar({ id: newSearch, label });
     }
   };
@@ -193,10 +201,11 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
   return (
     <Form<Fields>
       form={form}
-      id="form"
       onFinish={executeSearch}
       layout="inline"
+      className="search-form"
     >
+
       <Form.Item
         name="field"
         id="searchselect"
@@ -278,15 +287,16 @@ const SearchComponent = ({ optionsFilters, runSearch }: Props) => {
         </Button>
       </Form.Item>
 
+
       <div id="searchdiv">
         {buttonFilters.map((buttonFilter) => (
-          <Button key={buttonFilter.id} id="searchfilters">
+          < Button key={buttonFilter.id} id="searchfilters" >
             {buttonFilter.label}
-            <CloseCircleOutlined onClick={() => removeFilter(buttonFilter)} />
+            < CloseCircleOutlined onClick={() => removeFilter(buttonFilter)} />
           </Button>
         ))}
       </div>
-    </Form>
+    </Form >
   );
 };
 
