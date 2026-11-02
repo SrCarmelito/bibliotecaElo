@@ -11,6 +11,10 @@ public class BucketFileDTOConverter implements DTOConverter<BucketFile, BucketFi
 
     @Override
     public BucketFile from(BucketFileDTO dto, BucketFile entity) {
+        if (isNull(dto)) {
+            return null;
+        }
+
         if (isNull(entity)) {
             entity = new BucketFile();
         }
@@ -28,11 +32,10 @@ public class BucketFileDTOConverter implements DTOConverter<BucketFile, BucketFi
     @Override
     public BucketFileDTO to(BucketFile entity) {
         if (isNull(entity)) {
-            return new BucketFileDTO();
+            return null;
         }
 
         BucketFileDTO dto = new BucketFileDTO();
-
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
         dto.setFileId(entity.getFileId());

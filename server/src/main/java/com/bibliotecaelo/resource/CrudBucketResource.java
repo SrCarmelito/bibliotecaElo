@@ -1,17 +1,17 @@
 package com.bibliotecaelo.resource;
 
 import com.bibliotecaelo.converter.BucketFileDTOConverter;
-import com.bibliotecaelo.converter.DTOConverter;
+import com.bibliotecaelo.domain.BucketFile;
 import com.bibliotecaelo.dto.BucketFileDTO;
 import com.bibliotecaelo.interfaces.Entidade;
 import com.bibliotecaelo.interfaces.EntidadeDTO;
 import com.bibliotecaelo.interfaces.EntidadeWithBucketFile;
 import com.bibliotecaelo.service.CrudBucketService;
-import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,22 +30,18 @@ public abstract class CrudBucketResource<
     extends CrudResource<E, D> {
 
     @Autowired
-    protected CrudBucketService<E> crudBucketService;
-
-    @Autowired
-    protected DTOConverter<E, D> dtoConverter;
-
-    @Autowired
     protected BucketFileDTOConverter bucketFileDTOConverter;
+    
+    protected CrudBucketService<E> getCrudBucketService() {
+        return (CrudBucketService<E>) this.crudService;
+    };
 
     @PostMapping("/file/upload/{entityId}")
     public ResponseEntity<D> upload(
-        @PathVariable UUID entityId,
-        @RequestBody MultipartFile multipartFile) {
+        @PathVariable("entityId") UUID entityId,
+        @RequestParam("multipartFile") MultipartFile multipartFile) {
 
-        if(Objects.isNull(multipartFile)) {
-            throw new IllegalArgumentException("Arquivo não pode ser nulo.");
-        }
+        isValidContentType(multipartFile);
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
 
@@ -55,33 +51,30 @@ public abstract class CrudBucketResource<
             dto.setInputStream(inputStream);
             dto.setContentType(multipartFile.getContentType());
 
-            E entity = crudBucketService.upload(entityId, bucketFileDTOConverter.from(dto));
+            E entity = getCrudBucketService().upload(entityId, bucketFileDTOConverter.from(dto));
 
             return ResponseEntity.ok(dtoConverter.to(entity));
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            throw new RuntimeException("Não foi possível realizar o upload do arquivo", ex);
         }
     }
 
     @DeleteMapping("/file/remove/{entityId}/{bucketFileId}")
     public ResponseEntity<Void> removeFile(
         @PathVariable("entityId") UUID entityId,
-        @PathVariable("bucketFileId") UUID bucketFileId) throws MinioException, IOException {
+        @PathVariable("bucketFileId") UUID bucketFileId) {
 
-        crudBucketService.removeBucketFile(entityId, bucketFileId);
+        getCrudBucketService().removeBucketFile(entityId, bucketFileId);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/file/update/{entityId}")
     public ResponseEntity<D> updateFile(
-        @PathVariable UUID entityId,
-        @RequestBody MultipartFile multipartFile) {
+        @PathVariable("entityId") UUID entityId,
+        @RequestParam("multipartFile") MultipartFile multipartFile) {
 
-        if(Objects.isNull(multipartFile)) {
-            throw new IllegalArgumentException("Arquivo não pode ser nulo.");
-        }
+        isValidContentType(multipartFile);
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
 
@@ -91,22 +84,35 @@ public abstract class CrudBucketResource<
             dto.setInputStream(inputStream);
             dto.setContentType(multipartFile.getContentType());
 
-            E entity = crudBucketService.updateFile(entityId, bucketFileDTOConverter.from(dto));
+            E entity = getCrudBucketService().updateFile(entityId, bucketFileDTOConverter.from(dto));
 
             return ResponseEntity.ok(dtoConverter.to(entity));
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException("Não foi possível atualizar o arquivo", e);
         }
     }
 
-    @GetMapping("/file/{entityId}")
-    public ResponseEntity<Resource> getFile(@PathVariable("entityId") UUID entityId) throws MinioException {
-        InputStream inputStream = crudBucketService.getFile(entityId);
+    @GetMapping("/file/{bucketFileId}")
+    public ResponseEntity<Resource> getFile(@PathVariable("bucketFileId") UUID bucketFileId) {
+        BucketFile bucketFile = getCrudBucketService().getBucketFileFromDatabase(bucketFileId);
+        bucketFile.setInputStream(getCrudBucketService().getFile(bucketFile.getId()));
 
         return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(new InputStreamResource(inputStream));
+            .contentType(MediaType.valueOf(bucketFile.getContentType()))
+            .body(new InputStreamResource(bucketFile.getInputStream()));
+    }
+
+    public void isValidContentType(MultipartFile multipartFile) {
+        if(Objects.isNull(multipartFile)) {
+            throw new IllegalArgumentException("Arquivo não pode ser nulo.");
+        }
+
+        try {
+            MediaType.parseMediaType(Objects.requireNonNull(multipartFile.getContentType()));
+        } catch (InvalidMediaTypeException e) {
+            throw new IllegalArgumentException("Tipo de arquivo é inválido");
+        }
     }
 
 }

@@ -1,12 +1,11 @@
 package com.bibliotecaelo.converter;
 
-import java.util.Objects;
-import java.util.UUID;
-
 import com.bibliotecaelo.domain.Pessoa;
 import com.bibliotecaelo.dto.PessoaConsumerDTO;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -18,7 +17,7 @@ public class PessoaDTOConverter {
             entity = new Pessoa();
         }
 
-        if(Objects.isNull(entity.getId())) {
+        if(isNull(entity.getId())) {
             entity.setId(UUID.randomUUID());
         }
 

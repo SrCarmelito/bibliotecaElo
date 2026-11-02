@@ -1,22 +1,18 @@
 package com.bibliotecaelo.service;
 
-import java.util.Objects;
-import java.util.UUID;
-
 import com.bibliotecaelo.interfaces.Entidade;
 import com.bibliotecaelo.repository.RsqlRepository;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 public abstract class CrudService<E extends Entidade> {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public abstract RsqlRepository<E, UUID> getRepository();
 
@@ -26,8 +22,8 @@ public abstract class CrudService<E extends Entidade> {
 
     public void beforeUpdate(E entity) {}
 
+    @Transactional
     public E insert(E entity) {
-
         if(!Objects.isNull(entity.getId())) {
             throw new IllegalStateException("Entidade já criada, utilize o método update.");
         }
@@ -38,6 +34,7 @@ public abstract class CrudService<E extends Entidade> {
         return entitySaved;
     }
 
+    @Transactional
     public E findById(UUID id) {
         return getRepository().findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Não foi encontrado com o id ".concat(id.toString()))
@@ -48,6 +45,7 @@ public abstract class CrudService<E extends Entidade> {
         return getRepository().findByRsql(search, pageable);
     }
 
+    @Transactional
     public E update(E entity) {
         beforeUpdate(entity);
         E entityUpdated = getRepository().saveAndFlush(entity);
@@ -55,6 +53,7 @@ public abstract class CrudService<E extends Entidade> {
         return entityUpdated;
     }
 
+    @Transactional
     public void deleteById(UUID id) {
         beforeDelete(id);
         E entityDeleted = findById(id);

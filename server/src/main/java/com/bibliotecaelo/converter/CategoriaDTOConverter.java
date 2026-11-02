@@ -24,11 +24,10 @@ public class CategoriaDTOConverter implements DTOConverter<Categoria, CategoriaD
     @Override
     public CategoriaDTO to(Categoria entity) {
         if (isNull(entity)) {
-            return new CategoriaDTO();
+            return null;
         }
 
         CategoriaDTO dto = new CategoriaDTO();
-
         dto.setId(entity.getId());
         dto.setDescricao(entity.getDescricao());
 

@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface BucketFileRespository extends RsqlRepository<BucketFile, UUID> {}
+public interface BucketFileRepository extends RsqlRepository<BucketFile, UUID> {}

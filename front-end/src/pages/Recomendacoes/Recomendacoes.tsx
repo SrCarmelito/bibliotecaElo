@@ -57,7 +57,7 @@ const Recomendacoes = () => {
                     {livro.isbn}
                   </p>
                 </div>
-                {livro.bucketFile?.fileId! &&
+                {!!livro.bucketFile?.fileId &&
                   <Col>
                     <BucketFileRender entity={livro} width={100} preview bucketService={livroService} />
                   </Col>

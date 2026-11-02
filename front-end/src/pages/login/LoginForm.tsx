@@ -66,7 +66,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <>
-      <Form<LoginDTO> onFinish={onSubmit} id="styledform">
+      <Form<LoginDTO> onFinish={onSubmit} >
         <Spin spinning={loading} fullscreen />
         <Title level={3}>Entrar</Title>
         <Form.Item
@@ -116,7 +116,7 @@ const LoginForm: React.FC = () => {
           encaminhado um e-mail com as instruções para confirmação da troca de
           sua senha.
         </p>
-        <Form<Email> form={form} onFinish={changePassword} id="styledform">
+        <Form<Email> form={form} onFinish={changePassword}>
           <Form.Item
             name="email"
             rules={[{ required: true, message: "Informe o e-mail." }]}

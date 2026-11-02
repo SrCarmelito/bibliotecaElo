@@ -35,7 +35,7 @@ const ResetPasswordForm = () => {
   };
 
   return (
-    <Form id="styledform" onFinish={onSubmit} initialValues={initialValues}>
+    <Form onFinish={onSubmit} initialValues={initialValues}>
       <Title level={3}>Troca de senha</Title>
       <Form.Item name="token" noStyle />
       <Form.Item

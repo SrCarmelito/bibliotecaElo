@@ -208,7 +208,6 @@ const CategoriaList: React.FC = () => {
           initialValues={initialCategoria}
           form={form}
           onFinish={onSubmit}
-          id="styledform"
           key="id"
         >
           <Form.Item name="id" noStyle />

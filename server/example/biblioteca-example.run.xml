@@ -1,0 +1,30 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="biblioteca-dev" type="Application" factoryName="Application">
+    <envs>
+      <env name="spring.profiles.active" value="your_profile_active" />
+      <env name="ALGORITHM_SECRET_TOKEN" value="00a97cba-b461-44ac-80be-5db3b213749d" />
+      <env name="DATABASE_PASSWORD" value="your_database_password" />
+      <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5432/postgres" />
+      <env name="DATABASE_USERNAME" value="postgres" />
+      <env name="liquibaseSchema" value="biblioteca" />
+      <env name="MAIL_HOST" value="smtp.gmail.com" />
+      <env name="MAIL_PASSWORD" value="l x r p s u k a m i b v r s t y" />
+      <env name="MAIL_PORT" value="587" />
+      <env name="MAIL_USERNAME" value="your_email_for_application@gmail.com" />
+      <env name="MINIO_ACCESS_KEY" value="minioadmin" />
+      <env name="MINIO_BUCKET_NAME" value="biblioteca" />
+      <env name="MINIO_SECRET_KEY" value="minioadmin123" />
+      <env name="MINIO_URL" value="http://localhost:9000" />
+      <env name="RABBIT_HOST" value="localhost" />
+      <env name="RABBIT_PORT" value="5672" />
+      <env name="RABBIT_USERNAME" value="guest" />
+      <env name="RABBIT_PASSWORD" value="guest" />
+      <env name="RABBIT_APPLICATION_NAME" value="biblioteca" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.bibliotecaelo.BibliotecaeloApplication" />
+    <module name="bibliotecaelo" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

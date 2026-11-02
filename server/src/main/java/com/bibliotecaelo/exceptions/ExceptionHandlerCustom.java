@@ -51,7 +51,19 @@ public class ExceptionHandlerCustom {
     }
 
     @ExceptionHandler({
-        Exception.class,
+        Exception.class
+    })
+    private ResponseEntity<StandardError> exception(Exception exception, HttpServletRequest request) {
+        return buildResponseError(
+            exception,
+            request,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            exception.getMessage(),
+            Collections.singleton(exception.getMessage())
+        );
+    }
+
+    @ExceptionHandler({
         EntityNotFoundException.class,
         HttpRequestMethodNotSupportedException.class,
         IllegalArgumentException.class,

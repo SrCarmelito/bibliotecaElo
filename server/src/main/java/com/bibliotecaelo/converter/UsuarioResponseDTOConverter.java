@@ -28,13 +28,11 @@ public class UsuarioResponseDTOConverter
 
     @Override
     public UsuarioResponseDTO to(Usuario entity) {
-
         if (isNull(entity)) {
-            return new UsuarioResponseDTO();
+            return null;
         }
 
         UsuarioResponseDTO dto = new UsuarioResponseDTO();
-
         dto.setId(entity.getId());
         dto.setNome(entity.getNome());
         dto.setEmail(entity.getEmail());

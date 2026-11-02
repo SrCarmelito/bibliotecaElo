@@ -16,18 +16,14 @@ p {
   text-align: justify;
 }
 
-form {
+.ant-form {
+  max-width: 25em;
+  margin: 2px auto;
+  margin: 3em auto;
+  padding: 2em;
   border-radius: 15px;
   box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.5);
   background-color: #f9f9f9;
-  max-width: 25em;
-  margin: 2px auto;
-  padding: 2em;
-}
-
-#styledform {
-  margin: 3em auto;
-  padding: 2em;
 }
 
 .ant-table .ant-table-thead>tr>th {
@@ -53,10 +49,6 @@ form {
   width: 420px;
 }
 
-.container.has-image {
-  width: 800px;
-}
-
 .ant-upload-drag-icon,
 .ant-upload-text {
   text-align: center;
@@ -73,10 +65,11 @@ form {
   padding-bottom: 2px;
 }
 
-.no-image {
-  max-width: 30em;
+.container.has-image {
+  width: 800px;
 }
 
-.has-image {
-  max-width: 60em;
+#form-image {
+  display: flex;
+  gap: 7%;
 }

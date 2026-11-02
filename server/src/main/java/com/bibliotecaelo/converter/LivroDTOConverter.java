@@ -5,7 +5,6 @@ import com.bibliotecaelo.dto.LivroDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Component
 public class LivroDTOConverter implements DTOConverter<Livro, LivroDTO> {
@@ -21,33 +20,24 @@ public class LivroDTOConverter implements DTOConverter<Livro, LivroDTO> {
         entity.setAutor(dto.getAutor());
         entity.setIsbn(dto.getIsbn());
         entity.setDataPublicacao(dto.getDataPublicacao());
-
-        if (nonNull(dto.getCategoria())) {
-            entity.setCategoria(new CategoriaDTOConverter().from(dto.getCategoria()));
-        }
-
-        if(nonNull(dto.getBucketFile())) {
-            entity.setBucketFile(new BucketFileDTOConverter().from(dto.getBucketFile()));
-        }
-
+        entity.setCategoria(new CategoriaDTOConverter().from(dto.getCategoria()));
+        entity.setBucketFile(new BucketFileDTOConverter().from(dto.getBucketFile()));
+        
         return entity;
     }
 
     @Override
     public LivroDTO to(Livro entity) {
-
         if (isNull(entity)) {
-            return new LivroDTO();
+            return null;
         }
 
         LivroDTO dto = new LivroDTO();
-
         dto.setId(entity.getId());
         dto.setTitulo(entity.getTitulo());
         dto.setAutor(entity.getAutor());
         dto.setIsbn(entity.getIsbn());
         dto.setDataPublicacao(entity.getDataPublicacao());
-
         dto.setCategoria(new CategoriaDTOConverter().to(entity.getCategoria()));
         dto.setBucketFile(new BucketFileDTOConverter().to(entity.getBucketFile()));
 

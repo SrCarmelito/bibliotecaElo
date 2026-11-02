@@ -228,13 +228,19 @@ const EmprestimoList: React.FC = () => {
             : "Faça um novo Empréstimo."
         }
         onCancel={() => handleCloseModal()}
+        styles={{
+          content: {
+            margin: 8,
+          },
+        }}
       >
         <Spin spinning={loading} fullscreen />
         <Form<Emprestimo>
           initialValues={initialEmprestimo}
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 18 }}
           form={form}
           onFinish={onSubmit}
-          id="styledform"
         >
           <Form.Item name="id" noStyle />
           <Form.Item name="usuario" noStyle />

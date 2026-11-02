@@ -50,12 +50,6 @@ const LivroForm: React.FC = () => {
     if (isEditing && id) {
       livroService.findById(id).then(({ data }) => {
         setLivro(data);
-      });
-    }
-
-    if (isEditing && id) {
-      livroService.findById(id).then(({ data }) => {
-        setLivro(data);
         form.setFieldsValue(data || initialLivro);
         form.setFieldValue("categoria", data.categoria?.id);
       });
@@ -104,24 +98,17 @@ const LivroForm: React.FC = () => {
         initialValues={form}
         form={form}
         onFinish={onSubmit}
-        id="styledform"
-
+        style={isEditing ? { maxWidth: "55em" } : { maxWidth: "32em" }}
         labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
-        className={`container `.concat(id === "new"
+        wrapperCol={{ span: 20 }}
+        className={`container `.concat(isEditing
           ? "no-image"
           : "has-image")}
       >
         <Title level={3}>
-          {id === "new" ? "Cadastre um novo livro" : "Editando o livro"}
+          {!isEditing ? "Cadastre um novo livro" : "Editando o livro"}
         </Title>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: "10%"
-          }}
-        >
+        <div id="form-image">
           <div>
             <Form.Item name="id" noStyle />
             <Form.Item
@@ -184,27 +171,30 @@ const LivroForm: React.FC = () => {
               </Button>
             </Form.Item>
           </div>
-
-          {livro.bucketFile && <BucketFileRender
-            entity={livro}
-            width={300}
-            title="Imagem do livro"
-            fetchData={fetchData}
-            canEdit
-            canRemove
-            preview={false}
-            bucketService={livroService}
-          />}
+          <Form.Item
+            name="bucketFile"
+          >
+            {livro?.id && <BucketFileRender
+              entity={livro}
+              width={300}
+              title="Imagem do livro"
+              fetchData={fetchData}
+              canEdit
+              canRemove
+              preview={false}
+              bucketService={livroService}
+            />}
+          </Form.Item>
         </div>
       </Form >
 
       {contextHolder}
-      < Button
+      <Button
         onClick={onCancel}
         type="primary"
         size="large"
         shape="circle"
-        icon={< RollbackOutlined />}
+        icon={<RollbackOutlined />}
         style={{ position: "fixed", zIndex: 1, bottom: 40, right: 40 }}
       />
     </div>

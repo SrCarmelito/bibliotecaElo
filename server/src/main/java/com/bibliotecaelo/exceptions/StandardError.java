@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -19,8 +20,12 @@ public class StandardError {
     private String path;
     private Set<String> errors = new HashSet<>();
 
-    public int getStatus() {
-        return httpStatus.value();
+    public Integer getStatus() {
+        if(Objects.nonNull(httpStatus)) {
+            return httpStatus.value();
+        }
+
+        return null;
     }
 
 }

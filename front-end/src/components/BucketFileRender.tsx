@@ -7,6 +7,7 @@ import Title from "antd/lib/typography/Title";
 import ImgCrop from "antd-img-crop";
 import { EntityWithBucketFile } from "../type/BucketFile";
 import { BucketService } from "../service/BucketService";
+import { handleApiError } from "../functions/handleApiError";
 
 type BucketFileProps<T extends EntityWithBucketFile> = {
   entity: T;
@@ -25,15 +26,16 @@ export function BucketFileRender<T extends EntityWithBucketFile>({ entity, width
   const openNotification = useNotification();
 
   useEffect(() => {
+    let imageUrl = "";
     if (entity.bucketFile?.id) {
       bucketService.getFile(entity.bucketFile?.id).then((response) => {
-        const imageUrl = URL.createObjectURL(response.data);
+        imageUrl = URL.createObjectURL(response.data);
         setSrc(imageUrl);
       });
 
       return () => {
-        if (src) {
-          URL.revokeObjectURL(src);
+        if (imageUrl) {
+          URL.revokeObjectURL(imageUrl);
         }
       };
     }
@@ -48,6 +50,15 @@ export function BucketFileRender<T extends EntityWithBucketFile>({ entity, width
         openNotification("success", "imagem inserida com sucesso");
         fetchData?.();
       })
+      .catch((errors) =>
+        handleApiError(
+          openNotification,
+          errors,
+          entity.bucketFile?.id
+            ? "Não é possível atualizar o arquivo."
+            : "Não foi possível inserir o arquivo"
+        ),
+      )
   };
 
   function onRemoveFile(): void {
@@ -62,6 +73,13 @@ export function BucketFileRender<T extends EntityWithBucketFile>({ entity, width
                 fetchData?.();
                 openNotification("success", "Imagem removida com sucesso.");
               })
+              .catch((errors) =>
+                handleApiError(
+                  openNotification,
+                  errors,
+                  "Não foi possível remover o arquivo"
+                ),
+              )
           }
         },
       });
